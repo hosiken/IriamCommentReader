@@ -7,14 +7,12 @@ namespace IriamCommentReader
 {
     public class BouyomiTalk
     {
-        public static async Task<int> SpeakAsync(string text = "ゆっくりしていってね", int voice = 0, int volume = -1, int speed = -1, int tone = -1)
+        public static async Task<int> SpeakAsync(string text = "ゆっくりしていってね", string url = "http://localhost:50080/Talk", string query = "?text={{text}}")
         {
             using (var client = new HttpClient())
             {
-                var url = "http://localhost:50080/Talk";
-
                 string encodedText = WebUtility.UrlEncode(text);
-                string queryString = $"?text={encodedText}&voice={voice}&volume={volume}&speed={speed}&tone={tone}";
+                string queryString = query.Replace("{{text}}", encodedText);
 
                 try
                 {

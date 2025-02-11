@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Drawing.Imaging;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +12,13 @@ namespace IriamCommentReader
     public class GeminiAPI
     {
         private string _apiKey;
+        private string _model;
         private readonly HttpClient _client;
 
         public string APIKey { set { _apiKey = value; } }
+        public string Model { set { _model = value; } }
+        public float Temperature { get; set; }
+        public float TopP { get; set; }
 
         public GeminiAPI(string apiKey)
         {
@@ -21,15 +26,32 @@ namespace IriamCommentReader
             _client = new HttpClient();
         }
 
+        private ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+
+            return null;
+        }
+
         public async Task<string> UploadImageAsync(Image image)
         {
             using (var memoryStream = new MemoryStream())
             {
-                image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png); // PNG 形式で保存
+                var encParam = new EncoderParameters(1);
+                encParam.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 75L);
+                image.Save(memoryStream, GetEncoder(ImageFormat.Jpeg), encParam); // PNG 形式で保存
                 memoryStream.Position = 0; // ストリームの位置を先頭に戻す
 
                 var contentLength = memoryStream.Length;
-                var contentType = "image/png"; // or get from file extension
+                var contentType = "image/jpeg"; // or get from file extension
 
                 var uploadUrl = $"https://generativelanguage.googleapis.com/upload/v1beta/files?key={_apiKey}";
 
@@ -37,7 +59,7 @@ namespace IriamCommentReader
                 startUploadRequest.Headers.Add("X-Goog-Upload-Command", "start, upload, finalize");
                 startUploadRequest.Headers.Add("X-Goog-Upload-Header-Content-Length", contentLength.ToString());
                 startUploadRequest.Headers.Add("X-Goog-Upload-Header-Content-Type", contentType);
-                startUploadRequest.Content = new StringContent($"{{\"file\": {{\"display_name\": \"image.png\"}}}}", Encoding.UTF8, "application/json");
+                startUploadRequest.Content = new StringContent($"{{\"file\": {{\"display_name\": \"image.jpg\"}}}}", Encoding.UTF8, "application/json");
 
                 var startUploadResponse = await _client.SendAsync(startUploadRequest);
                 startUploadResponse.EnsureSuccessStatusCode();
@@ -52,7 +74,6 @@ namespace IriamCommentReader
                 dynamic responseObject = JsonConvert.DeserializeObject(jsonResponse);
                 return responseObject.file.uri;
             }
-
         }
 
         public async Task<string> UploadImageAsync(string filePath)
@@ -60,7 +81,7 @@ namespace IriamCommentReader
             using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 var contentLength = fileStream.Length;
-                var contentType = "image/png"; // or get from file extension
+                var contentType = "image/jpeg"; // or get from file extension
 
                 var uploadUrl = $"https://generativelanguage.googleapis.com/upload/v1beta/files?key={_apiKey}";
 
@@ -102,7 +123,7 @@ namespace IriamCommentReader
                             fileData = new
                             {
                                 fileUri = fileUri,
-                                mimeType = "image/png" // Or derive from file extension
+                                mimeType = "image/jpeg" // Or derive from file extension
                             }
                         }
                     }
@@ -126,15 +147,15 @@ namespace IriamCommentReader
                 },
                 generationConfig = new
                 {
-                    temperature = 0,
+                    temperature = Temperature,
                     topK = 40,
-                    topP = 0,
+                    topP = TopP,
                     maxOutputTokens = 8192,
                     responseMimeType = "text/plain"
                 }
             };
 
-            var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key={_apiKey}";
+            var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
             var generateRequest = new HttpRequestMessage(HttpMethod.Post, generateUrl);
             generateRequest.Content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
 
