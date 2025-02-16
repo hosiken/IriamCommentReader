@@ -51,6 +51,8 @@
             this.buttonClearLog = new System.Windows.Forms.Button();
             this.labelAPICount = new System.Windows.Forms.Label();
             this.buttonReset = new System.Windows.Forms.Button();
+            this.labelSimilarity = new System.Windows.Forms.Label();
+            this.timerSimilarRetry = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericInterval)).BeginInit();
             this.SuspendLayout();
@@ -72,7 +74,7 @@
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Location = new System.Drawing.Point(93, 50);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(244, 216);
+            this.pictureBox1.Size = new System.Drawing.Size(218, 151);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
@@ -90,23 +92,23 @@
             // textBoxPrompt
             // 
             this.textBoxPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxPrompt.Location = new System.Drawing.Point(93, 291);
+            this.textBoxPrompt.Location = new System.Drawing.Point(93, 226);
             this.textBoxPrompt.Multiline = true;
             this.textBoxPrompt.Name = "textBoxPrompt";
             this.textBoxPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxPrompt.Size = new System.Drawing.Size(244, 100);
+            this.textBoxPrompt.Size = new System.Drawing.Size(218, 100);
             this.textBoxPrompt.TabIndex = 14;
             // 
             // textBox2
             // 
             this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(343, 291);
+            this.textBox2.Location = new System.Drawing.Point(317, 226);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox2.Size = new System.Drawing.Size(238, 100);
+            this.textBox2.Size = new System.Drawing.Size(224, 100);
             this.textBox2.TabIndex = 16;
             // 
             // timerQuery
@@ -119,12 +121,12 @@
             this.textBoxChatLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxChatLog.Location = new System.Drawing.Point(343, 50);
+            this.textBoxChatLog.Location = new System.Drawing.Point(317, 50);
             this.textBoxChatLog.Multiline = true;
             this.textBoxChatLog.Name = "textBoxChatLog";
             this.textBoxChatLog.ReadOnly = true;
             this.textBoxChatLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxChatLog.Size = new System.Drawing.Size(238, 216);
+            this.textBoxChatLog.Size = new System.Drawing.Size(224, 151);
             this.textBoxChatLog.TabIndex = 12;
             // 
             // buttonReadTest
@@ -183,7 +185,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(91, 276);
+            this.label2.Location = new System.Drawing.Point(91, 211);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(49, 12);
             this.label2.TabIndex = 13;
@@ -193,7 +195,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(341, 276);
+            this.label3.Location = new System.Drawing.Point(315, 211);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 12);
             this.label3.TabIndex = 15;
@@ -222,7 +224,7 @@
             // buttonPreference
             // 
             this.buttonPreference.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonPreference.Location = new System.Drawing.Point(509, 12);
+            this.buttonPreference.Location = new System.Drawing.Point(469, 12);
             this.buttonPreference.Name = "buttonPreference";
             this.buttonPreference.Size = new System.Drawing.Size(75, 23);
             this.buttonPreference.TabIndex = 5;
@@ -256,7 +258,7 @@
             // buttonClearLog
             // 
             this.buttonClearLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClearLog.Location = new System.Drawing.Point(428, 12);
+            this.buttonClearLog.Location = new System.Drawing.Point(388, 12);
             this.buttonClearLog.Name = "buttonClearLog";
             this.buttonClearLog.Size = new System.Drawing.Size(75, 23);
             this.buttonClearLog.TabIndex = 17;
@@ -269,13 +271,15 @@
             this.labelAPICount.AutoSize = true;
             this.labelAPICount.Location = new System.Drawing.Point(10, 254);
             this.labelAPICount.Name = "labelAPICount";
-            this.labelAPICount.Size = new System.Drawing.Size(0, 12);
+            this.labelAPICount.Size = new System.Drawing.Size(49, 12);
             this.labelAPICount.TabIndex = 18;
+            this.labelAPICount.Tag = "";
+            this.labelAPICount.Text = "API回数:";
             // 
             // buttonReset
             // 
             this.buttonReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonReset.Location = new System.Drawing.Point(12, 368);
+            this.buttonReset.Location = new System.Drawing.Point(12, 303);
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.Size = new System.Drawing.Size(75, 23);
             this.buttonReset.TabIndex = 19;
@@ -283,11 +287,29 @@
             this.buttonReset.UseVisualStyleBackColor = true;
             this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
             // 
+            // labelSimilarity
+            // 
+            this.labelSimilarity.AutoSize = true;
+            this.labelSimilarity.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.labelSimilarity.Location = new System.Drawing.Point(10, 275);
+            this.labelSimilarity.Name = "labelSimilarity";
+            this.labelSimilarity.Size = new System.Drawing.Size(31, 12);
+            this.labelSimilarity.TabIndex = 20;
+            this.labelSimilarity.Tag = "";
+            this.labelSimilarity.Text = "類似:";
+            this.labelSimilarity.DoubleClick += new System.EventHandler(this.labelSimilarity_DoubleClick);
+            // 
+            // timerSimilarRetry
+            // 
+            this.timerSimilarRetry.Interval = 1000;
+            this.timerSimilarRetry.Tick += new System.EventHandler(this.timerSimilarRetry_Tick);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(593, 403);
+            this.ClientSize = new System.Drawing.Size(553, 338);
+            this.Controls.Add(this.labelSimilarity);
             this.Controls.Add(this.buttonReset);
             this.Controls.Add(this.labelAPICount);
             this.Controls.Add(this.buttonClearLog);
@@ -310,7 +332,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.buttonCapture);
             this.Name = "FormMain";
-            this.Text = "IriamCommentReader 20250210";
+            this.Text = "IriamCommentReader 20250216";
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericInterval)).EndInit();
@@ -343,6 +365,8 @@
         private System.Windows.Forms.Button buttonClearLog;
         private System.Windows.Forms.Label labelAPICount;
         private System.Windows.Forms.Button buttonReset;
+        private System.Windows.Forms.Label labelSimilarity;
+        private System.Windows.Forms.Timer timerSimilarRetry;
     }
 }
 

@@ -145,16 +145,19 @@ namespace IriamCommentReader
         private const string DefaultPrompt = "【直近読み上げたテキスト】\r\n{{text}}";
         private const string DefaultBouyomiURL = "http://localhost:50080/Talk";
         private const string DefaultBouyomiParam = "?text={{text}}";
+        public const float DefaultSimilarity = 0.6f;
 
         public string APIKey { get; set; }
         public string Model { get; set; }
-        public float Temperature { get; set; } = 0.0f;
+        public float Temperature { get; set; }
         public float TopP { get; set; } = 0.0f;
         public string SystemPrompt { get; set; }
         public string InitPrompt { get; set; }
         public string Prompt { get; set; }
         public bool SkipNameAll { get; set; }
         public bool SkipName { get; set; }
+        public bool SimilarOnly { get; set; }
+        public float Similarity { get; set; }
         public string BouyomiURL { get; set; }
         public string BouyomiParam { get; set; }
 
@@ -171,6 +174,8 @@ namespace IriamCommentReader
             Prompt = DefaultPrompt;
             SkipNameAll = false;
             SkipName = true;
+            SimilarOnly = true;
+            Similarity = DefaultSimilarity;
             BouyomiURL = DefaultBouyomiURL;
             BouyomiParam = BouyomiParam;
         }
@@ -189,6 +194,8 @@ namespace IriamCommentReader
             WriteStr(SectionName, "Prompt", Prompt);
             WriteBool(SectionName, "SkipNameAll", SkipNameAll);
             WriteBool(SectionName, "SkipName", SkipName);
+            WriteBool(SectionName, "SimilarOnly", SimilarOnly);
+            WriteFloat(SectionName, "Similarity", Similarity);
             WriteStr(SectionName, "BouyomiURL", BouyomiURL);
             WriteStr(SectionName, "BouyomiParam", BouyomiParam);
         }
@@ -209,6 +216,8 @@ namespace IriamCommentReader
             pref.Prompt = ReadStr(SectionName, "Prompt", DefaultPrompt);
             pref.SkipNameAll = ReadBool(SectionName, "SkipNameAll", false);
             pref.SkipName = ReadBool(SectionName, "SkipName", true);
+            pref.SimilarOnly = ReadBool(SectionName, "SimilarOnly", true);
+            pref.Similarity = ReadFloat(SectionName, "Similarity", DefaultSimilarity);
             pref.BouyomiURL = ReadStr(SectionName, "BouyomiURL", DefaultBouyomiURL);
             pref.BouyomiParam = ReadStr(SectionName, "BouyomiParam", DefaultBouyomiParam);
             return pref;

@@ -51,8 +51,11 @@
             this.label8 = new System.Windows.Forms.Label();
             this.comboBoxBouyomiParam = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.checkBoxSimilarOnly = new System.Windows.Forms.CheckBox();
+            this.numericSimilarity = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numericTemperature)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericTopP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericSimilarity)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBoxModel
@@ -140,7 +143,7 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(307, 555);
+            this.buttonOK.Location = new System.Drawing.Point(307, 575);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 21;
@@ -152,7 +155,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(388, 555);
+            this.buttonCancel.Location = new System.Drawing.Point(388, 575);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 22;
@@ -162,7 +165,7 @@
             // buttonDefualt
             // 
             this.buttonDefualt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonDefualt.Location = new System.Drawing.Point(12, 555);
+            this.buttonDefualt.Location = new System.Drawing.Point(12, 575);
             this.buttonDefualt.Name = "buttonDefualt";
             this.buttonDefualt.Size = new System.Drawing.Size(75, 23);
             this.buttonDefualt.TabIndex = 20;
@@ -270,7 +273,7 @@
             this.comboBoxBouyomiURL.FormattingEnabled = true;
             this.comboBoxBouyomiURL.Items.AddRange(new object[] {
             "http://localhost:50080/Talk"});
-            this.comboBoxBouyomiURL.Location = new System.Drawing.Point(88, 490);
+            this.comboBoxBouyomiURL.Location = new System.Drawing.Point(88, 517);
             this.comboBoxBouyomiURL.Name = "comboBoxBouyomiURL";
             this.comboBoxBouyomiURL.Size = new System.Drawing.Size(375, 20);
             this.comboBoxBouyomiURL.TabIndex = 17;
@@ -278,7 +281,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(13, 493);
+            this.label8.Location = new System.Drawing.Point(13, 520);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(62, 12);
             this.label8.TabIndex = 16;
@@ -290,7 +293,7 @@
             this.comboBoxBouyomiParam.Items.AddRange(new object[] {
             "?text={{text}}",
             "?text={{text}}&voice=5"});
-            this.comboBoxBouyomiParam.Location = new System.Drawing.Point(88, 516);
+            this.comboBoxBouyomiParam.Location = new System.Drawing.Point(88, 543);
             this.comboBoxBouyomiParam.Name = "comboBoxBouyomiParam";
             this.comboBoxBouyomiParam.Size = new System.Drawing.Size(375, 20);
             this.comboBoxBouyomiParam.TabIndex = 19;
@@ -298,11 +301,39 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(13, 519);
+            this.label9.Location = new System.Drawing.Point(13, 546);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(58, 12);
             this.label9.TabIndex = 18;
             this.label9.Text = "棒読みパラ";
+            // 
+            // checkBoxSimilarOnly
+            // 
+            this.checkBoxSimilarOnly.AutoSize = true;
+            this.checkBoxSimilarOnly.Location = new System.Drawing.Point(12, 490);
+            this.checkBoxSimilarOnly.Name = "checkBoxSimilarOnly";
+            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(217, 16);
+            this.checkBoxSimilarOnly.TabIndex = 23;
+            this.checkBoxSimilarOnly.Text = "類似度が高い場合だけAPIにアクセスする";
+            this.checkBoxSimilarOnly.UseVisualStyleBackColor = true;
+            // 
+            // numericSimilarity
+            // 
+            this.numericSimilarity.DecimalPlaces = 2;
+            this.numericSimilarity.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericSimilarity.Location = new System.Drawing.Point(235, 489);
+            this.numericSimilarity.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericSimilarity.Name = "numericSimilarity";
+            this.numericSimilarity.Size = new System.Drawing.Size(72, 19);
+            this.numericSimilarity.TabIndex = 24;
             // 
             // FormPreference
             // 
@@ -310,7 +341,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(478, 590);
+            this.ClientSize = new System.Drawing.Size(478, 610);
+            this.Controls.Add(this.numericSimilarity);
+            this.Controls.Add(this.checkBoxSimilarOnly);
             this.Controls.Add(this.comboBoxBouyomiParam);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.comboBoxBouyomiURL);
@@ -343,6 +376,7 @@
             this.Load += new System.EventHandler(this.FormPreference_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericTemperature)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericTopP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericSimilarity)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -373,5 +407,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBoxBouyomiParam;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox checkBoxSimilarOnly;
+        private System.Windows.Forms.NumericUpDown numericSimilarity;
     }
 }

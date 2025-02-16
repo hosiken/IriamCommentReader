@@ -28,6 +28,8 @@ namespace IriamCommentReader
             textBoxPrompt.Text = Preference.Instance.Prompt;
             checkBoxSkipNameAll.Checked = Preference.Instance.SkipNameAll;
             checkBoxSkipName.Checked = Preference.Instance.SkipName;
+            checkBoxSimilarOnly.Checked = Preference.Instance.SimilarOnly;
+            numericSimilarity.Value = (Decimal)Preference.Instance.Similarity;
             comboBoxBouyomiURL.Text = Preference.Instance.BouyomiURL;
             comboBoxBouyomiParam.Text = Preference.Instance.BouyomiParam;
         }
@@ -37,12 +39,14 @@ namespace IriamCommentReader
             Preference.Instance.APIKey = textBoxAPIKey.Text;
             Preference.Instance.Model = comboBoxModel.Text;
             Preference.Instance.Temperature = (float)numericTemperature.Value;
-            Preference.Instance.TopP = (float)numericTopP.Value ;
+            Preference.Instance.TopP = (float)numericTopP.Value;
             Preference.Instance.SystemPrompt = textBoxSystem.Text;
             Preference.Instance.InitPrompt = textBoxInitPrompt.Text;
             Preference.Instance.Prompt = textBoxPrompt.Text;
             Preference.Instance.SkipNameAll = checkBoxSkipNameAll.Checked;
             Preference.Instance.SkipName = checkBoxSkipName.Checked;
+            Preference.Instance.SimilarOnly = checkBoxSimilarOnly.Checked;
+            Preference.Instance.Similarity = (float)numericSimilarity.Value;
             Preference.Instance.BouyomiURL = comboBoxBouyomiURL.Text;
             Preference.Instance.BouyomiParam = comboBoxBouyomiParam.Text;
             Preference.Instance.Save();
