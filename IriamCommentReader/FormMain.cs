@@ -101,6 +101,7 @@ namespace IriamCommentReader
                 if (similarity >= Preference.Instance.Similarity)
                 {
                     labelSimilarity.ForeColor = Color.Blue;
+                    timerSimilarRetry.Interval = Preference.Instance.SimilarRetryInterval * 1000;
                     timerSimilarRetry.Enabled = true;
                     return;
                 }

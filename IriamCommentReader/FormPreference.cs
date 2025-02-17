@@ -30,6 +30,7 @@ namespace IriamCommentReader
             checkBoxSkipName.Checked = Preference.Instance.SkipName;
             checkBoxSimilarOnly.Checked = Preference.Instance.SimilarOnly;
             numericSimilarity.Value = (Decimal)Preference.Instance.Similarity;
+            numericSimilarRetryInterval.Value = (Decimal)Preference.Instance.SimilarRetryInterval;
             comboBoxBouyomiURL.Text = Preference.Instance.BouyomiURL;
             comboBoxBouyomiParam.Text = Preference.Instance.BouyomiParam;
         }
@@ -47,6 +48,7 @@ namespace IriamCommentReader
             Preference.Instance.SkipName = checkBoxSkipName.Checked;
             Preference.Instance.SimilarOnly = checkBoxSimilarOnly.Checked;
             Preference.Instance.Similarity = (float)numericSimilarity.Value;
+            Preference.Instance.SimilarRetryInterval = (int)numericSimilarRetryInterval.Value;
             Preference.Instance.BouyomiURL = comboBoxBouyomiURL.Text;
             Preference.Instance.BouyomiParam = comboBoxBouyomiParam.Text;
             Preference.Instance.Save();
