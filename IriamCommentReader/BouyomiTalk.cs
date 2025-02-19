@@ -9,6 +9,9 @@ namespace IriamCommentReader
     {
         public static async Task<int> SpeakAsync(string text = "ゆっくりしていってね", string url = "http://localhost:50080/Talk", string query = "?text={{text}}")
         {
+            // URLエンコードされると困る文字を全角に変換
+            text = text.Replace(" ", "　").Replace("%", "％").Replace("/", "／");
+
             using (var client = new HttpClient())
             {
                 string encodedText = WebUtility.UrlEncode(text);
