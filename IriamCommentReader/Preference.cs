@@ -145,7 +145,7 @@ namespace IriamCommentReader
         private const string DefaultPrompt = "【直近読み上げたテキスト】\r\n{{text}}";
         private const string DefaultBouyomiURL = "http://localhost:50080/Talk";
         private const string DefaultBouyomiParam = "?text={{text}}";
-        private const float DefaultSimilarity = 0.6f;
+        private const float DefaultSimilarity = 0.5f;
         private const int DefaultSimilarRetryInterval = 1;
 
         public string APIKey { get; set; }
@@ -159,6 +159,7 @@ namespace IriamCommentReader
         public bool SkipName { get; set; }
         public bool SimilarOnly { get; set; }
         public float Similarity { get; set; }
+        public bool SimilarityRetryEnable { get; set; }
         public int SimilarRetryInterval { get; set; }
         public string BouyomiURL { get; set; }
         public string BouyomiParam { get; set; }
@@ -178,6 +179,7 @@ namespace IriamCommentReader
             SkipName = true;
             SimilarOnly = true;
             Similarity = DefaultSimilarity;
+            SimilarityRetryEnable = true;
             SimilarRetryInterval = DefaultSimilarRetryInterval;
             BouyomiURL = DefaultBouyomiURL;
             BouyomiParam = BouyomiParam;
@@ -199,6 +201,7 @@ namespace IriamCommentReader
             WriteBool(SectionName, "SkipName", SkipName);
             WriteBool(SectionName, "SimilarOnly", SimilarOnly);
             WriteFloat(SectionName, "Similarity", Similarity);
+            WriteBool(SectionName, "SimilarityRetryEnable", SimilarityRetryEnable);
             WriteInt(SectionName, "SimilarRetryInterval", SimilarRetryInterval);
             WriteStr(SectionName, "BouyomiURL", BouyomiURL);
             WriteStr(SectionName, "BouyomiParam", BouyomiParam);
@@ -222,6 +225,7 @@ namespace IriamCommentReader
             pref.SkipName = ReadBool(SectionName, "SkipName", true);
             pref.SimilarOnly = ReadBool(SectionName, "SimilarOnly", true);
             pref.Similarity = ReadFloat(SectionName, "Similarity", DefaultSimilarity);
+            pref.SimilarityRetryEnable = ReadBool(SectionName, "SimilarityRetryEnable", true);
             pref.SimilarRetryInterval = ReadInt(SectionName, "SimilarRetryInterval", DefaultSimilarRetryInterval);
             pref.BouyomiURL = ReadStr(SectionName, "BouyomiURL", DefaultBouyomiURL);
             pref.BouyomiParam = ReadStr(SectionName, "BouyomiParam", DefaultBouyomiParam);

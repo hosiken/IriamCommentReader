@@ -53,8 +53,9 @@
             this.label9 = new System.Windows.Forms.Label();
             this.checkBoxSimilarOnly = new System.Windows.Forms.CheckBox();
             this.numericSimilarity = new System.Windows.Forms.NumericUpDown();
-            this.label10 = new System.Windows.Forms.Label();
             this.numericSimilarRetryInterval = new System.Windows.Forms.NumericUpDown();
+            this.checkBoxSimilarityRetryEnable = new System.Windows.Forms.CheckBox();
+            this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericTemperature)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericTopP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSimilarity)).BeginInit();
@@ -146,10 +147,10 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(307, 575);
+            this.buttonOK.Location = new System.Drawing.Point(307, 591);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 25;
+            this.buttonOK.TabIndex = 26;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
@@ -158,20 +159,20 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(388, 575);
+            this.buttonCancel.Location = new System.Drawing.Point(388, 591);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 26;
+            this.buttonCancel.TabIndex = 27;
             this.buttonCancel.Text = "キャンセル";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
             // buttonDefualt
             // 
             this.buttonDefualt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonDefualt.Location = new System.Drawing.Point(12, 575);
+            this.buttonDefualt.Location = new System.Drawing.Point(12, 591);
             this.buttonDefualt.Name = "buttonDefualt";
             this.buttonDefualt.Size = new System.Drawing.Size(75, 23);
-            this.buttonDefualt.TabIndex = 24;
+            this.buttonDefualt.TabIndex = 25;
             this.buttonDefualt.Text = "初期設定";
             this.buttonDefualt.UseVisualStyleBackColor = true;
             this.buttonDefualt.Click += new System.EventHandler(this.buttonDefualt_Click);
@@ -276,18 +277,18 @@
             this.comboBoxBouyomiURL.FormattingEnabled = true;
             this.comboBoxBouyomiURL.Items.AddRange(new object[] {
             "http://localhost:50080/Talk"});
-            this.comboBoxBouyomiURL.Location = new System.Drawing.Point(88, 517);
+            this.comboBoxBouyomiURL.Location = new System.Drawing.Point(88, 536);
             this.comboBoxBouyomiURL.Name = "comboBoxBouyomiURL";
             this.comboBoxBouyomiURL.Size = new System.Drawing.Size(375, 20);
-            this.comboBoxBouyomiURL.TabIndex = 21;
+            this.comboBoxBouyomiURL.TabIndex = 22;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(13, 520);
+            this.label8.Location = new System.Drawing.Point(13, 539);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(62, 12);
-            this.label8.TabIndex = 20;
+            this.label8.TabIndex = 21;
             this.label8.Text = "棒読みURL";
             // 
             // comboBoxBouyomiParam
@@ -296,18 +297,18 @@
             this.comboBoxBouyomiParam.Items.AddRange(new object[] {
             "?text={{text}}",
             "?text={{text}}&voice=5"});
-            this.comboBoxBouyomiParam.Location = new System.Drawing.Point(88, 543);
+            this.comboBoxBouyomiParam.Location = new System.Drawing.Point(88, 562);
             this.comboBoxBouyomiParam.Name = "comboBoxBouyomiParam";
             this.comboBoxBouyomiParam.Size = new System.Drawing.Size(375, 20);
-            this.comboBoxBouyomiParam.TabIndex = 23;
+            this.comboBoxBouyomiParam.TabIndex = 24;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(13, 546);
+            this.label9.Location = new System.Drawing.Point(13, 565);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(68, 12);
-            this.label9.TabIndex = 22;
+            this.label9.TabIndex = 23;
             this.label9.Text = "棒読みパラム";
             // 
             // checkBoxSimilarOnly
@@ -315,9 +316,9 @@
             this.checkBoxSimilarOnly.AutoSize = true;
             this.checkBoxSimilarOnly.Location = new System.Drawing.Point(12, 490);
             this.checkBoxSimilarOnly.Name = "checkBoxSimilarOnly";
-            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(217, 16);
+            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(241, 16);
             this.checkBoxSimilarOnly.TabIndex = 16;
-            this.checkBoxSimilarOnly.Text = "類似度が高い場合だけAPIにアクセスする";
+            this.checkBoxSimilarOnly.Text = "変化が少ない場合はAPIアクセスをスキップする";
             this.checkBoxSimilarOnly.UseVisualStyleBackColor = true;
             // 
             // numericSimilarity
@@ -328,7 +329,7 @@
             0,
             0,
             65536});
-            this.numericSimilarity.Location = new System.Drawing.Point(235, 489);
+            this.numericSimilarity.Location = new System.Drawing.Point(264, 489);
             this.numericSimilarity.Maximum = new decimal(new int[] {
             10,
             0,
@@ -338,18 +339,9 @@
             this.numericSimilarity.Size = new System.Drawing.Size(72, 19);
             this.numericSimilarity.TabIndex = 17;
             // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(313, 491);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(81, 12);
-            this.label10.TabIndex = 18;
-            this.label10.Text = "リトライ間隔(秒)";
-            // 
             // numericSimilarRetryInterval
             // 
-            this.numericSimilarRetryInterval.Location = new System.Drawing.Point(400, 489);
+            this.numericSimilarRetryInterval.Location = new System.Drawing.Point(264, 511);
             this.numericSimilarRetryInterval.Maximum = new decimal(new int[] {
             1200,
             0,
@@ -361,7 +353,7 @@
             0,
             0});
             this.numericSimilarRetryInterval.Name = "numericSimilarRetryInterval";
-            this.numericSimilarRetryInterval.Size = new System.Drawing.Size(63, 19);
+            this.numericSimilarRetryInterval.Size = new System.Drawing.Size(72, 19);
             this.numericSimilarRetryInterval.TabIndex = 19;
             this.numericSimilarRetryInterval.Value = new decimal(new int[] {
             1,
@@ -369,15 +361,35 @@
             0,
             0});
             // 
+            // checkBoxSimilarityRetryEnable
+            // 
+            this.checkBoxSimilarityRetryEnable.AutoSize = true;
+            this.checkBoxSimilarityRetryEnable.Location = new System.Drawing.Point(27, 512);
+            this.checkBoxSimilarityRetryEnable.Name = "checkBoxSimilarityRetryEnable";
+            this.checkBoxSimilarityRetryEnable.Size = new System.Drawing.Size(228, 16);
+            this.checkBoxSimilarityRetryEnable.TabIndex = 18;
+            this.checkBoxSimilarityRetryEnable.Text = "APIをスキップしたとき次の間隔でリトライする";
+            this.checkBoxSimilarityRetryEnable.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(342, 513);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(17, 12);
+            this.label10.TabIndex = 20;
+            this.label10.Text = "秒";
+            // 
             // FormPreference
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(478, 610);
-            this.Controls.Add(this.numericSimilarRetryInterval);
+            this.ClientSize = new System.Drawing.Size(478, 626);
             this.Controls.Add(this.label10);
+            this.Controls.Add(this.checkBoxSimilarityRetryEnable);
+            this.Controls.Add(this.numericSimilarRetryInterval);
             this.Controls.Add(this.numericSimilarity);
             this.Controls.Add(this.checkBoxSimilarOnly);
             this.Controls.Add(this.comboBoxBouyomiParam);
@@ -446,7 +458,8 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox checkBoxSimilarOnly;
         private System.Windows.Forms.NumericUpDown numericSimilarity;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown numericSimilarRetryInterval;
+        private System.Windows.Forms.CheckBox checkBoxSimilarityRetryEnable;
+        private System.Windows.Forms.Label label10;
     }
 }

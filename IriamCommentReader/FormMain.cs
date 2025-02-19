@@ -97,14 +97,14 @@ namespace IriamCommentReader
                 var text = OCRPicture(_shot).Text.Replace(" ", "");
                 var similarity = TextCompare.Compare(text, _prevText);
                 labelSimilarity.Text = $"類似: {similarity:F2}/{Preference.Instance.Similarity:F2}";
-                _prevText = text;
                 if (similarity >= Preference.Instance.Similarity)
                 {
                     labelSimilarity.ForeColor = Color.Blue;
                     timerSimilarRetry.Interval = Preference.Instance.SimilarRetryInterval * 1000;
-                    timerSimilarRetry.Enabled = true;
+                    timerSimilarRetry.Enabled = Preference.Instance.SimilarityRetryEnable;
                     return;
                 }
+                _prevText = text;
                 labelSimilarity.ForeColor = SystemColors.ControlText;
             }
             else

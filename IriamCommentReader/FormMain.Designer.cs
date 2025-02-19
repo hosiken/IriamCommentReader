@@ -332,7 +332,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.buttonCapture);
             this.Name = "FormMain";
-            this.Text = "IriamCommentReader 20250218";
+            this.Text = "IriamCommentReader 20250220";
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericInterval)).EndInit();
