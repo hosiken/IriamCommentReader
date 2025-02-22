@@ -210,7 +210,7 @@ namespace IriamCommentReader
 
         private async void button4_Click(object sender, EventArgs e)
         {
-            await BouyomiTalk.SpeakAsync("読み上げテスト");
+            await BouyomiTalk.SpeakAsync("読み上げテスト", Preference.Instance.BouyomiURL, Preference.Instance.BouyomiParam);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
