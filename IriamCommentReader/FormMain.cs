@@ -22,9 +22,23 @@ namespace IriamCommentReader
         public FormMain()
         {
             InitializeComponent();
-            // https://aistudio.google.com の左上「Gety API Key」から無料のAPIキーを取得する
             Preference.Instance = Preference.Load();
+            checkBoxAuto.Checked = Preference.Instance.AutoExecEnable;
+            numericInterval.Value = Preference.Instance.AutoExecInterval;
+            textBoxLeft.Text = Preference.Instance.CaptureRect.X.ToString();
+            textBoxTop.Text = Preference.Instance.CaptureRect.Y.ToString();
+            textBoxWidth.Text = Preference.Instance.CaptureRect.Width.ToString();
+            textBoxHeight.Text = Preference.Instance.CaptureRect.Height.ToString();
             _geminiAPI = new GeminiAPI("APIキーをここに入れる"); // Replace with your actual API key
+        }
+
+        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Preference.Instance.AutoExecEnable = checkBoxAuto.Checked;
+            Preference.Instance.AutoExecInterval = (int)numericInterval.Value;
+            Preference.Instance.CaptureRect = new Rect(int.Parse(textBoxLeft.Text), int.Parse(textBoxTop.Text), 
+                int.Parse(textBoxWidth.Text), int.Parse(textBoxHeight.Text));
+            Preference.Instance.Save();
         }
 
         public static Image CaptureRegion(Rectangle region)
@@ -92,6 +106,11 @@ namespace IriamCommentReader
 
         private async void button2_Click(object sender, EventArgs e)
         {
+            if (_shot == null)
+            {
+                return;
+            }
+
             if (Preference.Instance.SimilarOnly)
             {
                 var text = OCRPicture(_shot).Text.Replace(" ", "");

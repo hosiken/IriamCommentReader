@@ -69,17 +69,17 @@
             "gemini-2.0-flash",
             "gemini-2.0-flash-exp",
             "gemini-2.0-flash-lite-preview-02-05"});
-            this.comboBoxModel.Location = new System.Drawing.Point(88, 36);
+            this.comboBoxModel.Location = new System.Drawing.Point(88, 39);
             this.comboBoxModel.Name = "comboBoxModel";
-            this.comboBoxModel.Size = new System.Drawing.Size(172, 20);
+            this.comboBoxModel.Size = new System.Drawing.Size(172, 23);
             this.comboBoxModel.TabIndex = 3;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 39);
+            this.label6.Location = new System.Drawing.Point(13, 42);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(34, 12);
+            this.label6.Size = new System.Drawing.Size(36, 15);
             this.label6.TabIndex = 2;
             this.label6.Text = "モデル";
             // 
@@ -89,7 +89,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxAPIKey.Location = new System.Drawing.Point(88, 12);
             this.textBoxAPIKey.Name = "textBoxAPIKey";
-            this.textBoxAPIKey.Size = new System.Drawing.Size(378, 19);
+            this.textBoxAPIKey.Size = new System.Drawing.Size(378, 23);
             this.textBoxAPIKey.TabIndex = 1;
             // 
             // label5
@@ -97,16 +97,16 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(13, 15);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(43, 12);
+            this.label5.Size = new System.Drawing.Size(47, 15);
             this.label5.TabIndex = 0;
             this.label5.Text = "APIキー";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 107);
+            this.label1.Location = new System.Drawing.Point(13, 104);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 12);
+            this.label1.Size = new System.Drawing.Size(89, 15);
             this.label1.TabIndex = 8;
             this.label1.Text = "システムプロンプト";
             // 
@@ -119,15 +119,15 @@
             this.textBoxSystem.Multiline = true;
             this.textBoxSystem.Name = "textBoxSystem";
             this.textBoxSystem.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxSystem.Size = new System.Drawing.Size(451, 136);
+            this.textBoxSystem.Size = new System.Drawing.Size(451, 133);
             this.textBoxSystem.TabIndex = 9;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 261);
+            this.label2.Location = new System.Drawing.Point(13, 258);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(73, 12);
+            this.label2.Size = new System.Drawing.Size(75, 15);
             this.label2.TabIndex = 10;
             this.label2.Text = "初期プロンプト";
             // 
@@ -140,14 +140,14 @@
             this.textBoxInitPrompt.Multiline = true;
             this.textBoxInitPrompt.Name = "textBoxInitPrompt";
             this.textBoxInitPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxInitPrompt.Size = new System.Drawing.Size(451, 73);
+            this.textBoxInitPrompt.Size = new System.Drawing.Size(451, 70);
             this.textBoxInitPrompt.TabIndex = 11;
             // 
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(307, 591);
+            this.buttonOK.Location = new System.Drawing.Point(307, 614);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 26;
@@ -159,7 +159,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(388, 591);
+            this.buttonCancel.Location = new System.Drawing.Point(388, 614);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 27;
@@ -169,7 +169,7 @@
             // buttonDefualt
             // 
             this.buttonDefualt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonDefualt.Location = new System.Drawing.Point(12, 591);
+            this.buttonDefualt.Location = new System.Drawing.Point(12, 614);
             this.buttonDefualt.Name = "buttonDefualt";
             this.buttonDefualt.Size = new System.Drawing.Size(75, 23);
             this.buttonDefualt.TabIndex = 25;
@@ -182,7 +182,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(13, 76);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 12);
+            this.label3.Size = new System.Drawing.Size(83, 15);
             this.label3.TabIndex = 4;
             this.label3.Text = "Temperature";
             // 
@@ -194,14 +194,14 @@
             0,
             0,
             65536});
-            this.numericTemperature.Location = new System.Drawing.Point(88, 74);
+            this.numericTemperature.Location = new System.Drawing.Point(99, 74);
             this.numericTemperature.Maximum = new decimal(new int[] {
             20,
             0,
             0,
             65536});
             this.numericTemperature.Name = "numericTemperature";
-            this.numericTemperature.Size = new System.Drawing.Size(72, 19);
+            this.numericTemperature.Size = new System.Drawing.Size(72, 23);
             this.numericTemperature.TabIndex = 5;
             // 
             // numericTopP
@@ -212,31 +212,31 @@
             0,
             0,
             65536});
-            this.numericTopP.Location = new System.Drawing.Point(214, 74);
+            this.numericTopP.Location = new System.Drawing.Point(227, 74);
             this.numericTopP.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numericTopP.Name = "numericTopP";
-            this.numericTopP.Size = new System.Drawing.Size(72, 19);
+            this.numericTopP.Size = new System.Drawing.Size(72, 23);
             this.numericTopP.TabIndex = 7;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(177, 76);
+            this.label4.Location = new System.Drawing.Point(186, 76);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(31, 12);
+            this.label4.Size = new System.Drawing.Size(35, 15);
             this.label4.TabIndex = 6;
             this.label4.Text = "TopP";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(13, 352);
+            this.label7.Location = new System.Drawing.Point(13, 349);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(117, 12);
+            this.label7.Size = new System.Drawing.Size(119, 15);
             this.label7.TabIndex = 12;
             this.label7.Text = "チャット更新時プロンプト";
             // 
@@ -255,9 +255,9 @@
             // checkBoxSkipNameAll
             // 
             this.checkBoxSkipNameAll.AutoSize = true;
-            this.checkBoxSkipNameAll.Location = new System.Drawing.Point(12, 446);
+            this.checkBoxSkipNameAll.Location = new System.Drawing.Point(15, 446);
             this.checkBoxSkipNameAll.Name = "checkBoxSkipNameAll";
-            this.checkBoxSkipNameAll.Size = new System.Drawing.Size(147, 16);
+            this.checkBoxSkipNameAll.Size = new System.Drawing.Size(149, 19);
             this.checkBoxSkipNameAll.TabIndex = 14;
             this.checkBoxSkipNameAll.Text = "名前読みを全部省略する";
             this.checkBoxSkipNameAll.UseVisualStyleBackColor = true;
@@ -265,9 +265,9 @@
             // checkBoxSkipName
             // 
             this.checkBoxSkipName.AutoSize = true;
-            this.checkBoxSkipName.Location = new System.Drawing.Point(12, 468);
+            this.checkBoxSkipName.Location = new System.Drawing.Point(15, 471);
             this.checkBoxSkipName.Name = "checkBoxSkipName";
-            this.checkBoxSkipName.Size = new System.Drawing.Size(199, 16);
+            this.checkBoxSkipName.Size = new System.Drawing.Size(201, 19);
             this.checkBoxSkipName.TabIndex = 15;
             this.checkBoxSkipName.Text = "連続した発言の名前読みを省略する";
             this.checkBoxSkipName.UseVisualStyleBackColor = true;
@@ -277,17 +277,17 @@
             this.comboBoxBouyomiURL.FormattingEnabled = true;
             this.comboBoxBouyomiURL.Items.AddRange(new object[] {
             "http://localhost:50080/Talk"});
-            this.comboBoxBouyomiURL.Location = new System.Drawing.Point(88, 536);
+            this.comboBoxBouyomiURL.Location = new System.Drawing.Point(84, 555);
             this.comboBoxBouyomiURL.Name = "comboBoxBouyomiURL";
-            this.comboBoxBouyomiURL.Size = new System.Drawing.Size(375, 20);
+            this.comboBoxBouyomiURL.Size = new System.Drawing.Size(375, 23);
             this.comboBoxBouyomiURL.TabIndex = 22;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(13, 539);
+            this.label8.Location = new System.Drawing.Point(12, 558);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(62, 12);
+            this.label8.Size = new System.Drawing.Size(66, 15);
             this.label8.TabIndex = 21;
             this.label8.Text = "棒読みURL";
             // 
@@ -297,26 +297,26 @@
             this.comboBoxBouyomiParam.Items.AddRange(new object[] {
             "?text={{text}}",
             "?text={{text}}&voice=5"});
-            this.comboBoxBouyomiParam.Location = new System.Drawing.Point(88, 562);
+            this.comboBoxBouyomiParam.Location = new System.Drawing.Point(84, 581);
             this.comboBoxBouyomiParam.Name = "comboBoxBouyomiParam";
-            this.comboBoxBouyomiParam.Size = new System.Drawing.Size(375, 20);
+            this.comboBoxBouyomiParam.Size = new System.Drawing.Size(375, 23);
             this.comboBoxBouyomiParam.TabIndex = 24;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(13, 565);
+            this.label9.Location = new System.Drawing.Point(13, 584);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(68, 12);
+            this.label9.Size = new System.Drawing.Size(70, 15);
             this.label9.TabIndex = 23;
             this.label9.Text = "棒読みパラム";
             // 
             // checkBoxSimilarOnly
             // 
             this.checkBoxSimilarOnly.AutoSize = true;
-            this.checkBoxSimilarOnly.Location = new System.Drawing.Point(12, 490);
+            this.checkBoxSimilarOnly.Location = new System.Drawing.Point(15, 521);
             this.checkBoxSimilarOnly.Name = "checkBoxSimilarOnly";
-            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(241, 16);
+            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(245, 19);
             this.checkBoxSimilarOnly.TabIndex = 16;
             this.checkBoxSimilarOnly.Text = "変化が少ない場合はAPIアクセスをスキップする";
             this.checkBoxSimilarOnly.UseVisualStyleBackColor = true;
@@ -329,19 +329,19 @@
             0,
             0,
             65536});
-            this.numericSimilarity.Location = new System.Drawing.Point(264, 489);
+            this.numericSimilarity.Location = new System.Drawing.Point(264, 495);
             this.numericSimilarity.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numericSimilarity.Name = "numericSimilarity";
-            this.numericSimilarity.Size = new System.Drawing.Size(72, 19);
+            this.numericSimilarity.Size = new System.Drawing.Size(72, 23);
             this.numericSimilarity.TabIndex = 17;
             // 
             // numericSimilarRetryInterval
             // 
-            this.numericSimilarRetryInterval.Location = new System.Drawing.Point(264, 511);
+            this.numericSimilarRetryInterval.Location = new System.Drawing.Point(263, 520);
             this.numericSimilarRetryInterval.Maximum = new decimal(new int[] {
             1200,
             0,
@@ -353,7 +353,7 @@
             0,
             0});
             this.numericSimilarRetryInterval.Name = "numericSimilarRetryInterval";
-            this.numericSimilarRetryInterval.Size = new System.Drawing.Size(72, 19);
+            this.numericSimilarRetryInterval.Size = new System.Drawing.Size(72, 23);
             this.numericSimilarRetryInterval.TabIndex = 19;
             this.numericSimilarRetryInterval.Value = new decimal(new int[] {
             1,
@@ -364,9 +364,9 @@
             // checkBoxSimilarityRetryEnable
             // 
             this.checkBoxSimilarityRetryEnable.AutoSize = true;
-            this.checkBoxSimilarityRetryEnable.Location = new System.Drawing.Point(27, 512);
+            this.checkBoxSimilarityRetryEnable.Location = new System.Drawing.Point(15, 496);
             this.checkBoxSimilarityRetryEnable.Name = "checkBoxSimilarityRetryEnable";
-            this.checkBoxSimilarityRetryEnable.Size = new System.Drawing.Size(228, 16);
+            this.checkBoxSimilarityRetryEnable.Size = new System.Drawing.Size(232, 19);
             this.checkBoxSimilarityRetryEnable.TabIndex = 18;
             this.checkBoxSimilarityRetryEnable.Text = "APIをスキップしたとき次の間隔でリトライする";
             this.checkBoxSimilarityRetryEnable.UseVisualStyleBackColor = true;
@@ -374,19 +374,19 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(342, 513);
+            this.label10.Location = new System.Drawing.Point(341, 522);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(17, 12);
+            this.label10.Size = new System.Drawing.Size(19, 15);
             this.label10.TabIndex = 20;
             this.label10.Text = "秒";
             // 
             // FormPreference
             // 
             this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(478, 626);
+            this.ClientSize = new System.Drawing.Size(478, 649);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.checkBoxSimilarityRetryEnable);
             this.Controls.Add(this.numericSimilarRetryInterval);
@@ -415,6 +415,7 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBoxAPIKey);
             this.Controls.Add(this.label5);
+            this.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

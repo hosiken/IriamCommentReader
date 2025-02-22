@@ -135,10 +135,29 @@ namespace IriamCommentReader
 
     }
 
+    public class Rect
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public Rect(int x, int y, int width, int height)
+        {
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+        }
+
+        public Rect() : this(0, 0, 0, 0) { }
+    }
+
     public class Preference : PreferenceBase
     {
         public static Preference Instance { get; set; } = new Preference();
 
+        private const int DefaultAutoExecInterval = 60;
         private const string DefaultModel = "gemini-2.0-flash";
         private const string DefaultSystemPrompt = "ライブ配信アプリの画面キャプチャからリアルタイムでコメントを読み上げるためのテキストをOCR文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- AIからの返答やメッセージは一切書かない\r\n- 文字起こしの内容のみ記載\r\n- 絵文字は省略する、若葉マークに注意\r\n- 名前は省略しない\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- チャットにおいて名前とチャットは「 | 」で区切る\r\n    - 「○○さんが」で始まるメッセージはシステムメッセージのですので、「 | 」で区切らない\r\n- 3点リーダーは…に統一する\r\n- 1つのチャットにつき1行\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、「なし」と出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultInitPrompt = "【直近読み上げたテキスト】\r\n(ありません。この指示が初回ですので全文取得します)";
@@ -163,12 +182,19 @@ namespace IriamCommentReader
         public int SimilarRetryInterval { get; set; }
         public string BouyomiURL { get; set; }
         public string BouyomiParam { get; set; }
+        public bool AutoExecEnable { get; set; }
+        public int AutoExecInterval { get; set; }
+        public Rect CaptureRect { get; set; } = new Rect(0, 0, 100, 100);
 
         // INI ファイルに書き込むセクション名（任意）
         private const string SectionName = "Preference";
 
         public void ResetToDefault()
         {
+            AutoExecEnable = false;
+            AutoExecInterval = DefaultAutoExecInterval;
+            CaptureRect = new Rect(0, 0, 0, 0);
+
             Model = DefaultModel;
             Temperature = 0.0f;
             TopP = 0.0f;
@@ -190,6 +216,13 @@ namespace IriamCommentReader
         /// </summary>
         public void Save()
         {
+            // WriteBool(SectionName, "AutoExecEnable", AutoExecEnable);
+            WriteInt(SectionName, "AutoExecInterval", AutoExecInterval);
+            WriteInt(SectionName, "CaptureRectX", CaptureRect.X);
+            WriteInt(SectionName, "CaptureRectY", CaptureRect.Y);
+            WriteInt(SectionName, "CaptureRectWidth", CaptureRect.Width);
+            WriteInt(SectionName, "CaptureRectHeight", CaptureRect.Height);
+
             WriteStr(SectionName, "APIKey", APIKey);
             WriteStr(SectionName, "Model", Model);
             WriteFloat(SectionName, "Temperature", Temperature);
@@ -214,6 +247,13 @@ namespace IriamCommentReader
         public static Preference Load()
         {
             Preference pref = new Preference();
+            pref.AutoExecEnable = ReadBool(SectionName, "AutoExecEnable", false);
+            pref.AutoExecInterval = ReadInt(SectionName, "AutoExecInterval", DefaultAutoExecInterval);
+            pref.CaptureRect.X = ReadInt(SectionName, "CaptureRectX", 0);
+            pref.CaptureRect.Y = ReadInt(SectionName, "CaptureRectY", 0);
+            pref.CaptureRect.Width = ReadInt(SectionName, "CaptureRectWidth", 100);
+            pref.CaptureRect.Height = ReadInt(SectionName, "CaptureRectHeight", 100);
+
             pref.APIKey = ReadStr(SectionName, "APIKey", "");
             pref.Model = ReadStr(SectionName, "Model", DefaultModel);
             pref.Temperature = ReadFloat(SectionName, "Temperature", 0.0f);
