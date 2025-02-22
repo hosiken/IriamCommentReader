@@ -88,7 +88,7 @@
             this.buttonCapture.Location = new System.Drawing.Point(11, 6);
             this.buttonCapture.Name = "buttonCapture";
             this.buttonCapture.Size = new System.Drawing.Size(81, 23);
-            this.buttonCapture.TabIndex = 6;
+            this.buttonCapture.TabIndex = 0;
             this.buttonCapture.Text = "画面キャプ";
             this.buttonCapture.UseVisualStyleBackColor = true;
             this.buttonCapture.Click += new System.EventHandler(this.button1_Click);
@@ -110,7 +110,7 @@
             this.buttonQuery.Location = new System.Drawing.Point(11, 35);
             this.buttonQuery.Name = "buttonQuery";
             this.buttonQuery.Size = new System.Drawing.Size(81, 23);
-            this.buttonQuery.TabIndex = 7;
+            this.buttonQuery.TabIndex = 1;
             this.buttonQuery.Text = "AI読み上げ";
             this.buttonQuery.UseVisualStyleBackColor = true;
             this.buttonQuery.Click += new System.EventHandler(this.button2_Click);
@@ -125,7 +125,7 @@
             this.textBoxPrompt.Name = "textBoxPrompt";
             this.textBoxPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxPrompt.Size = new System.Drawing.Size(213, 96);
-            this.textBoxPrompt.TabIndex = 14;
+            this.textBoxPrompt.TabIndex = 1;
             // 
             // textBox2
             // 
@@ -138,7 +138,7 @@
             this.textBox2.ReadOnly = true;
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox2.Size = new System.Drawing.Size(226, 96);
-            this.textBox2.TabIndex = 16;
+            this.textBox2.TabIndex = 1;
             // 
             // timerQuery
             // 
@@ -154,7 +154,7 @@
             this.textBoxChatLog.ReadOnly = true;
             this.textBoxChatLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxChatLog.Size = new System.Drawing.Size(226, 154);
-            this.textBoxChatLog.TabIndex = 12;
+            this.textBoxChatLog.TabIndex = 0;
             // 
             // buttonReadTest
             // 
@@ -163,7 +163,7 @@
             this.buttonReadTest.Location = new System.Drawing.Point(11, 64);
             this.buttonReadTest.Name = "buttonReadTest";
             this.buttonReadTest.Size = new System.Drawing.Size(81, 23);
-            this.buttonReadTest.TabIndex = 11;
+            this.buttonReadTest.TabIndex = 2;
             this.buttonReadTest.Text = "棒読みテスト";
             this.buttonReadTest.UseVisualStyleBackColor = true;
             this.buttonReadTest.Click += new System.EventHandler(this.button4_Click);
@@ -216,7 +216,7 @@
             this.label2.Location = new System.Drawing.Point(0, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(51, 15);
-            this.label2.TabIndex = 13;
+            this.label2.TabIndex = 0;
             this.label2.Text = "プロンプト";
             // 
             // label3
@@ -225,7 +225,7 @@
             this.label3.Location = new System.Drawing.Point(0, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 15);
-            this.label3.TabIndex = 15;
+            this.label3.TabIndex = 0;
             this.label3.Text = "レスポンス";
             // 
             // checkBoxAuto
@@ -234,7 +234,7 @@
             this.checkBoxAuto.Location = new System.Drawing.Point(11, 93);
             this.checkBoxAuto.Name = "checkBoxAuto";
             this.checkBoxAuto.Size = new System.Drawing.Size(50, 19);
-            this.checkBoxAuto.TabIndex = 8;
+            this.checkBoxAuto.TabIndex = 3;
             this.checkBoxAuto.Text = "自動";
             this.checkBoxAuto.UseVisualStyleBackColor = true;
             this.checkBoxAuto.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
@@ -246,7 +246,7 @@
             this.label4.Location = new System.Drawing.Point(49, 139);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 15);
-            this.label4.TabIndex = 10;
+            this.label4.TabIndex = 5;
             this.label4.Text = "秒間隔";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
@@ -256,7 +256,7 @@
             this.buttonPreference.Location = new System.Drawing.Point(469, 12);
             this.buttonPreference.Name = "buttonPreference";
             this.buttonPreference.Size = new System.Drawing.Size(75, 23);
-            this.buttonPreference.TabIndex = 5;
+            this.buttonPreference.TabIndex = 6;
             this.buttonPreference.Text = "環境設定";
             this.buttonPreference.UseVisualStyleBackColor = true;
             this.buttonPreference.Click += new System.EventHandler(this.buttonPreference_Click);
@@ -278,7 +278,7 @@
             0});
             this.numericInterval.Name = "numericInterval";
             this.numericInterval.Size = new System.Drawing.Size(81, 23);
-            this.numericInterval.TabIndex = 9;
+            this.numericInterval.TabIndex = 4;
             this.numericInterval.Value = new decimal(new int[] {
             15,
             0,
@@ -292,7 +292,7 @@
             this.buttonClearLog.Location = new System.Drawing.Point(388, 12);
             this.buttonClearLog.Name = "buttonClearLog";
             this.buttonClearLog.Size = new System.Drawing.Size(75, 23);
-            this.buttonClearLog.TabIndex = 17;
+            this.buttonClearLog.TabIndex = 5;
             this.buttonClearLog.Text = "ログクリア";
             this.buttonClearLog.UseVisualStyleBackColor = true;
             this.buttonClearLog.Click += new System.EventHandler(this.buttonClearLog_Click);
@@ -303,7 +303,7 @@
             this.labelAPICount.Location = new System.Drawing.Point(9, 165);
             this.labelAPICount.Name = "labelAPICount";
             this.labelAPICount.Size = new System.Drawing.Size(56, 15);
-            this.labelAPICount.TabIndex = 18;
+            this.labelAPICount.TabIndex = 6;
             this.labelAPICount.Tag = "";
             this.labelAPICount.Text = "API回数:";
             // 
@@ -314,7 +314,7 @@
             this.buttonReset.Location = new System.Drawing.Point(11, 237);
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.Size = new System.Drawing.Size(81, 23);
-            this.buttonReset.TabIndex = 19;
+            this.buttonReset.TabIndex = 8;
             this.buttonReset.Text = "リセット";
             this.buttonReset.UseVisualStyleBackColor = true;
             this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
@@ -326,7 +326,7 @@
             this.labelSimilarity.Location = new System.Drawing.Point(9, 186);
             this.labelSimilarity.Name = "labelSimilarity";
             this.labelSimilarity.Size = new System.Drawing.Size(36, 15);
-            this.labelSimilarity.TabIndex = 20;
+            this.labelSimilarity.TabIndex = 7;
             this.labelSimilarity.Tag = "";
             this.labelSimilarity.Text = "類似:";
             this.labelSimilarity.DoubleClick += new System.EventHandler(this.labelSimilarity_DoubleClick);
@@ -349,7 +349,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(553, 44);
-            this.panel1.TabIndex = 21;
+            this.panel1.TabIndex = 0;
             // 
             // panel2
             // 
@@ -366,7 +366,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(102, 272);
-            this.panel2.TabIndex = 22;
+            this.panel2.TabIndex = 0;
             // 
             // splitContainer1
             // 
@@ -385,7 +385,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.textBox2);
             this.splitContainer1.Size = new System.Drawing.Size(443, 114);
             this.splitContainer1.SplitterDistance = 213;
-            this.splitContainer1.TabIndex = 26;
+            this.splitContainer1.TabIndex = 0;
             // 
             // splitContainer2
             // 
@@ -429,7 +429,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 316);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(553, 22);
-            this.statusStrip1.TabIndex = 21;
+            this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "tsettset";
             // 
             // panel3
@@ -452,7 +452,7 @@
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(213, 154);
-            this.panel4.TabIndex = 21;
+            this.panel4.TabIndex = 0;
             // 
             // FormMain
             // 
