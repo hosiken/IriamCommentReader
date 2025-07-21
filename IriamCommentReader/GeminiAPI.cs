@@ -14,22 +14,18 @@ namespace IriamCommentReader
         [JsonProperty("type")]
         public string Type { get; set; }
 
-        [JsonProperty("properties")]
-        public Dictionary<string, GeminiSchemaProperty> Properties { get; set; }
+        [JsonProperty("properties", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, GeminiSchema> Properties { get; set; }
 
         [JsonProperty("required", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> Required { get; set; }
-    }
 
-    public class GeminiSchemaProperty
-    {
-        [JsonProperty("type")]
-        public string Type { get; set; }
-
-        [JsonProperty("description")]
+        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
-    }
 
+        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
+        public GeminiSchema Items { get; set; }
+    }
 
     public class GeminiAPI
     {
@@ -49,7 +45,7 @@ namespace IriamCommentReader
         }
 
         private ImageCodecInfo GetEncoder(ImageFormat format)
-        {
+        { 
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
 
             foreach (ImageCodecInfo codec in codecs)
@@ -190,7 +186,11 @@ namespace IriamCommentReader
 
             var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
             var generateRequest = new HttpRequestMessage(HttpMethod.Post, generateUrl);
-            generateRequest.Content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            generateRequest.Content = new StringContent(JsonConvert.SerializeObject(requestBody, settings), Encoding.UTF8, "application/json");
 
             var generateResponse = await _client.SendAsync(generateRequest);
             generateResponse.EnsureSuccessStatusCode();

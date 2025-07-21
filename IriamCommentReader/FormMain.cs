@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,9 +7,26 @@ using System.Windows.Forms;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace IriamCommentReader
 {
+    public class Comment
+    {
+        [JsonProperty("username")]
+        public string Username { get; set; }
+
+        [JsonProperty("comment")]
+        public string Message { get; set; }
+    }
+
+    public class CommentList
+    {
+        [JsonProperty("comments")]
+        public List<Comment> Comments { get; set; }
+    }
+
+
     // Example usage in a Windows Forms application
     public partial class FormMain : Form
     {
@@ -147,13 +164,43 @@ namespace IriamCommentReader
                     _geminiAPI.Temperature = Preference.Instance.Temperature;
                     _geminiAPI.TopP = Preference.Instance.TopP;
                     string imageUri = await _geminiAPI.UploadImageAsync(_shot);
-                    string transcribedText = await _geminiAPI.TranscribeImageAsync(imageUri, systemPrompt, userPrompt);
-                    textBox2.Text = transcribedText; // Display transcribed text in a textbox
+
+                    var commentSchema = new GeminiSchema
+                    {
+                        Type = "object",
+                        Properties = new Dictionary<string, GeminiSchema>
+                        {
+                            { "comments", new GeminiSchema {
+                                Type = "array", 
+                                Description = "コメントのリスト", 
+                                Items = new GeminiSchema {
+                                    Type = "object", 
+                                    Description = "コメント", 
+                                    Properties = new Dictionary<string, GeminiSchema> {
+                                        { "username", new GeminiSchema { Type = "string", Description = "ユーザー名" } },
+                                        { "comment", new GeminiSchema { Type = "string", Description = "コメント" } }
+                                    }
+                                }
+                            } }
+                        },
+                        Required = new List<string> { "comments" }
+                    };
+
+                    string jsonResponse = await _geminiAPI.TranscribeImageAsync(imageUri, systemPrompt, userPrompt, commentSchema);
+                    textBox2.Text = jsonResponse; // Display transcribed text in a textbox
                     _apiCount++;
                     labelAPICount.Text = $"API回数:{_apiCount}";
 
-                    if (transcribedText.Replace("\r\n", "") != "なし")
+                    var commentList = JsonConvert.DeserializeObject<CommentList>(jsonResponse);
+
+                    if (commentList != null && commentList.Comments != null && commentList.Comments.Count > 0)
                     {
+                        string transcribedText = "";
+                        foreach(var comment in commentList.Comments)
+                        {
+                            transcribedText += $"{comment.Username} | {comment.Message}\r\n";
+                        }
+
                         var prompt = Preference.Instance.Prompt.Replace(TextString, transcribedText);
                         textBoxPrompt.Text = prompt;
                         if (transcribedText != "")
@@ -189,7 +236,15 @@ namespace IriamCommentReader
                 }
                 catch (Exception ex)
                 {
-                    textBoxChatLog.AppendText($"Error: {ex.Message}\r\n");
+                    if (ex is System.Net.Http.HttpRequestException && ex.Message.Contains("429"))
+                    {
+                        textBoxChatLog.AppendText("APIの呼び出し回数制限(429)に達しました.\r\n");
+                        // 必要ならリトライ処理や待機処理を追加
+                    }
+                    else
+                    {
+                        textBoxChatLog.AppendText($"Error: {ex.Message}\r\n");
+                    }
                 }
             }
             buttonQuery.Enabled = true;
