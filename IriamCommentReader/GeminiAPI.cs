@@ -1,13 +1,35 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace IriamCommentReader
 {
+    public class GeminiSchema
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
+        [JsonProperty("properties")]
+        public Dictionary<string, GeminiSchemaProperty> Properties { get; set; }
+
+        [JsonProperty("required", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Required { get; set; }
+    }
+
+    public class GeminiSchemaProperty
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+    }
+
 
     public class GeminiAPI
     {
@@ -107,8 +129,26 @@ namespace IriamCommentReader
 
         }
 
-        public async Task<string> TranscribeImageAsync(string fileUri, string systemPrompt, string userPrompt)
+        public async Task<string> TranscribeImageAsync(string fileUri, string systemPrompt, string userPrompt, GeminiSchema schema = null)
         {
+            var generationConfig = new Dictionary<string, object>
+            {
+                { "temperature", Temperature },
+                { "topK", 40 },
+                { "topP", TopP },
+                { "maxOutputTokens", 8192 }
+            };
+
+            if (schema != null)
+            {
+                generationConfig["responseMimeType"] = "application/json";
+                generationConfig["responseSchema"] = schema;
+            }
+            else
+            {
+                generationConfig["responseMimeType"] = "text/plain";
+            }
+
             var requestBody = new
             {
                 contents = new object[]
@@ -145,14 +185,7 @@ namespace IriamCommentReader
                     new { text = systemPrompt }
                     }
                 },
-                generationConfig = new
-                {
-                    temperature = Temperature,
-                    topK = 40,
-                    topP = TopP,
-                    maxOutputTokens = 8192,
-                    responseMimeType = "text/plain"
-                }
+                generationConfig
             };
 
             var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
@@ -170,7 +203,11 @@ namespace IriamCommentReader
             {
                 transcribedText += part.text;
             }
-            transcribedText = transcribedText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
+
+            if (schema == null)
+            {
+                transcribedText = transcribedText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
+            }
             return transcribedText;
         }
     }
