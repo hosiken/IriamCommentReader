@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,7 +19,21 @@ namespace IriamCommentReader
         public AreaSelector()
         {
             InitializeComponent();
+        }
 
+        private void AreaSelector_Load(object sender, EventArgs e)
+        {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Bounds = SystemInformation.VirtualScreen; // Use the entire virtual screen
+            this.BackColor = Color.Blue;
+            this.Opacity = 0.5;
+            this.DoubleBuffered = true;
+
+            this.MouseDown += AreaSelector_MouseDown;
+            this.MouseMove += AreaSelector_MouseMove;
+            this.MouseUp += AreaSelector_MouseUp;
+            this.KeyDown += AreaSelector_KeyDown;
         }
 
         private void AreaSelector_MouseDown(object sender, MouseEventArgs e)
@@ -27,7 +41,8 @@ namespace IriamCommentReader
             if (e.Button == MouseButtons.Left)
             {
                 isDragging = true;
-                startPoint = e.Location;
+                // Convert the starting point to screen coordinates
+                startPoint = this.PointToScreen(e.Location);
             }
         }
 
@@ -35,13 +50,17 @@ namespace IriamCommentReader
         {
             if (isDragging)
             {
-                int x = Math.Min(startPoint.X, e.X);
-                int y = Math.Min(startPoint.Y, e.Y);
-                int width = Math.Abs(startPoint.X - e.X);
-                int height = Math.Abs(startPoint.Y - e.Y);
+                // Convert the current point to screen coordinates
+                Point currentPoint = this.PointToScreen(e.Location);
 
+                int x = Math.Min(startPoint.X, currentPoint.X);
+                int y = Math.Min(startPoint.Y, currentPoint.Y);
+                int width = Math.Abs(startPoint.X - currentPoint.X);
+                int height = Math.Abs(startPoint.Y - currentPoint.Y);
+
+                // The selectedArea is now in screen coordinates
                 selectedArea = new Rectangle(x, y, width, height);
-                this.Invalidate(); // 再描画
+                this.Invalidate(); // Request a repaint
             }
         }
 
@@ -58,30 +77,39 @@ namespace IriamCommentReader
             }
         }
 
-
         private void AreaSelector_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
-                this.Close(); // Escキーでキャンセルして閉じる
+                this.Close(); // Cancel and close on Esc
             }
         }
-
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
+            // Draw borders for all screens
+            foreach (var screen in Screen.AllScreens)
+            {
+                using (Pen pen = new Pen(Color.LightGreen, 3))
+                {
+                    // Convert screen bounds to client coordinates for drawing
+                    var rect = this.RectangleToClient(screen.Bounds);
+                    e.Graphics.DrawRectangle(pen, rect);
+                }
+            }
+
             if (isDragging)
             {
-                // 選択領域の描画
+                // Draw the selected area
                 using (Pen pen = new Pen(Color.Red, 2))
                 {
-                    e.Graphics.DrawRectangle(pen, selectedArea);
+                    // Convert the selected area (in screen coords) to client coords for drawing
+                    e.Graphics.DrawRectangle(pen, this.RectangleToClient(selectedArea));
                 }
             }
         }
-
 
         public static Rectangle GetSelectedArea()
         {
@@ -90,22 +118,6 @@ namespace IriamCommentReader
                 selector.ShowDialog();
                 return selector.selectedArea;
             }
-        }
-
-        private void AreaSelector_Load(object sender, EventArgs e)
-        {
-
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.StartPosition = FormStartPosition.Manual;
-            this.Bounds = Screen.PrimaryScreen.Bounds;
-            this.BackColor = Color.Blue; // 半透明の青
-            this.Opacity = 0.5;  // 透明度を設定
-            this.DoubleBuffered = true; // 描画のちらつき防止
-
-            this.MouseDown += AreaSelector_MouseDown;
-            this.MouseMove += AreaSelector_MouseMove;
-            this.MouseUp += AreaSelector_MouseUp;
-            this.KeyDown += AreaSelector_KeyDown; // Escキーでキャンセル
         }
     }
 }
