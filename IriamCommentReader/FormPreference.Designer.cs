@@ -66,9 +66,11 @@
             // 
             this.comboBoxModel.FormattingEnabled = true;
             this.comboBoxModel.Items.AddRange(new object[] {
+            "gemini-2.5-flash",
+            "gemini-2.5-flash-lite",
             "gemini-2.0-flash",
-            "gemini-2.0-flash-exp",
-            "gemini-2.0-flash-lite-preview-02-05"});
+            "gemini-2.0-flash-lite",
+            "gemini-2.5-flash-lite-preview-06-17"});
             this.comboBoxModel.Location = new System.Drawing.Point(88, 39);
             this.comboBoxModel.Name = "comboBoxModel";
             this.comboBoxModel.Size = new System.Drawing.Size(172, 23);
@@ -316,9 +318,9 @@
             this.checkBoxSimilarOnly.AutoSize = true;
             this.checkBoxSimilarOnly.Location = new System.Drawing.Point(15, 521);
             this.checkBoxSimilarOnly.Name = "checkBoxSimilarOnly";
-            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(245, 19);
+            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(232, 19);
             this.checkBoxSimilarOnly.TabIndex = 16;
-            this.checkBoxSimilarOnly.Text = "変化が少ない場合はAPIアクセスをスキップする";
+            this.checkBoxSimilarOnly.Text = "APIをスキップしたとき次の間隔でリトライする";
             this.checkBoxSimilarOnly.UseVisualStyleBackColor = true;
             // 
             // numericSimilarity
@@ -366,9 +368,9 @@
             this.checkBoxSimilarityRetryEnable.AutoSize = true;
             this.checkBoxSimilarityRetryEnable.Location = new System.Drawing.Point(15, 496);
             this.checkBoxSimilarityRetryEnable.Name = "checkBoxSimilarityRetryEnable";
-            this.checkBoxSimilarityRetryEnable.Size = new System.Drawing.Size(232, 19);
+            this.checkBoxSimilarityRetryEnable.Size = new System.Drawing.Size(245, 19);
             this.checkBoxSimilarityRetryEnable.TabIndex = 18;
-            this.checkBoxSimilarityRetryEnable.Text = "APIをスキップしたとき次の間隔でリトライする";
+            this.checkBoxSimilarityRetryEnable.Text = "変化が少ない場合はAPIアクセスをスキップする";
             this.checkBoxSimilarityRetryEnable.UseVisualStyleBackColor = true;
             // 
             // label10
