@@ -138,12 +138,16 @@ namespace IriamCommentReader
         {
             var generationConfig = new Dictionary<string, object>
             {
-                { "thinkingConfig", thinkingConfig ?? new ThinkingConfig()},
                 { "temperature", Temperature },
                 { "topK", 40 },
                 { "topP", TopP },
                 { "maxOutputTokens", 8192 }
             };
+
+            if (thinkingConfig != null)
+            {
+                generationConfig.Add("thinkingConfig", thinkingConfig);
+            }
 
             if (schema != null)
             {
@@ -156,54 +160,38 @@ namespace IriamCommentReader
             }
 
             var contentsList = new List<object>();
+            var userParts = new List<object>();
+
+            userParts.Add(new { text = userPrompt });
 
             if (fileUri != null && fileUri != "")
             {
-                contentsList.Add(new
-                    {
-                        role = "user",
-                        parts = new object[]
-                        {
-                            new
-                            {
-                                fileData = new
-                                {
-                                    fileUri = fileUri,
-                                    mimeType = "image/jpeg" // Or derive from file extension
-                                }
-                            }
-                        }
-                    });
-                contentsList.Add(new
-                    {
-                        role = "user",
-                        parts = new object[]
-                        {
-                            new { text = userPrompt }
-                        }
-                    });
-
-            }
-
-            if (fileBase64 != null && fileBase64 != "")
-            {
-                contentsList.Add(new
+                userParts.Add(new
                 {
-                    role = "user",
-                    parts = new object[]
+                    fileData = new
                     {
-                        new
-                        {
-                            fileData = new
-                            {
-                                fileUri = fileUri,
-                                mimeType = "image/jpeg" // Or derive from file extension
-                            }
-                        },
-                        new { text = userPrompt }
+                        fileUri = fileUri,
+                        mimeType = "image/jpeg"
                     }
                 });
             }
+            else if (fileBase64 != null && fileBase64 != "")
+            {
+                userParts.Add(new
+                {
+                    inlineData = new
+                    {
+                        mimeType = "image/jpeg",
+                        data = fileBase64
+                    }
+                });
+            }
+
+            contentsList.Add(new
+            {
+                role = "user",
+                parts = userParts.ToArray()
+            });
 
             var requestBody = new
             {

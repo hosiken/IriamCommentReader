@@ -11,22 +11,6 @@ using Newtonsoft.Json;
 
 namespace IriamCommentReader
 {
-    public class Comment
-    {
-        [JsonProperty("username")]
-        public string Username { get; set; }
-
-        [JsonProperty("comment")]
-        public string Message { get; set; }
-    }
-
-    public class CommentList
-    {
-        [JsonProperty("comments")]
-        public List<Comment> Comments { get; set; }
-    }
-
-
     // Example usage in a Windows Forms application
     public partial class FormMain : Form
     {
@@ -35,6 +19,21 @@ namespace IriamCommentReader
         private static Image _shot;
         private int _apiCount = 0;
         static string _prevText = "";
+
+        public class Comment
+        {
+            [JsonProperty("username")]
+            public string Username { get; set; }
+
+            [JsonProperty("comment")]
+            public string Message { get; set; }
+        }
+
+        public class CommentList
+        {
+            [JsonProperty("comments")]
+            public List<Comment> Comments { get; set; }
+        }
 
         public FormMain()
         {
@@ -163,7 +162,6 @@ namespace IriamCommentReader
                     _geminiAPI.Model = Preference.Instance.Model;
                     _geminiAPI.Temperature = Preference.Instance.Temperature;
                     _geminiAPI.TopP = Preference.Instance.TopP;
-                    string imageUri = await _geminiAPI.UploadImageAsync(_shot);
 
                     var commentSchema = new GeminiSchema
                     {
@@ -171,11 +169,11 @@ namespace IriamCommentReader
                         Properties = new Dictionary<string, GeminiSchema>
                         {
                             { "comments", new GeminiSchema {
-                                Type = "array", 
-                                Description = "コメントのリスト", 
+                                Type = "array",
+                                Description = "コメントのリスト",
                                 Items = new GeminiSchema {
-                                    Type = "object", 
-                                    Description = "コメント", 
+                                    Type = "object",
+                                    Description = "コメント",
                                     Properties = new Dictionary<string, GeminiSchema> {
                                         { "username", new GeminiSchema { Type = "string", Description = "ユーザー名" } },
                                         { "comment", new GeminiSchema { Type = "string", Description = "コメント" } }
@@ -186,7 +184,22 @@ namespace IriamCommentReader
                         Required = new List<string> { "comments" }
                     };
 
-                    string jsonResponse = await _geminiAPI.TranscribeImageAsync(systemPrompt, userPrompt, fileUri: imageUri, schema: commentSchema);
+                    string jsonResponse;
+                    if (Preference.Instance.UseBase64)
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            _shot.Save(ms, ImageFormat.Jpeg);
+                            var base64 = Convert.ToBase64String(ms.ToArray());
+                            jsonResponse = await _geminiAPI.TranscribeImageAsync(systemPrompt, userPrompt, fileBase64: base64, schema: commentSchema);
+                        }
+                    }
+                    else
+                    {
+                        string imageUri = await _geminiAPI.UploadImageAsync(_shot);
+                        jsonResponse = await _geminiAPI.TranscribeImageAsync(systemPrompt, userPrompt, fileUri: imageUri, schema: commentSchema);
+                    }
+
                     textBox2.Text = jsonResponse; // Display transcribed text in a textbox
                     _apiCount++;
                     labelAPICount.Text = $"API回数:{_apiCount}";

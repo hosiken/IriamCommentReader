@@ -185,6 +185,7 @@ namespace IriamCommentReader
         public bool AutoExecEnable { get; set; }
         public int AutoExecInterval { get; set; }
         public Rect CaptureRect { get; set; } = new Rect(0, 0, 100, 100);
+        public bool UseBase64 { get; set; }
 
         // INI ファイルに書き込むセクション名（任意）
         private const string SectionName = "Preference";
@@ -209,6 +210,7 @@ namespace IriamCommentReader
             SimilarRetryInterval = DefaultSimilarRetryInterval;
             BouyomiURL = DefaultBouyomiURL;
             BouyomiParam = BouyomiParam;
+            UseBase64 = true;
         }
 
         /// <summary>
@@ -238,6 +240,7 @@ namespace IriamCommentReader
             WriteInt(SectionName, "SimilarRetryInterval", SimilarRetryInterval);
             WriteStr(SectionName, "BouyomiURL", BouyomiURL);
             WriteStr(SectionName, "BouyomiParam", BouyomiParam);
+            WriteBool(SectionName, "UseBase64", UseBase64);
         }
 
         /// <summary>
@@ -269,6 +272,7 @@ namespace IriamCommentReader
             pref.SimilarRetryInterval = ReadInt(SectionName, "SimilarRetryInterval", DefaultSimilarRetryInterval);
             pref.BouyomiURL = ReadStr(SectionName, "BouyomiURL", DefaultBouyomiURL);
             pref.BouyomiParam = ReadStr(SectionName, "BouyomiParam", DefaultBouyomiParam);
+            pref.UseBase64 = ReadBool(SectionName, "UseBase64", true);
             return pref;
         }
     }
