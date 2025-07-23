@@ -199,7 +199,8 @@ namespace IriamCommentReader
                                 fileUri = fileUri,
                                 mimeType = "image/jpeg" // Or derive from file extension
                             }
-                        }
+                        },
+                        new { text = userPrompt }
                     }
                 });
             }
