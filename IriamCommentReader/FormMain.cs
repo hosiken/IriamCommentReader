@@ -186,7 +186,7 @@ namespace IriamCommentReader
                         Required = new List<string> { "comments" }
                     };
 
-                    string jsonResponse = await _geminiAPI.TranscribeImageAsync(imageUri, systemPrompt, userPrompt, commentSchema);
+                    string jsonResponse = await _geminiAPI.TranscribeImageAsync(systemPrompt, userPrompt, fileUri: imageUri, schema: commentSchema);
                     textBox2.Text = jsonResponse; // Display transcribed text in a textbox
                     _apiCount++;
                     labelAPICount.Text = $"API回数:{_apiCount}";

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Windows.Management.Deployment.Preview;
+using System.Configuration;
+using System.Data;
 
 namespace IriamCommentReader
 {
@@ -37,6 +40,12 @@ namespace IriamCommentReader
         public string Model { set { _model = value; } }
         public float Temperature { get; set; }
         public float TopP { get; set; }
+
+        public class ThinkingConfig
+        {
+            [JsonProperty("thinkingBudget")]
+            public int ThinkingBudget { get; set; } = 0;
+        }
 
         public GeminiAPI(string apiKey)
         {
@@ -125,10 +134,11 @@ namespace IriamCommentReader
 
         }
 
-        public async Task<string> TranscribeImageAsync(string fileUri, string systemPrompt, string userPrompt, GeminiSchema schema = null)
+        public async Task<string> TranscribeImageAsync(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null, GeminiSchema schema = null, ThinkingConfig thinkingConfig = null)
         {
             var generationConfig = new Dictionary<string, object>
             {
+                { "thinkingConfig", thinkingConfig ?? new ThinkingConfig()},
                 { "temperature", Temperature },
                 { "topK", 40 },
                 { "topP", TopP },
@@ -145,11 +155,39 @@ namespace IriamCommentReader
                 generationConfig["responseMimeType"] = "text/plain";
             }
 
-            var requestBody = new
+            var contentsList = new List<object>();
+
+            if (fileUri != null && fileUri != "")
             {
-                contents = new object[]
-                {
-                new
+                contentsList.Add(new
+                    {
+                        role = "user",
+                        parts = new object[]
+                        {
+                            new
+                            {
+                                fileData = new
+                                {
+                                    fileUri = fileUri,
+                                    mimeType = "image/jpeg" // Or derive from file extension
+                                }
+                            }
+                        }
+                    });
+                contentsList.Add(new
+                    {
+                        role = "user",
+                        parts = new object[]
+                        {
+                            new { text = userPrompt }
+                        }
+                    });
+
+            }
+
+            if (fileBase64 != null && fileBase64 != "")
+            {
+                contentsList.Add(new
                 {
                     role = "user",
                     parts = new object[]
@@ -163,22 +201,18 @@ namespace IriamCommentReader
                             }
                         }
                     }
-                },
-                new
-                {
-                    role = "user",
-                    parts = new object[]
-                    {
-                        new { text = userPrompt }
-                    }
-                }
-                },
+                });
+            }
+
+            var requestBody = new
+            {
+                contents = contentsList.ToArray(),
                 systemInstruction = new
                 {
                     role = "user",
                     parts = new object[]
                     {
-                    new { text = systemPrompt }
+                        new { text = systemPrompt }
                     }
                 },
                 generationConfig
