@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Windows.Management.Deployment.Preview;
 using System.Configuration;
 using System.Data;
+using IriamCommentReader.Properties;
 
 namespace IriamCommentReader
 {
@@ -41,7 +42,7 @@ namespace IriamCommentReader
         public float Temperature { get; set; }
         public float TopP { get; set; }
 
-        public class ThinkingConfig
+        public class GeminiThinkingConfig
         {
             [JsonProperty("thinkingBudget")]
             public int ThinkingBudget { get; set; } = 0;
@@ -131,10 +132,9 @@ namespace IriamCommentReader
                 dynamic responseObject = JsonConvert.DeserializeObject(jsonResponse);
                 return responseObject.file.uri;
             }
-
         }
 
-        public async Task<string> TranscribeImageAsync(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null, GeminiSchema schema = null, ThinkingConfig thinkingConfig = null)
+        public string GetRequestJson(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null, GeminiSchema schema = null, GeminiThinkingConfig thinkingConfig = null)
         {
             var generationConfig = new Dictionary<string, object>
             {
@@ -144,9 +144,10 @@ namespace IriamCommentReader
                 { "maxOutputTokens", 8192 }
             };
 
-            if (thinkingConfig != null)
+            // Gemini 2.5はThinking Budgetを指定する
+            if (_model.Contains("-2.5"))
             {
-                generationConfig.Add("thinkingConfig", thinkingConfig);
+                generationConfig.Add("thinkingConfig", thinkingConfig ?? new GeminiThinkingConfig());
             }
 
             if (schema != null)
@@ -207,17 +208,21 @@ namespace IriamCommentReader
                 generationConfig
             };
 
-            var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
-            var generateRequest = new HttpRequestMessage(HttpMethod.Post, generateUrl);
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
-            generateRequest.Content = new StringContent(JsonConvert.SerializeObject(requestBody, settings), Encoding.UTF8, "application/json");
+            return JsonConvert.SerializeObject(requestBody, settings);
+        }
+
+        public async Task<string> RequestAsync(string requestJson)
+        {
+            var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
+            var generateRequest = new HttpRequestMessage(HttpMethod.Post, generateUrl);
+            generateRequest.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
             var generateResponse = await _client.SendAsync(generateRequest);
             generateResponse.EnsureSuccessStatusCode();
-
 
             var generateJsonResponse = await generateResponse.Content.ReadAsStringAsync();
             dynamic generateResponseObject = JsonConvert.DeserializeObject(generateJsonResponse);
@@ -227,10 +232,7 @@ namespace IriamCommentReader
                 transcribedText += part.text;
             }
 
-            if (schema == null)
-            {
-                transcribedText = transcribedText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
-            }
+            transcribedText = transcribedText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
             return transcribedText;
         }
     }
