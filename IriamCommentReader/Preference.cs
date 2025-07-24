@@ -158,8 +158,8 @@ namespace IriamCommentReader
         public static Preference Instance { get; set; } = new Preference();
 
         private const int DefaultAutoExecInterval = 60;
-        private const string DefaultModel = "gemini-2.0-flash";
-        private const string DefaultSystemPrompt = "ライブ配信アプリの画面キャプチャからリアルタイムでコメントを読み上げるためのテキストをOCR文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- AIからの返答やメッセージは一切書かない\r\n- 文字起こしの内容のみ記載\r\n- 絵文字は省略する、若葉マークに注意\r\n- 名前は省略しない\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- チャットにおいて名前とチャットは「 | 」で区切る\r\n    - 「○○さんが」で始まるメッセージはシステムメッセージのですので、「 | 」で区切らない\r\n- 3点リーダーは…に統一する\r\n- 1つのチャットにつき1行\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、「なし」と出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
+        private const string DefaultModel = "gemini-2.5-flash-lite-preview-06-17";
+        private const string DefaultSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- フォロー、入室、キリ番などのシステムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultInitPrompt = "【直近読み上げたテキスト】\r\n(ありません。この指示が初回ですので全文取得します)";
         private const string DefaultPrompt = "【直近読み上げたテキスト】\r\n{{text}}";
         private const string DefaultBouyomiURL = "http://localhost:50080/Talk";

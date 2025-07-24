@@ -139,7 +139,7 @@ namespace IriamCommentReader
             var generationConfig = new Dictionary<string, object>
             {
                 { "temperature", Temperature },
-                { "topK", 40 },
+                // { "topK", 40 },
                 { "topP", TopP },
                 { "maxOutputTokens", 8192 }
             };
@@ -162,6 +162,9 @@ namespace IriamCommentReader
 
             var contentsList = new List<object>();
             var userParts = new List<object>();
+
+            userPrompt = userPrompt.Replace("\r\n", "\n").Replace("\r", "\n");
+            systemPrompt = systemPrompt.Replace("\r\n", "\n").Replace("\r", "\n");
 
             userParts.Add(new { text = userPrompt });
 
