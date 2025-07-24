@@ -191,13 +191,15 @@ namespace IriamCommentReader
                         {
                             _shot.Save(ms, ImageFormat.Jpeg);
                             var base64 = Convert.ToBase64String(ms.ToArray());
-                            jsonResponse = await _geminiAPI.TranscribeImageAsync(_geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: commentSchema));
+                            var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: commentSchema);
+                            jsonResponse = await _geminiAPI.RequestAsync(jsonText);
                         }
                     }
                     else
                     {
                         string imageUri = await _geminiAPI.UploadImageAsync(_shot);
-                        jsonResponse = await _geminiAPI.TranscribeImageAsync(_geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileUri: imageUri, schema: commentSchema));
+                        var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileUri: imageUri, schema: commentSchema);
+                        jsonResponse = await _geminiAPI.RequestAsync(jsonText);
                     }
 
                     textBox2.Text = jsonResponse; // Display transcribed text in a textbox
