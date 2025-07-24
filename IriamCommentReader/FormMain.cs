@@ -22,8 +22,8 @@ namespace IriamCommentReader
 
         public class Comment
         {
-            [JsonProperty("username")]
-            public string Username { get; set; }
+            [JsonProperty("name")]
+            public string Name { get; set; }
 
             [JsonProperty("comment")]
             public string Message { get; set; }
@@ -175,7 +175,7 @@ namespace IriamCommentReader
                                     Type = "object",
                                     Description = "コメント",
                                     Properties = new Dictionary<string, GeminiSchema> {
-                                        { "username", new GeminiSchema { Type = "string", Description = "ユーザー名" } },
+                                        { "name", new GeminiSchema { Type = "string", Description = "ユーザー名" } },
                                         { "comment", new GeminiSchema { Type = "string", Description = "コメント" } }
                                     }
                                 }
@@ -191,13 +191,13 @@ namespace IriamCommentReader
                         {
                             _shot.Save(ms, ImageFormat.Jpeg);
                             var base64 = Convert.ToBase64String(ms.ToArray());
-                            jsonResponse = await _geminiAPI.TranscribeImageAsync(systemPrompt, userPrompt, fileBase64: base64, schema: commentSchema);
+                            jsonResponse = await _geminiAPI.TranscribeImageAsync(_geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: commentSchema));
                         }
                     }
                     else
                     {
                         string imageUri = await _geminiAPI.UploadImageAsync(_shot);
-                        jsonResponse = await _geminiAPI.TranscribeImageAsync(systemPrompt, userPrompt, fileUri: imageUri, schema: commentSchema);
+                        jsonResponse = await _geminiAPI.TranscribeImageAsync(_geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileUri: imageUri, schema: commentSchema));
                     }
 
                     textBox2.Text = jsonResponse; // Display transcribed text in a textbox
@@ -211,7 +211,7 @@ namespace IriamCommentReader
                         string transcribedText = "";
                         foreach(var comment in commentList.Comments)
                         {
-                            transcribedText += $"{comment.Username} | {comment.Message}\r\n";
+                            transcribedText += $"{comment.Name} | {comment.Message}\r\n";
                         }
 
                         var prompt = Preference.Instance.Prompt.Replace(TextString, transcribedText);
