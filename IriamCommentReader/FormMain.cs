@@ -20,6 +20,27 @@ namespace IriamCommentReader
         private int _apiCount = 0;
         static string _prevText = "";
 
+        private static GeminiSchema _commentSchema = new GeminiSchema
+        {
+            Type = "object",
+            Properties = new Dictionary<string, GeminiSchema>
+                        {
+                            { "comments", new GeminiSchema {
+                                Type = "array",
+                                Description = "コメントのリスト",
+                                Items = new GeminiSchema {
+                                    Type = "object",
+                                    Description = "コメント",
+                                    Properties = new Dictionary<string, GeminiSchema> {
+                                        { "name", new GeminiSchema { Type = "string", Description = "ユーザー名" } },
+                                        { "comment", new GeminiSchema { Type = "string", Description = "コメント" } }
+                                    }
+                                }
+                            } }
+                        },
+            Required = new List<string> { "comments" }
+        };
+
         public class Comment
         {
             [JsonProperty("name")]
@@ -163,27 +184,6 @@ namespace IriamCommentReader
                     _geminiAPI.Temperature = Preference.Instance.Temperature;
                     _geminiAPI.TopP = Preference.Instance.TopP;
 
-                    var commentSchema = new GeminiSchema
-                    {
-                        Type = "object",
-                        Properties = new Dictionary<string, GeminiSchema>
-                        {
-                            { "comments", new GeminiSchema {
-                                Type = "array",
-                                Description = "コメントのリスト",
-                                Items = new GeminiSchema {
-                                    Type = "object",
-                                    Description = "コメント",
-                                    Properties = new Dictionary<string, GeminiSchema> {
-                                        { "name", new GeminiSchema { Type = "string", Description = "ユーザー名" } },
-                                        { "comment", new GeminiSchema { Type = "string", Description = "コメント" } }
-                                    }
-                                }
-                            } }
-                        },
-                        Required = new List<string> { "comments" }
-                    };
-
                     string jsonResponse;
                     if (Preference.Instance.UseBase64)
                     {
@@ -191,14 +191,14 @@ namespace IriamCommentReader
                         {
                             _shot.Save(ms, ImageFormat.Jpeg);
                             var base64 = Convert.ToBase64String(ms.ToArray());
-                            var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: commentSchema);
+                            var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: _commentSchema);
                             jsonResponse = await _geminiAPI.RequestAsync(jsonText);
                         }
                     }
                     else
                     {
                         string imageUri = await _geminiAPI.UploadImageAsync(_shot);
-                        var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileUri: imageUri, schema: commentSchema);
+                        var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileUri: imageUri, schema: _commentSchema);
                         jsonResponse = await _geminiAPI.RequestAsync(jsonText);
                     }
 
@@ -399,6 +399,69 @@ namespace IriamCommentReader
                     }
                 }
             }
+        }
+
+        private async void buttonDebugDirect_Click(object sender, EventArgs e)
+        {
+            string systemPrompt = Preference.Instance.SystemPrompt;
+            string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
+            try
+            {
+                _geminiAPI.APIKey = Preference.Instance.APIKey;
+                _geminiAPI.Model = Preference.Instance.Model;
+                _geminiAPI.Temperature = Preference.Instance.Temperature;
+                _geminiAPI.TopP = Preference.Instance.TopP;
+                var jsonResponse = await _geminiAPI.RequestAsync(userPrompt);
+                textBox2.Text = jsonResponse;
+            }
+            catch (Exception ex)
+            {
+                if (ex is System.Net.Http.HttpRequestException && ex.Message.Contains("429"))
+                {
+                    textBoxChatLog.AppendText("APIの呼び出し回数制限(429)に達しました.\r\n");
+                    // 必要ならリトライ処理や待機処理を追加
+                }
+                else
+                {
+                    textBoxChatLog.AppendText($"Error: {ex.Message}\r\n");
+                }
+            }
+        }
+
+        private void MenuImagePaste_Click(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsImage())
+            {
+                var img = Clipboard.GetImage();
+                if (img != null)
+                {
+                    pictureBox1.Image?.Dispose();
+                    pictureBox1.Image = img;
+                    _shot = img;
+                }
+            }
+        }
+
+        private void MenuImageLoad_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "画像ファイル|*.png;*.jpg;*.jpeg;*.bmp";
+                openFileDialog.Title = "画像を開く";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    pictureBox1.Image?.Dispose();
+                    pictureBox1.Image = Image.FromFile(openFileDialog.FileName);
+                    _shot = pictureBox1.Image;
+                }
+            }
+        }
+
+        private void contextMenuImage_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MenuImagePaste.Enabled = Clipboard.ContainsImage();
+            MenuImageCopy.Enabled = pictureBox1.Image != null;
+            MenuImageSave.Enabled = pictureBox1.Image != null;
         }
     }
 }

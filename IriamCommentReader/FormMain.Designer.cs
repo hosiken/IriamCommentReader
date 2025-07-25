@@ -31,6 +31,9 @@
             this.components = new System.ComponentModel.Container();
             this.buttonCapture = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.contextMenuImage = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.MenuImageCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuImageSave = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonQuery = new System.Windows.Forms.Button();
             this.textBoxPrompt = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -55,16 +58,18 @@
             this.timerSimilarRetry = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.buttonDebugDirect = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panel4 = new System.Windows.Forms.Panel();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.contextMenuImage = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.MenuImageCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuImageSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuImagePaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.MenuImageLoad = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.contextMenuImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericInterval)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -82,7 +87,6 @@
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.contextMenuImage.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonCapture
@@ -99,6 +103,7 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.pictureBox1.ContextMenuStrip = this.contextMenuImage;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
@@ -107,6 +112,32 @@
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
+            // contextMenuImage
+            // 
+            this.contextMenuImage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuImageCopy,
+            this.MenuImagePaste,
+            this.toolStripSeparator1,
+            this.MenuImageLoad,
+            this.MenuImageSave});
+            this.contextMenuImage.Name = "contextMenuImage";
+            this.contextMenuImage.Size = new System.Drawing.Size(181, 120);
+            this.contextMenuImage.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuImage_Opening);
+            // 
+            // MenuImageCopy
+            // 
+            this.MenuImageCopy.Name = "MenuImageCopy";
+            this.MenuImageCopy.Size = new System.Drawing.Size(180, 22);
+            this.MenuImageCopy.Text = "コピー(&C)";
+            this.MenuImageCopy.Click += new System.EventHandler(this.MenuImageCopy_Click);
+            // 
+            // MenuImageSave
+            // 
+            this.MenuImageSave.Name = "MenuImageSave";
+            this.MenuImageSave.Size = new System.Drawing.Size(180, 22);
+            this.MenuImageSave.Text = "保存(&S)";
+            this.MenuImageSave.Click += new System.EventHandler(this.MenuImageSave_Click);
             // 
             // buttonQuery
             // 
@@ -126,6 +157,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPrompt.Location = new System.Drawing.Point(0, 18);
+            this.textBoxPrompt.MaxLength = 256000;
             this.textBoxPrompt.Multiline = true;
             this.textBoxPrompt.Name = "textBoxPrompt";
             this.textBoxPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -358,6 +390,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.buttonDebugDirect);
             this.panel2.Controls.Add(this.buttonCapture);
             this.panel2.Controls.Add(this.buttonQuery);
             this.panel2.Controls.Add(this.buttonReset);
@@ -372,6 +405,18 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(102, 272);
             this.panel2.TabIndex = 0;
+            // 
+            // buttonDebugDirect
+            // 
+            this.buttonDebugDirect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonDebugDirect.Location = new System.Drawing.Point(11, 208);
+            this.buttonDebugDirect.Name = "buttonDebugDirect";
+            this.buttonDebugDirect.Size = new System.Drawing.Size(81, 23);
+            this.buttonDebugDirect.TabIndex = 9;
+            this.buttonDebugDirect.Text = "直接リクエスト";
+            this.buttonDebugDirect.UseVisualStyleBackColor = true;
+            this.buttonDebugDirect.Click += new System.EventHandler(this.buttonDebugDirect_Click);
             // 
             // splitContainer1
             // 
@@ -459,27 +504,24 @@
             this.panel3.Size = new System.Drawing.Size(553, 272);
             this.panel3.TabIndex = 2;
             // 
-            // contextMenuImage
+            // MenuImagePaste
             // 
-            this.contextMenuImage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuImageCopy,
-            this.MenuImageSave});
-            this.contextMenuImage.Name = "contextMenuImage";
-            this.contextMenuImage.Size = new System.Drawing.Size(115, 48);
+            this.MenuImagePaste.Name = "MenuImagePaste";
+            this.MenuImagePaste.Size = new System.Drawing.Size(180, 22);
+            this.MenuImagePaste.Text = "貼り付け(&P)";
+            this.MenuImagePaste.Click += new System.EventHandler(this.MenuImagePaste_Click);
             // 
-            // MenuImageCopy
+            // toolStripSeparator1
             // 
-            this.MenuImageCopy.Name = "MenuImageCopy";
-            this.MenuImageCopy.Size = new System.Drawing.Size(180, 22);
-            this.MenuImageCopy.Text = "コピー(&C)";
-            this.MenuImageCopy.Click += new System.EventHandler(this.MenuImageCopy_Click);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
-            // MenuImageSave
+            // MenuImageLoad
             // 
-            this.MenuImageSave.Name = "MenuImageSave";
-            this.MenuImageSave.Size = new System.Drawing.Size(180, 22);
-            this.MenuImageSave.Text = "保存(&S)";
-            this.MenuImageSave.Click += new System.EventHandler(this.MenuImageSave_Click);
+            this.MenuImageLoad.Name = "MenuImageLoad";
+            this.MenuImageLoad.Size = new System.Drawing.Size(180, 22);
+            this.MenuImageLoad.Text = "読み込み(&L)";
+            this.MenuImageLoad.Click += new System.EventHandler(this.MenuImageLoad_Click);
             // 
             // FormMain
             // 
@@ -495,6 +537,7 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.contextMenuImage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericInterval)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -518,7 +561,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
-            this.contextMenuImage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -561,6 +603,10 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuImage;
         private System.Windows.Forms.ToolStripMenuItem MenuImageCopy;
         private System.Windows.Forms.ToolStripMenuItem MenuImageSave;
+        private System.Windows.Forms.Button buttonDebugDirect;
+        private System.Windows.Forms.ToolStripMenuItem MenuImagePaste;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem MenuImageLoad;
     }
 }
 
