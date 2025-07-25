@@ -359,5 +359,46 @@ namespace IriamCommentReader
                 labelSimilarity.ForeColor = Color.Red;
             }
         }
+
+        private void MenuImageCopy_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image != null)
+            {
+                Clipboard.SetImage(pictureBox1.Image);
+            }
+        }
+
+        private void MenuImageSave_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image != null)
+            {
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "PNG 画像|*.png|JPEG 画像|*.jpg|ビットマップ画像|*.bmp";
+                    saveFileDialog.Title = "画像を保存";
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // 拡張子に応じて画像形式を決定して保存
+                        var ext = Path.GetExtension(saveFileDialog.FileName).ToLower();
+                        ImageFormat format = ImageFormat.Png;
+                        switch (ext)
+                        {
+                            case ".jpg":
+                            case ".jpeg":
+                                format = ImageFormat.Jpeg;
+                                break;
+                            case ".bmp":
+                                format = ImageFormat.Bmp;
+                                break;
+                            case ".png":
+                            default:
+                                format = ImageFormat.Png;
+                                break;
+                        }
+                        pictureBox1.Image.Save(saveFileDialog.FileName, format);
+                    }
+                }
+            }
+        }
     }
 }

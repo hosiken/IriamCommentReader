@@ -1,4 +1,4 @@
-﻿namespace IriamCommentReader
+namespace IriamCommentReader
 {
     partial class FormPreference
     {

@@ -57,10 +57,13 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.contextMenuImage = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.MenuImageCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuImageSave = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericInterval)).BeginInit();
             this.panel1.SuspendLayout();
@@ -73,12 +76,13 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
+            this.contextMenuImage.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonCapture
@@ -95,6 +99,7 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.ContextMenuStrip = this.contextMenuImage;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(200, 92);
@@ -405,6 +410,17 @@
             this.splitContainer2.SplitterDistance = 213;
             this.splitContainer2.TabIndex = 0;
             // 
+            // panel4
+            // 
+            this.panel4.AutoScroll = true;
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.pictureBox1);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(213, 154);
+            this.panel4.TabIndex = 0;
+            // 
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -443,16 +459,27 @@
             this.panel3.Size = new System.Drawing.Size(553, 272);
             this.panel3.TabIndex = 2;
             // 
-            // panel4
+            // contextMenuImage
             // 
-            this.panel4.AutoScroll = true;
-            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel4.Controls.Add(this.pictureBox1);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(213, 154);
-            this.panel4.TabIndex = 0;
+            this.contextMenuImage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuImageCopy,
+            this.MenuImageSave});
+            this.contextMenuImage.Name = "contextMenuImage";
+            this.contextMenuImage.Size = new System.Drawing.Size(115, 48);
+            // 
+            // MenuImageCopy
+            // 
+            this.MenuImageCopy.Name = "MenuImageCopy";
+            this.MenuImageCopy.Size = new System.Drawing.Size(180, 22);
+            this.MenuImageCopy.Text = "コピー(&C)";
+            this.MenuImageCopy.Click += new System.EventHandler(this.MenuImageCopy_Click);
+            // 
+            // MenuImageSave
+            // 
+            this.MenuImageSave.Name = "MenuImageSave";
+            this.MenuImageSave.Size = new System.Drawing.Size(180, 22);
+            this.MenuImageSave.Text = "保存(&S)";
+            this.MenuImageSave.Click += new System.EventHandler(this.MenuImageSave_Click);
             // 
             // FormMain
             // 
@@ -484,13 +511,14 @@
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
+            this.contextMenuImage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -530,6 +558,9 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.ContextMenuStrip contextMenuImage;
+        private System.Windows.Forms.ToolStripMenuItem MenuImageCopy;
+        private System.Windows.Forms.ToolStripMenuItem MenuImageSave;
     }
 }
 
