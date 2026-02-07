@@ -288,7 +288,7 @@ namespace IriamCommentReader
             pref.TokenLastDate = ReadInt(SectionName, "TokenLastDate", 0);
             pref.LeftTokens = ReadInt(SectionName, "LeftTokens", 0);
             pref.LeftMiniTokens = ReadInt(SectionName, "LeftMiniTokens", 0);
-            Preference.Instance.CheckAndUpdateTokenDate();
+            pref.CheckAndUpdateTokenDate();
             return pref;
         }
 
