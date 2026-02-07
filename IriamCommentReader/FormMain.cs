@@ -403,6 +403,8 @@ namespace IriamCommentReader
 
         private async void buttonDebugDirect_Click(object sender, EventArgs e)
         {
+            buttonDebugDirect.Enabled = false;
+
             string systemPrompt = Preference.Instance.SystemPrompt;
             string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
             try
@@ -426,6 +428,8 @@ namespace IriamCommentReader
                     textBoxChatLog.AppendText($"Error: {ex.Message}\r\n");
                 }
             }
+
+            buttonDebugDirect.Enabled = true;
         }
 
         private void MenuImagePaste_Click(object sender, EventArgs e)

@@ -31,27 +31,19 @@ namespace IriamCommentReader
         public GeminiSchema Items { get; set; }
     }
 
-    public class GeminiAPI
+    public class GeminiAPI : LMBase
     {
-        private string _apiKey;
-        private string _model;
-        private readonly HttpClient _client;
-
-        public string APIKey { set { _apiKey = value; } }
-        public string Model { set { _model = value; } }
-        public float Temperature { get; set; }
-        public float TopP { get; set; }
+        public bool IsModelGemini25 => Model != null && Model.Contains("-2.5");
+        public bool IsModelGeminiPro => Model != null && Model.Contains("-pro");
 
         public class GeminiThinkingConfig
         {
             [JsonProperty("thinkingBudget")]
-            public int ThinkingBudget { get; set; } = 0;
+            public int ThinkingBudget { get; set; } = -1;
         }
 
-        public GeminiAPI(string apiKey)
+        public GeminiAPI(string apiKey) : base(apiKey)
         {
-            _apiKey = apiKey;
-            _client = new HttpClient();
         }
 
         private ImageCodecInfo GetEncoder(ImageFormat format)
@@ -69,7 +61,7 @@ namespace IriamCommentReader
             return null;
         }
 
-        public async Task<string> UploadImageAsync(Image image)
+        public override async Task<string> UploadImageAsync(Image image)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -81,7 +73,7 @@ namespace IriamCommentReader
                 var contentLength = memoryStream.Length;
                 var contentType = "image/jpeg"; // or get from file extension
 
-                var uploadUrl = $"https://generativelanguage.googleapis.com/upload/v1beta/files?key={_apiKey}";
+                var uploadUrl = $"https://generativelanguage.googleapis.com/upload/v1beta/files?key={APIKey}";
 
                 var startUploadRequest = new HttpRequestMessage(HttpMethod.Post, uploadUrl);
                 startUploadRequest.Headers.Add("X-Goog-Upload-Command", "start, upload, finalize");
@@ -104,14 +96,14 @@ namespace IriamCommentReader
             }
         }
 
-        public async Task<string> UploadImageAsync(string filePath)
+        public override async Task<string> UploadImageAsync(string filePath)
         {
             using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 var contentLength = fileStream.Length;
                 var contentType = "image/jpeg"; // or get from file extension
 
-                var uploadUrl = $"https://generativelanguage.googleapis.com/upload/v1beta/files?key={_apiKey}";
+                var uploadUrl = $"https://generativelanguage.googleapis.com/upload/v1beta/files?key={APIKey}";
 
                 var startUploadRequest = new HttpRequestMessage(HttpMethod.Post, uploadUrl);
                 startUploadRequest.Headers.Add("X-Goog-Upload-Command", "start, upload, finalize");
@@ -145,9 +137,9 @@ namespace IriamCommentReader
             };
 
             // Gemini 2.5はThinking Budgetを指定する
-            if (_model.Contains("-2.5"))
+            if (IsModelGemini25)
             {
-                generationConfig.Add("thinkingConfig", thinkingConfig ?? new GeminiThinkingConfig());
+                generationConfig.Add("thinkingConfig", thinkingConfig ?? new GeminiThinkingConfig() { ThinkingBudget = IsModelGeminiPro ? 0 : -1 });
             }
 
             if (schema != null)
@@ -218,9 +210,9 @@ namespace IriamCommentReader
             return JsonConvert.SerializeObject(requestBody, settings);
         }
 
-        public async Task<string> RequestAsync(string requestJson)
+        public override async Task<string> RequestAsync(string requestJson)
         {
-            var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
+            var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{Model}:generateContent?key={APIKey}";
             var generateRequest = new HttpRequestMessage(HttpMethod.Post, generateUrl);
             generateRequest.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
@@ -230,13 +222,22 @@ namespace IriamCommentReader
             var generateJsonResponse = await generateResponse.Content.ReadAsStringAsync();
             dynamic generateResponseObject = JsonConvert.DeserializeObject(generateJsonResponse);
             string transcribedText = "";
-            foreach (var part in generateResponseObject.candidates[0].content.parts)
+            if (generateResponseObject.candidates[0].content.parts != null)
             {
-                transcribedText += part.text;
+                foreach (var part in generateResponseObject.candidates[0].content.parts)
+                {
+                    transcribedText += part.text;
+                }
             }
 
             transcribedText = transcribedText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
             return transcribedText;
+        }
+
+        public override async Task<string> RequestAsync(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null)
+        {
+            var requestJson = GetRequestJson(systemPrompt, userPrompt, fileUri, fileBase64);
+            return await RequestAsync(requestJson);
         }
     }
 }
