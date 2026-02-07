@@ -66,11 +66,11 @@ namespace IriamCommentReader
             // 
             this.comboBoxModel.FormattingEnabled = true;
             this.comboBoxModel.Items.AddRange(new object[] {
-            "gemini-2.5-flash",
-            "gemini-2.5-flash-lite",
-            "gemini-2.0-flash",
-            "gemini-2.0-flash-lite",
-            "gemini-2.5-flash-lite-preview-06-17"});
+            "gpt-5-mini",
+            "gpt-5-nano",
+            "gpt-5.2",
+            "gpt-5.1",
+            "gpt-5"});
             this.comboBoxModel.Location = new System.Drawing.Point(88, 39);
             this.comboBoxModel.Name = "comboBoxModel";
             this.comboBoxModel.Size = new System.Drawing.Size(172, 23);

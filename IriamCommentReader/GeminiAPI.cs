@@ -126,7 +126,12 @@ namespace IriamCommentReader
             }
         }
 
-        public string GetRequestJson(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null, GeminiSchema schema = null, GeminiThinkingConfig thinkingConfig = null)
+        public override string GetRequestJson(string systemPrompt, string userPrompt, string fileBase64 = null)
+        {
+            return GetRequestJsonV25(systemPrompt, userPrompt, fileBase64: fileBase64);
+        }
+
+        public string GetRequestJsonV25(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null, GeminiSchema schema = null, GeminiThinkingConfig thinkingConfig = null)
         {
             var generationConfig = new Dictionary<string, object>
             {
@@ -236,7 +241,7 @@ namespace IriamCommentReader
 
         public override async Task<string> RequestAsync(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null)
         {
-            var requestJson = GetRequestJson(systemPrompt, userPrompt, fileUri, fileBase64);
+            var requestJson = GetRequestJsonV25(systemPrompt, userPrompt, fileUri, fileBase64);
             return await RequestAsync(requestJson);
         }
     }

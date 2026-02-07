@@ -23,5 +23,6 @@ namespace IriamCommentReader
         public abstract Task<string> UploadImageAsync(string filePath);
         public abstract Task<string> RequestAsync(string requestJson);
         public abstract Task<string> RequestAsync(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null);
+        public abstract string GetRequestJson(string systemPrompt, string userPrompt, string fileBase64 = null);
     }
 }

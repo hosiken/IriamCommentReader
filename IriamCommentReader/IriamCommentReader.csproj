@@ -78,7 +78,9 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="GeminiAPI.cs" />
+    <Compile Include="LMBase.cs" />
     <Compile Include="OCRTextComp.cs" />
+    <Compile Include="OpenAIAPI.cs" />
     <Compile Include="Preference.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

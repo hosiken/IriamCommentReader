@@ -15,7 +15,7 @@ namespace IriamCommentReader
     public partial class FormMain : Form
     {
         private const string TextString = "{{text}}";
-        private readonly GeminiAPI _geminiAPI;
+        private readonly LMBase _api;
         private static Image _shot;
         private int _apiCount = 0;
         static string _prevText = "";
@@ -66,7 +66,7 @@ namespace IriamCommentReader
             textBoxTop.Text = Preference.Instance.CaptureRect.Y.ToString();
             textBoxWidth.Text = Preference.Instance.CaptureRect.Width.ToString();
             textBoxHeight.Text = Preference.Instance.CaptureRect.Height.ToString();
-            _geminiAPI = new GeminiAPI("APIキーをここに入れる"); // Replace with your actual API key
+            _api = new OpenAIAPI("APIキーをここに入れる"); // Replace with your actual API key
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -179,28 +179,30 @@ namespace IriamCommentReader
                 string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
                 try
                 {
-                    _geminiAPI.APIKey = Preference.Instance.APIKey;
-                    _geminiAPI.Model = Preference.Instance.Model;
-                    _geminiAPI.Temperature = Preference.Instance.Temperature;
-                    _geminiAPI.TopP = Preference.Instance.TopP;
+                    _api.APIKey = Preference.Instance.APIKey;
+                    _api.Model = Preference.Instance.Model;
+                    _api.Temperature = Preference.Instance.Temperature;
+                    _api.TopP = Preference.Instance.TopP;
 
                     string jsonResponse;
-                    if (Preference.Instance.UseBase64)
+                    // if (Preference.Instance.UseBase64)
                     {
                         using (var ms = new MemoryStream())
                         {
                             _shot.Save(ms, ImageFormat.Jpeg);
                             var base64 = Convert.ToBase64String(ms.ToArray());
-                            var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: _commentSchema);
-                            jsonResponse = await _geminiAPI.RequestAsync(jsonText);
+                            // var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: _commentSchema);
+                            var jsonText = _api.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64);
+                            textBoxChatLog.AppendText(jsonText);
+                            jsonResponse = await _api.RequestAsync(jsonText);
                         }
                     }
-                    else
-                    {
-                        string imageUri = await _geminiAPI.UploadImageAsync(_shot);
-                        var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileUri: imageUri, schema: _commentSchema);
-                        jsonResponse = await _geminiAPI.RequestAsync(jsonText);
-                    }
+                    // else
+                    // {
+                    //  string imageUri = await _geminiAPI.UploadImageAsync(_shot);
+                    //  var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileUri: imageUri, schema: _commentSchema);
+                    //  jsonResponse = await _geminiAPI.RequestAsync(jsonText);
+                    // }
 
                     textBox2.Text = jsonResponse; // Display transcribed text in a textbox
                     _apiCount++;
@@ -303,7 +305,7 @@ namespace IriamCommentReader
 
         private void textBoxAPIKey_TextChanged(object sender, EventArgs e)
         {
-            _geminiAPI.APIKey = ((TextBox)sender).Text;
+            _api.APIKey = ((TextBox)sender).Text;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -322,7 +324,7 @@ namespace IriamCommentReader
 
         private void comboBoxModel_TextChanged(object sender, EventArgs e)
         {
-            _geminiAPI.Model = ((ComboBox)sender).Text;
+            _api.Model = ((ComboBox)sender).Text;
         }
 
         private void buttonPreference_Click(object sender, EventArgs e)
@@ -409,11 +411,11 @@ namespace IriamCommentReader
             string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
             try
             {
-                _geminiAPI.APIKey = Preference.Instance.APIKey;
-                _geminiAPI.Model = Preference.Instance.Model;
-                _geminiAPI.Temperature = Preference.Instance.Temperature;
-                _geminiAPI.TopP = Preference.Instance.TopP;
-                var jsonResponse = await _geminiAPI.RequestAsync(userPrompt);
+                _api.APIKey = Preference.Instance.APIKey;
+                _api.Model = Preference.Instance.Model;
+                _api.Temperature = Preference.Instance.Temperature;
+                _api.TopP = Preference.Instance.TopP;
+                var jsonResponse = await _api.RequestAsync(userPrompt);
                 textBox2.Text = jsonResponse;
             }
             catch (Exception ex)
