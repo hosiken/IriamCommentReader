@@ -33,12 +33,14 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.contextMenuImage = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.MenuImageCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuImagePaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.MenuImageLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuImageSave = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonQuery = new System.Windows.Forms.Button();
             this.textBoxPrompt = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.timerQuery = new System.Windows.Forms.Timer(this.components);
-            this.textBoxChatLog = new System.Windows.Forms.TextBox();
             this.buttonReadTest = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.textBoxLeft = new System.Windows.Forms.TextBox();
@@ -62,12 +64,17 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.textBoxChatLog = new System.Windows.Forms.TextBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.textBoxRequest = new System.Windows.Forms.TextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.textBoxResponse = new System.Windows.Forms.TextBox();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.labelTokens = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.MenuImagePaste = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.MenuImageLoad = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericInterval)).BeginInit();
@@ -82,10 +89,15 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -122,20 +134,39 @@
             this.MenuImageLoad,
             this.MenuImageSave});
             this.contextMenuImage.Name = "contextMenuImage";
-            this.contextMenuImage.Size = new System.Drawing.Size(181, 120);
+            this.contextMenuImage.Size = new System.Drawing.Size(135, 98);
             this.contextMenuImage.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuImage_Opening);
             // 
             // MenuImageCopy
             // 
             this.MenuImageCopy.Name = "MenuImageCopy";
-            this.MenuImageCopy.Size = new System.Drawing.Size(180, 22);
+            this.MenuImageCopy.Size = new System.Drawing.Size(134, 22);
             this.MenuImageCopy.Text = "コピー(&C)";
             this.MenuImageCopy.Click += new System.EventHandler(this.MenuImageCopy_Click);
+            // 
+            // MenuImagePaste
+            // 
+            this.MenuImagePaste.Name = "MenuImagePaste";
+            this.MenuImagePaste.Size = new System.Drawing.Size(134, 22);
+            this.MenuImagePaste.Text = "貼り付け(&P)";
+            this.MenuImagePaste.Click += new System.EventHandler(this.MenuImagePaste_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+            // 
+            // MenuImageLoad
+            // 
+            this.MenuImageLoad.Name = "MenuImageLoad";
+            this.MenuImageLoad.Size = new System.Drawing.Size(134, 22);
+            this.MenuImageLoad.Text = "読み込み(&L)";
+            this.MenuImageLoad.Click += new System.EventHandler(this.MenuImageLoad_Click);
             // 
             // MenuImageSave
             // 
             this.MenuImageSave.Name = "MenuImageSave";
-            this.MenuImageSave.Size = new System.Drawing.Size(180, 22);
+            this.MenuImageSave.Size = new System.Drawing.Size(134, 22);
             this.MenuImageSave.Text = "保存(&S)";
             this.MenuImageSave.Click += new System.EventHandler(this.MenuImageSave_Click);
             // 
@@ -161,7 +192,7 @@
             this.textBoxPrompt.Multiline = true;
             this.textBoxPrompt.Name = "textBoxPrompt";
             this.textBoxPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxPrompt.Size = new System.Drawing.Size(213, 96);
+            this.textBoxPrompt.Size = new System.Drawing.Size(213, 93);
             this.textBoxPrompt.TabIndex = 1;
             // 
             // textBox2
@@ -174,24 +205,13 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox2.Size = new System.Drawing.Size(226, 96);
+            this.textBox2.Size = new System.Drawing.Size(226, 93);
             this.textBox2.TabIndex = 1;
             // 
             // timerQuery
             // 
             this.timerQuery.Interval = 15000;
             this.timerQuery.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // textBoxChatLog
-            // 
-            this.textBoxChatLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxChatLog.Location = new System.Drawing.Point(0, 0);
-            this.textBoxChatLog.Multiline = true;
-            this.textBoxChatLog.Name = "textBoxChatLog";
-            this.textBoxChatLog.ReadOnly = true;
-            this.textBoxChatLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxChatLog.Size = new System.Drawing.Size(226, 154);
-            this.textBoxChatLog.TabIndex = 0;
             // 
             // buttonReadTest
             // 
@@ -337,7 +357,7 @@
             // labelAPICount
             // 
             this.labelAPICount.AutoSize = true;
-            this.labelAPICount.Location = new System.Drawing.Point(9, 165);
+            this.labelAPICount.Location = new System.Drawing.Point(12, 164);
             this.labelAPICount.Name = "labelAPICount";
             this.labelAPICount.Size = new System.Drawing.Size(56, 15);
             this.labelAPICount.TabIndex = 6;
@@ -348,7 +368,7 @@
             // 
             this.buttonReset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonReset.Location = new System.Drawing.Point(11, 237);
+            this.buttonReset.Location = new System.Drawing.Point(11, 229);
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.Size = new System.Drawing.Size(81, 23);
             this.buttonReset.TabIndex = 8;
@@ -360,7 +380,7 @@
             // 
             this.labelSimilarity.AutoSize = true;
             this.labelSimilarity.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.labelSimilarity.Location = new System.Drawing.Point(9, 186);
+            this.labelSimilarity.Location = new System.Drawing.Point(12, 179);
             this.labelSimilarity.Name = "labelSimilarity";
             this.labelSimilarity.Size = new System.Drawing.Size(36, 15);
             this.labelSimilarity.TabIndex = 7;
@@ -403,19 +423,20 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(102, 272);
+            this.panel2.Size = new System.Drawing.Size(102, 264);
             this.panel2.TabIndex = 0;
             // 
             // buttonDebugDirect
             // 
             this.buttonDebugDirect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDebugDirect.Location = new System.Drawing.Point(11, 208);
+            this.buttonDebugDirect.Location = new System.Drawing.Point(11, 200);
             this.buttonDebugDirect.Name = "buttonDebugDirect";
             this.buttonDebugDirect.Size = new System.Drawing.Size(81, 23);
             this.buttonDebugDirect.TabIndex = 9;
             this.buttonDebugDirect.Text = "直接リクエスト";
             this.buttonDebugDirect.UseVisualStyleBackColor = true;
+            this.buttonDebugDirect.Visible = false;
             this.buttonDebugDirect.Click += new System.EventHandler(this.buttonDebugDirect_Click);
             // 
             // splitContainer1
@@ -433,7 +454,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.label3);
             this.splitContainer1.Panel2.Controls.Add(this.textBox2);
-            this.splitContainer1.Size = new System.Drawing.Size(443, 114);
+            this.splitContainer1.Size = new System.Drawing.Size(443, 111);
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -450,8 +471,8 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.textBoxChatLog);
-            this.splitContainer2.Size = new System.Drawing.Size(443, 154);
+            this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer2.Size = new System.Drawing.Size(443, 149);
             this.splitContainer2.SplitterDistance = 213;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -463,8 +484,86 @@
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(213, 154);
+            this.panel4.Size = new System.Drawing.Size(213, 149);
             this.panel4.TabIndex = 0;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(226, 149);
+            this.tabControl1.TabIndex = 1;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.textBoxChatLog);
+            this.tabPage1.Location = new System.Drawing.Point(4, 24);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(218, 121);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "ログ";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // textBoxChatLog
+            // 
+            this.textBoxChatLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxChatLog.Location = new System.Drawing.Point(3, 3);
+            this.textBoxChatLog.Multiline = true;
+            this.textBoxChatLog.Name = "textBoxChatLog";
+            this.textBoxChatLog.ReadOnly = true;
+            this.textBoxChatLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxChatLog.Size = new System.Drawing.Size(212, 115);
+            this.textBoxChatLog.TabIndex = 1;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.textBoxRequest);
+            this.tabPage2.Location = new System.Drawing.Point(4, 24);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(218, 121);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "リクエスト";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // textBoxRequest
+            // 
+            this.textBoxRequest.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxRequest.Location = new System.Drawing.Point(3, 3);
+            this.textBoxRequest.Multiline = true;
+            this.textBoxRequest.Name = "textBoxRequest";
+            this.textBoxRequest.ReadOnly = true;
+            this.textBoxRequest.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxRequest.Size = new System.Drawing.Size(212, 115);
+            this.textBoxRequest.TabIndex = 2;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.textBoxResponse);
+            this.tabPage3.Location = new System.Drawing.Point(4, 24);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(218, 121);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "レスポンス";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // textBoxResponse
+            // 
+            this.textBoxResponse.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxResponse.Location = new System.Drawing.Point(3, 3);
+            this.textBoxResponse.Multiline = true;
+            this.textBoxResponse.Name = "textBoxResponse";
+            this.textBoxResponse.ReadOnly = true;
+            this.textBoxResponse.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxResponse.Size = new System.Drawing.Size(212, 115);
+            this.textBoxResponse.TabIndex = 2;
             // 
             // splitContainer3
             // 
@@ -481,17 +580,23 @@
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer1);
             this.splitContainer3.Panel2.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.splitContainer3.Size = new System.Drawing.Size(443, 272);
-            this.splitContainer3.SplitterDistance = 154;
+            this.splitContainer3.Size = new System.Drawing.Size(443, 264);
+            this.splitContainer3.SplitterDistance = 149;
             this.splitContainer3.TabIndex = 0;
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 316);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelTokens});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 308);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(553, 22);
             this.statusStrip1.TabIndex = 1;
-            this.statusStrip1.Text = "tsettset";
+            // 
+            // labelTokens
+            // 
+            this.labelTokens.Name = "labelTokens";
+            this.labelTokens.Size = new System.Drawing.Size(0, 17);
             // 
             // panel3
             // 
@@ -501,33 +606,14 @@
             this.panel3.Location = new System.Drawing.Point(0, 44);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.panel3.Size = new System.Drawing.Size(553, 272);
+            this.panel3.Size = new System.Drawing.Size(553, 264);
             this.panel3.TabIndex = 2;
-            // 
-            // MenuImagePaste
-            // 
-            this.MenuImagePaste.Name = "MenuImagePaste";
-            this.MenuImagePaste.Size = new System.Drawing.Size(180, 22);
-            this.MenuImagePaste.Text = "貼り付け(&P)";
-            this.MenuImagePaste.Click += new System.EventHandler(this.MenuImagePaste_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
-            // 
-            // MenuImageLoad
-            // 
-            this.MenuImageLoad.Name = "MenuImageLoad";
-            this.MenuImageLoad.Size = new System.Drawing.Size(180, 22);
-            this.MenuImageLoad.Text = "読み込み(&L)";
-            this.MenuImageLoad.Click += new System.EventHandler(this.MenuImageLoad_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(553, 338);
+            this.ClientSize = new System.Drawing.Size(553, 330);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.panel1);
@@ -551,15 +637,23 @@
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
-            this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -574,7 +668,6 @@
         private System.Windows.Forms.TextBox textBoxPrompt;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Timer timerQuery;
-        private System.Windows.Forms.TextBox textBoxChatLog;
         private System.Windows.Forms.Button buttonReadTest;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox textBoxLeft;
@@ -607,6 +700,14 @@
         private System.Windows.Forms.ToolStripMenuItem MenuImagePaste;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem MenuImageLoad;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TextBox textBoxChatLog;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TextBox textBoxRequest;
+        private System.Windows.Forms.TextBox textBoxResponse;
+        private System.Windows.Forms.ToolStripStatusLabel labelTokens;
     }
 }
 

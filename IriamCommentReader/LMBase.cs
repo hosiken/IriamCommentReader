@@ -12,6 +12,8 @@ namespace IriamCommentReader
         public string Model { get; set; }
         public float Temperature { get; set; }
         public float TopP { get; set; }
+        public string LastResponse { get; set; }
+        public UsageInfo LastUsage { get; set; } = new UsageInfo();
 
         public LMBase(string apiKey)
         {
@@ -24,5 +26,12 @@ namespace IriamCommentReader
         public abstract Task<string> RequestAsync(string requestJson);
         public abstract Task<string> RequestAsync(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null);
         public abstract string GetRequestJson(string systemPrompt, string userPrompt, string fileBase64 = null);
+    }
+
+    public class UsageInfo
+    {
+        public int inputTokens { get; set; }
+        public int outputTokens { get; set; }
+        public int totalTokens { get; set; }
     }
 }

@@ -50,9 +50,6 @@ namespace IriamCommentReader
 
             if (!string.IsNullOrEmpty(fileBase64))
             {
-                // 画像がある場合
-                // ※Playground JSONには画像の具体例が含まれていませんでしたが、
-                //  テキストが "input_text" なので、画像は "input_image" であると推測されます。
                 userContent.Add(new
                 {
                     type = "input_image",
@@ -66,36 +63,71 @@ namespace IriamCommentReader
                 content = userContent
             });
 
+            // ★ここが JSON Schema の定義部分です
+            // C#の匿名オブジェクトで階層構造を作ります
+            var responseSchema = new
+            {
+                type = "json_schema",
+                name = "comment_extraction_schema", // 任意のスキーマ名
+                strict = true, // 構造を強制する（重要）
+                schema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        // 【重要】
+                        // 元のJSONでは "list" でしたが、C#側のクラス(CommentList)が
+                        // "Comments" というプロパティを持っていると推測されるため、
+                        // ここを "comments" にしておくと DeserializeObject でそのまま吸えます。
+                        comments = new
+                        {
+                            type = "array",
+                            description = "抽出されたコメントのリスト",
+                            items = new
+                            {
+                                type = "object",
+                                properties = new
+                                {
+                                    name = new { type = "string", description = "名前 (システムメッセージの場合は空文字)" },
+                                    comment = new { type = "string", description = "コメント本文" }
+                                },
+                                // strict: true の場合、全フィールドが必須である必要があります
+                                required = new[] { "name", "comment" },
+                                additionalProperties = false
+                            }
+                        }
+                    },
+                    required = new[] { "comments" },
+                    additionalProperties = false
+                }
+            };
+
             // 2. リクエストボディの構築
-            // PlaygroundのJSONにある項目を全て網羅します
             var requestBody = new
             {
-                model = this.Model, // ★重要: ここに "gpt-5-mini" が入っていることを確認してください
+                model = this.Model, // "gpt-5-mini" など
 
                 input = inputList,
 
+                // テキスト生成設定にスキーマを埋め込む
                 text = new
                 {
-                    format = new { type = "text" },
-                    verbosity = "medium"
+                    format = responseSchema, // 作成したスキーマをセット
+                    verbosity = "low"
                 },
 
                 reasoning = new
                 {
-                    effort = "minimal",
+                    effort = this.Model == "gpt-5.1" || this.Model == "gpt-5.2" ? "none" : "minimal",
                     summary = "concise"
                 },
 
-                // ★ここが前回のコードで足りなかった部分です
-                // APIによっては空配列でも明示的に送らないと400になることがあります
                 tools = new List<object>(),
 
                 store = true,
 
-                include = new[]
+                include = new string[]
                 {
-                    "reasoning.encrypted_content",
-                    "web_search_call.action.sources"
                 }
             };
 
@@ -122,10 +154,15 @@ namespace IriamCommentReader
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
+            LastResponse = jsonResponse;
             dynamic responseObject = JsonConvert.DeserializeObject(jsonResponse);
 
-            string responseText = responseObject.output[1].content[0].text;
-            
+            string responseText = responseObject.output[0].content[0].text;
+
+            LastUsage.inputTokens = responseObject.usage.input_tokens;
+            LastUsage.outputTokens = responseObject.usage.output_tokens;
+            LastUsage.totalTokens = responseObject.usage.total_tokens;
+
             return responseText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
         }
 

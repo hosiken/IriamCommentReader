@@ -173,6 +173,27 @@ namespace IriamCommentReader
             timerQuery.Enabled = false;
             timerQuery.Enabled = checkBoxAuto.Checked;
 
+            Preference.Instance.CheckAndUpdateTokenDate();
+            var leftTokens = 0;
+            var model = "";
+            bool miniModel = false;
+            if (Preference.Instance.LeftTokens > 0)
+            {
+                model = "gpt-5.2";
+                leftTokens = Preference.Instance.LeftTokens;
+            }
+            else if (Preference.Instance.LeftMiniTokens > 0)
+            {
+                model = "gpt-5-mini";
+                miniModel = true;
+                leftTokens = Preference.Instance.LeftMiniTokens;
+            }
+            else
+            {
+                textBoxChatLog.AppendText("本日分のトークンを使い切りました.\r\n");
+                return;
+            }
+
             buttonQuery.Enabled = false;
             {
                 string systemPrompt = Preference.Instance.SystemPrompt;
@@ -180,7 +201,8 @@ namespace IriamCommentReader
                 try
                 {
                     _api.APIKey = Preference.Instance.APIKey;
-                    _api.Model = Preference.Instance.Model;
+                    // _api.Model = Preference.Instance.Model;
+                    _api.Model = model;
                     _api.Temperature = Preference.Instance.Temperature;
                     _api.TopP = Preference.Instance.TopP;
 
@@ -193,7 +215,7 @@ namespace IriamCommentReader
                             var base64 = Convert.ToBase64String(ms.ToArray());
                             // var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: _commentSchema);
                             var jsonText = _api.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64);
-                            textBoxChatLog.AppendText(jsonText);
+                            textBoxRequest.Text = jsonText;
                             jsonResponse = await _api.RequestAsync(jsonText);
                         }
                     }
@@ -204,9 +226,21 @@ namespace IriamCommentReader
                     //  jsonResponse = await _geminiAPI.RequestAsync(jsonText);
                     // }
 
+                    textBoxResponse.Text = _api.LastResponse;
                     textBox2.Text = jsonResponse; // Display transcribed text in a textbox
                     _apiCount++;
+                    leftTokens -= _api.LastUsage.totalTokens;
                     labelAPICount.Text = $"API回数:{_apiCount}";
+                    labelTokens.Text = $"{_api.Model} | トークン: ↑{_api.LastUsage.inputTokens} + ↓{_api.LastUsage.outputTokens} = {_api.LastUsage.totalTokens} (残: {leftTokens}) 残り {(_api.LastUsage.outputTokens > 0 ? leftTokens / _api.LastUsage.totalTokens : 0)}回くらい";
+                    if (miniModel)
+                    {
+                        Preference.Instance.LeftMiniTokens = leftTokens;
+                    }
+                    else
+                    {
+                        Preference.Instance.LeftTokens = leftTokens;
+                    }
+                    Preference.Instance.SaveTokens();
 
                     var commentList = JsonConvert.DeserializeObject<CommentList>(jsonResponse);
 
@@ -262,6 +296,7 @@ namespace IriamCommentReader
                     {
                         textBoxChatLog.AppendText($"Error: {ex.Message}\r\n");
                     }
+                    textBoxResponse.Text = _api.LastResponse;
                 }
             }
             buttonQuery.Enabled = true;

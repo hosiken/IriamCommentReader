@@ -64,6 +64,8 @@ namespace IriamCommentReader
             // 
             // comboBoxModel
             // 
+            this.comboBoxModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxModel.Enabled = false;
             this.comboBoxModel.FormattingEnabled = true;
             this.comboBoxModel.Items.AddRange(new object[] {
             "gpt-5-mini",

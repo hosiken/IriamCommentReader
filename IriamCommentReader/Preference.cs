@@ -1,8 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using System.Globalization;
 
 namespace IriamCommentReader
 {
@@ -186,6 +187,9 @@ namespace IriamCommentReader
         public int AutoExecInterval { get; set; }
         public Rect CaptureRect { get; set; } = new Rect(0, 0, 100, 100);
         public bool UseBase64 { get; set; }
+        public int TokenLastDate { get; set; }
+        public int LeftTokens { get; set; }
+        public int LeftMiniTokens { get; set; }
 
         // INI ファイルに書き込むセクション名（任意）
         private const string SectionName = "Preference";
@@ -196,7 +200,7 @@ namespace IriamCommentReader
             AutoExecInterval = DefaultAutoExecInterval;
             CaptureRect = new Rect(0, 0, 0, 0);
 
-            Model = DefaultModel;
+            // Model = DefaultModel;
             Temperature = 0.0f;
             TopP = 0.0f;
             SystemPrompt = DefaultSystemPrompt;
@@ -226,7 +230,7 @@ namespace IriamCommentReader
             WriteInt(SectionName, "CaptureRectHeight", CaptureRect.Height);
 
             WriteStr(SectionName, "APIKey", APIKey);
-            WriteStr(SectionName, "Model", Model);
+            // WriteStr(SectionName, "Model", Model);
             WriteFloat(SectionName, "Temperature", Temperature);
             WriteFloat(SectionName, "TopP", TopP);
             WriteStr(SectionName, "SystemPrompt", SystemPrompt);
@@ -241,6 +245,13 @@ namespace IriamCommentReader
             WriteStr(SectionName, "BouyomiURL", BouyomiURL);
             WriteStr(SectionName, "BouyomiParam", BouyomiParam);
             WriteBool(SectionName, "UseBase64", UseBase64);
+        }
+
+        public void SaveTokens()
+        {
+            WriteInt(SectionName, "TokenLastDate", TokenLastDate);
+            WriteInt(SectionName, "LeftTokens", LeftTokens);
+            WriteInt(SectionName, "LeftMiniTokens", LeftMiniTokens);
         }
 
         /// <summary>
@@ -258,7 +269,7 @@ namespace IriamCommentReader
             pref.CaptureRect.Height = ReadInt(SectionName, "CaptureRectHeight", 100);
 
             pref.APIKey = ReadStr(SectionName, "APIKey", "");
-            pref.Model = ReadStr(SectionName, "Model", DefaultModel);
+            // pref.Model = ReadStr(SectionName, "Model", DefaultModel);
             pref.Temperature = ReadFloat(SectionName, "Temperature", 0.0f);
             pref.TopP = ReadFloat(SectionName, "TopP", 0.0f);
             pref.SystemPrompt = ReadStr(SectionName, "SystemPrompt", DefaultSystemPrompt);
@@ -273,7 +284,37 @@ namespace IriamCommentReader
             pref.BouyomiURL = ReadStr(SectionName, "BouyomiURL", DefaultBouyomiURL);
             pref.BouyomiParam = ReadStr(SectionName, "BouyomiParam", DefaultBouyomiParam);
             pref.UseBase64 = ReadBool(SectionName, "UseBase64", true);
+
+            pref.TokenLastDate = ReadInt(SectionName, "TokenLastDate", 0);
+            pref.LeftTokens = ReadInt(SectionName, "LeftTokens", 0);
+            pref.LeftMiniTokens = ReadInt(SectionName, "LeftMiniTokens", 0);
             return pref;
+        }
+
+        public bool CheckAndUpdateTokenDate()
+        {
+            // 1. 今日のお菓子な日付(GMT+0 / UTC)を取得
+            DateTime nowUtc = DateTime.UtcNow;
+
+            // 2. 日付を int型 (YYYYMMDD形式) に変換
+            // 例: 2023年10月5日 -> 20231005
+            int todayInt = (nowUtc.Year * 10000) + (nowUtc.Month * 100) + nowUtc.Day;
+
+            // 3. 保存されている日付と比較
+            if (TokenLastDate != todayInt)
+            {
+                // 4. 今日のお菓子な日付で上書き保存
+                Preference.Instance.TokenLastDate = todayInt;
+                LeftTokens = 150000;
+                LeftMiniTokens = 1500000;
+                SaveTokens();
+
+                return true; // 日付が更新されたことを示す
+            }
+            else
+            {
+                return false; // 日付は変更されていない
+            }
         }
     }
 }
