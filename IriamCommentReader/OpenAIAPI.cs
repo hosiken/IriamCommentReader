@@ -10,6 +10,8 @@ namespace IriamCommentReader
 {
     public class OpenAIAPI : LMBase
     {
+        public bool IsGPT52 => Model == "gpt-5.1" || Model == "gpt-5.2";
+
         public OpenAIAPI(string apiKey) : base(apiKey)
         {
         }
@@ -118,7 +120,7 @@ namespace IriamCommentReader
 
                 reasoning = new
                 {
-                    effort = this.Model == "gpt-5.1" || this.Model == "gpt-5.2" ? "none" : "minimal",
+                    effort = IsGPT52 ? "none" : "minimal",
                     summary = "concise"
                 },
 
@@ -157,7 +159,7 @@ namespace IriamCommentReader
             LastResponse = jsonResponse;
             dynamic responseObject = JsonConvert.DeserializeObject(jsonResponse);
 
-            string responseText = responseObject.output[0].content[0].text;
+            string responseText = responseObject.output[IsGPT52 ? 0 : 1].content[0].text;
 
             LastUsage.inputTokens = responseObject.usage.input_tokens;
             LastUsage.outputTokens = responseObject.usage.output_tokens;

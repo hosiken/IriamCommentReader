@@ -22,6 +22,9 @@ namespace IriamCommentReader
         static string _prevText = "";
         public List<string> _readText = new List<string>();
 
+        const string LargeModel = "gpt-5.2";
+        const string MiniModel = "gpt-5-mini";
+
         private static GeminiSchema _commentSchema = new GeminiSchema
         {
             Type = "object",
@@ -69,6 +72,7 @@ namespace IriamCommentReader
             textBoxWidth.Text = Preference.Instance.CaptureRect.Width.ToString();
             textBoxHeight.Text = Preference.Instance.CaptureRect.Height.ToString();
             _api = new OpenAIAPI("APIキーをここに入れる"); // Replace with your actual API key
+            labelTokens.Text = $"残りトークン: [{LargeModel}] {Preference.Instance.LeftTokens} / [{MiniModel}] {Preference.Instance.LeftMiniTokens}";
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -181,12 +185,12 @@ namespace IriamCommentReader
             bool miniModel = false;
             if (Preference.Instance.LeftTokens > 0)
             {
-                model = "gpt-5.2";
+                model = LargeModel;
                 leftTokens = Preference.Instance.LeftTokens;
             }
             else if (Preference.Instance.LeftMiniTokens > 0)
             {
-                model = "gpt-5-mini";
+                model = MiniModel;
                 miniModel = true;
                 leftTokens = Preference.Instance.LeftMiniTokens;
             }

@@ -542,6 +542,7 @@
             this.textBoxRequest.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxRequest.Size = new System.Drawing.Size(212, 115);
             this.textBoxRequest.TabIndex = 2;
+            this.textBoxRequest.WordWrap = false;
             // 
             // tabPage3
             // 
@@ -564,6 +565,7 @@
             this.textBoxResponse.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxResponse.Size = new System.Drawing.Size(212, 115);
             this.textBoxResponse.TabIndex = 2;
+            this.textBoxResponse.WordWrap = false;
             // 
             // splitContainer3
             // 
