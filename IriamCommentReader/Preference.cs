@@ -305,7 +305,7 @@ namespace IriamCommentReader
             if (TokenLastDate != todayInt)
             {
                 // 4. 今日のお菓子な日付で上書き保存
-                Preference.Instance.TokenLastDate = todayInt;
+                TokenLastDate = todayInt;
                 LeftTokens = 150000;
                 LeftMiniTokens = 1500000;
                 SaveTokens();
