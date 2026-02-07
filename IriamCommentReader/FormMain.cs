@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Windows.Forms;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
@@ -19,6 +20,7 @@ namespace IriamCommentReader
         private static Image _shot;
         private int _apiCount = 0;
         static string _prevText = "";
+        public List<string> _readText = new List<string>();
 
         private static GeminiSchema _commentSchema = new GeminiSchema
         {
@@ -250,9 +252,14 @@ namespace IriamCommentReader
                         foreach(var comment in commentList.Comments)
                         {
                             transcribedText += $"{comment.Name} | {comment.Message}\r\n";
+                            _readText.Add($"{comment.Name} | {comment.Message}");
                         }
 
-                        var prompt = Preference.Instance.Prompt.Replace(TextString, transcribedText);
+                        // _readTextの末尾から最大10件を改行で連結
+                        var lastStr = string.Join("\r\n", _readText.Skip(Math.Max(0, _readText.Count - 10)));
+
+                        // プロンプトには直近最大8件の履歴を使用する
+                        var prompt = Preference.Instance.Prompt.Replace(TextString, lastStr);
                         textBoxPrompt.Text = prompt;
                         if (transcribedText != "")
                         {
