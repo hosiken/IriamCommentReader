@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -158,8 +159,18 @@ namespace IriamCommentReader
     {
         public static Preference Instance { get; set; } = new Preference();
 
+        public static readonly List<string> ModelWhiteList = new List<string>()
+        {
+            "gpt-5.2", "gpt-5.1", "gpt-5", "gpt-5-chat-latest", "gpt-4.1", "gpt-4o", "o3", "o1"
+        };
+        public static readonly List<string> MiniModelWhiteList = new List<string>()
+        {
+            "gpt-5-mini", "gpt-5-nano", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "o4-mini", "o3-mini"
+        };
+
         private const int DefaultAutoExecInterval = 60;
-        private const string DefaultModel = "gpt-5-mini";
+        private const string DefaultModel = "gpt-5.2";
+        private const string DefaultMiniModel = "gpt-5-mini";
         private const string DefaultSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、「なし」と出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultInitPrompt = "【直近読み上げたテキスト】\r\n(ありません。この指示が初回ですので全文取得します)";
         private const string DefaultPrompt = "【直近読み上げたテキスト】\r\n{{text}}";
@@ -170,6 +181,7 @@ namespace IriamCommentReader
 
         public string APIKey { get; set; }
         public string Model { get; set; }
+        public string MiniModel { get; set; }
         public float Temperature { get; set; }
         public float TopP { get; set; } = 0.0f;
         public string SystemPrompt { get; set; }
@@ -200,7 +212,8 @@ namespace IriamCommentReader
             AutoExecInterval = DefaultAutoExecInterval;
             CaptureRect = new Rect(0, 0, 0, 0);
 
-            // Model = DefaultModel;
+            Model = DefaultModel;
+            MiniModel = DefaultMiniModel;
             Temperature = 0.0f;
             TopP = 0.0f;
             SystemPrompt = DefaultSystemPrompt;
@@ -230,7 +243,8 @@ namespace IriamCommentReader
             WriteInt(SectionName, "CaptureRectHeight", CaptureRect.Height);
 
             WriteStr(SectionName, "APIKey", APIKey);
-            // WriteStr(SectionName, "Model", Model);
+            WriteStr(SectionName, "Model", Model);
+            WriteStr(SectionName, "MiniModel", MiniModel);
             WriteFloat(SectionName, "Temperature", Temperature);
             WriteFloat(SectionName, "TopP", TopP);
             WriteStr(SectionName, "SystemPrompt", SystemPrompt);
@@ -269,7 +283,8 @@ namespace IriamCommentReader
             pref.CaptureRect.Height = ReadInt(SectionName, "CaptureRectHeight", 100);
 
             pref.APIKey = ReadStr(SectionName, "APIKey", "");
-            // pref.Model = ReadStr(SectionName, "Model", DefaultModel);
+            pref.Model = ReadStr(SectionName, "Model", DefaultModel);
+            pref.MiniModel = ReadStr(SectionName, "MiniModel", DefaultMiniModel);
             pref.Temperature = ReadFloat(SectionName, "Temperature", 0.0f);
             pref.TopP = ReadFloat(SectionName, "TopP", 0.0f);
             pref.SystemPrompt = ReadStr(SectionName, "SystemPrompt", DefaultSystemPrompt);
@@ -289,6 +304,15 @@ namespace IriamCommentReader
             pref.LeftTokens = ReadInt(SectionName, "LeftTokens", 0);
             pref.LeftMiniTokens = ReadInt(SectionName, "LeftMiniTokens", 0);
             pref.CheckAndUpdateTokenDate();
+
+            if (!ModelWhiteList.Contains(pref.Model))
+            {
+                pref.Model = DefaultModel;
+            }
+            if (!MiniModelWhiteList.Contains(pref.MiniModel))
+            {
+                pref.MiniModel = DefaultMiniModel;
+            }
             return pref;
         }
 

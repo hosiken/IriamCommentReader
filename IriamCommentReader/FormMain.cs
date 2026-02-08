@@ -22,9 +22,6 @@ namespace IriamCommentReader
         static string _prevText = "";
         public List<string> _readText = new List<string>();
 
-        const string LargeModel = "gpt-5.2";
-        const string MiniModel = "gpt-5-mini";
-
         private static GeminiSchema _commentSchema = new GeminiSchema
         {
             Type = "object",
@@ -72,7 +69,7 @@ namespace IriamCommentReader
             textBoxWidth.Text = Preference.Instance.CaptureRect.Width.ToString();
             textBoxHeight.Text = Preference.Instance.CaptureRect.Height.ToString();
             _api = new OpenAIAPI("APIキーをここに入れる"); // Replace with your actual API key
-            labelTokens.Text = $"残りトークン: [{LargeModel}] {Preference.Instance.LeftTokens} / [{MiniModel}] {Preference.Instance.LeftMiniTokens}";
+            ShowLeftTokens();
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -82,6 +79,11 @@ namespace IriamCommentReader
             Preference.Instance.CaptureRect = new Rect(int.Parse(textBoxLeft.Text), int.Parse(textBoxTop.Text), 
                 int.Parse(textBoxWidth.Text), int.Parse(textBoxHeight.Text));
             Preference.Instance.Save();
+        }
+
+        public void ShowLeftTokens(string appendText = "")
+        {
+            labelTokens.Text = $"残りトークン: [{Preference.Instance.Model}] {Preference.Instance.LeftTokens} / [{Preference.Instance.MiniModel}] {Preference.Instance.LeftMiniTokens}{appendText}";
         }
 
         public static Image CaptureRegion(Rectangle region)
@@ -158,7 +160,7 @@ namespace IriamCommentReader
             {
                 var text = OCRPicture(_shot).Text.Replace(" ", "");
                 var similarity = TextCompare.Compare(text, _prevText);
-                labelSimilarity.Text = $"類似: {similarity:F2}/{Preference.Instance.Similarity:F2}";
+                labelSimilarity.Text = $"似: {similarity:F2}/{Preference.Instance.Similarity:F2}";
                 if (similarity >= Preference.Instance.Similarity)
                 {
                     labelSimilarity.ForeColor = Color.Blue;
@@ -183,16 +185,21 @@ namespace IriamCommentReader
             var leftTokens = 0;
             var model = "";
             bool miniModel = false;
-            if (Preference.Instance.LeftTokens > 0)
+            if (Preference.Instance.LeftTokens > 0 && !checkBoxMini.Checked)
             {
-                model = LargeModel;
+                model = Preference.Instance.Model;
                 leftTokens = Preference.Instance.LeftTokens;
             }
             else if (Preference.Instance.LeftMiniTokens > 0)
             {
-                model = MiniModel;
+                model = Preference.Instance.MiniModel;
                 miniModel = true;
                 leftTokens = Preference.Instance.LeftMiniTokens;
+            }
+            else if (Preference.Instance.LeftTokens > 0 && checkBoxMini.Checked)
+            {
+                model = Preference.Instance.Model;
+                leftTokens = Preference.Instance.LeftTokens;
             }
             else
             {
@@ -237,7 +244,7 @@ namespace IriamCommentReader
                     _apiCount++;
                     leftTokens -= _api.LastUsage.totalTokens;
                     labelAPICount.Text = $"API回数:{_apiCount}";
-                    labelTokens.Text = $"{_api.Model} | トークン: ↑{_api.LastUsage.inputTokens} + ↓{_api.LastUsage.outputTokens} = {_api.LastUsage.totalTokens} (残: {leftTokens}) 残り {(_api.LastUsage.outputTokens > 0 ? leftTokens / _api.LastUsage.totalTokens : 0)}回くらい";
+
                     if (miniModel)
                     {
                         Preference.Instance.LeftMiniTokens = leftTokens;
@@ -247,6 +254,7 @@ namespace IriamCommentReader
                         Preference.Instance.LeftTokens = leftTokens;
                     }
                     Preference.Instance.SaveTokens();
+                    ShowLeftTokens($" | 使用: {_api.Model} ↑{_api.LastUsage.inputTokens} + ↓{_api.LastUsage.outputTokens} = {_api.LastUsage.totalTokens} (残 {(_api.LastUsage.outputTokens > 0 ? leftTokens / _api.LastUsage.totalTokens : 0)} 回)");
 
                     var commentList = JsonConvert.DeserializeObject<CommentList>(jsonResponse);
 
@@ -376,6 +384,7 @@ namespace IriamCommentReader
         private void buttonPreference_Click(object sender, EventArgs e)
         {
             var result = new FormPreference().ShowDialog(this);
+            ShowLeftTokens();
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)

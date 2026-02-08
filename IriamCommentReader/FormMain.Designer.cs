@@ -60,6 +60,7 @@
             this.timerSimilarRetry = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.checkBoxMini = new System.Windows.Forms.CheckBox();
             this.buttonDebugDirect = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -192,7 +193,7 @@
             this.textBoxPrompt.Multiline = true;
             this.textBoxPrompt.Name = "textBoxPrompt";
             this.textBoxPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxPrompt.Size = new System.Drawing.Size(213, 93);
+            this.textBoxPrompt.Size = new System.Drawing.Size(213, 113);
             this.textBoxPrompt.TabIndex = 1;
             // 
             // textBox2
@@ -205,7 +206,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox2.Size = new System.Drawing.Size(226, 93);
+            this.textBox2.Size = new System.Drawing.Size(226, 113);
             this.textBox2.TabIndex = 1;
             // 
             // timerQuery
@@ -288,10 +289,10 @@
             // checkBoxAuto
             // 
             this.checkBoxAuto.AutoSize = true;
-            this.checkBoxAuto.Location = new System.Drawing.Point(11, 93);
+            this.checkBoxAuto.Location = new System.Drawing.Point(11, 116);
             this.checkBoxAuto.Name = "checkBoxAuto";
             this.checkBoxAuto.Size = new System.Drawing.Size(50, 19);
-            this.checkBoxAuto.TabIndex = 3;
+            this.checkBoxAuto.TabIndex = 4;
             this.checkBoxAuto.Text = "自動";
             this.checkBoxAuto.UseVisualStyleBackColor = true;
             this.checkBoxAuto.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
@@ -300,10 +301,10 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(49, 139);
+            this.label4.Location = new System.Drawing.Point(49, 162);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 15);
-            this.label4.TabIndex = 5;
+            this.label4.TabIndex = 6;
             this.label4.Text = "秒間隔";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
@@ -322,7 +323,7 @@
             // 
             this.numericInterval.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericInterval.Location = new System.Drawing.Point(11, 113);
+            this.numericInterval.Location = new System.Drawing.Point(11, 136);
             this.numericInterval.Maximum = new decimal(new int[] {
             600,
             0,
@@ -335,7 +336,7 @@
             0});
             this.numericInterval.Name = "numericInterval";
             this.numericInterval.Size = new System.Drawing.Size(81, 23);
-            this.numericInterval.TabIndex = 4;
+            this.numericInterval.TabIndex = 5;
             this.numericInterval.Value = new decimal(new int[] {
             15,
             0,
@@ -357,10 +358,10 @@
             // labelAPICount
             // 
             this.labelAPICount.AutoSize = true;
-            this.labelAPICount.Location = new System.Drawing.Point(12, 164);
+            this.labelAPICount.Location = new System.Drawing.Point(12, 187);
             this.labelAPICount.Name = "labelAPICount";
             this.labelAPICount.Size = new System.Drawing.Size(56, 15);
-            this.labelAPICount.TabIndex = 6;
+            this.labelAPICount.TabIndex = 7;
             this.labelAPICount.Tag = "";
             this.labelAPICount.Text = "API回数:";
             // 
@@ -368,10 +369,10 @@
             // 
             this.buttonReset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonReset.Location = new System.Drawing.Point(11, 229);
+            this.buttonReset.Location = new System.Drawing.Point(11, 265);
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.Size = new System.Drawing.Size(81, 23);
-            this.buttonReset.TabIndex = 8;
+            this.buttonReset.TabIndex = 10;
             this.buttonReset.Text = "リセット";
             this.buttonReset.UseVisualStyleBackColor = true;
             this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
@@ -380,12 +381,12 @@
             // 
             this.labelSimilarity.AutoSize = true;
             this.labelSimilarity.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.labelSimilarity.Location = new System.Drawing.Point(12, 179);
+            this.labelSimilarity.Location = new System.Drawing.Point(12, 204);
             this.labelSimilarity.Name = "labelSimilarity";
-            this.labelSimilarity.Size = new System.Drawing.Size(36, 15);
-            this.labelSimilarity.TabIndex = 7;
+            this.labelSimilarity.Size = new System.Drawing.Size(24, 15);
+            this.labelSimilarity.TabIndex = 8;
             this.labelSimilarity.Tag = "";
-            this.labelSimilarity.Text = "類似:";
+            this.labelSimilarity.Text = "似:";
             this.labelSimilarity.DoubleClick += new System.EventHandler(this.labelSimilarity_DoubleClick);
             // 
             // timerSimilarRetry
@@ -410,6 +411,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.checkBoxMini);
             this.panel2.Controls.Add(this.buttonDebugDirect);
             this.panel2.Controls.Add(this.buttonCapture);
             this.panel2.Controls.Add(this.buttonQuery);
@@ -423,14 +425,24 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(102, 264);
+            this.panel2.Size = new System.Drawing.Size(102, 300);
             this.panel2.TabIndex = 0;
+            // 
+            // checkBoxMini
+            // 
+            this.checkBoxMini.AutoSize = true;
+            this.checkBoxMini.Location = new System.Drawing.Point(11, 93);
+            this.checkBoxMini.Name = "checkBoxMini";
+            this.checkBoxMini.Size = new System.Drawing.Size(75, 19);
+            this.checkBoxMini.TabIndex = 3;
+            this.checkBoxMini.Text = "mini優先";
+            this.checkBoxMini.UseVisualStyleBackColor = true;
             // 
             // buttonDebugDirect
             // 
             this.buttonDebugDirect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDebugDirect.Location = new System.Drawing.Point(11, 200);
+            this.buttonDebugDirect.Location = new System.Drawing.Point(11, 236);
             this.buttonDebugDirect.Name = "buttonDebugDirect";
             this.buttonDebugDirect.Size = new System.Drawing.Size(81, 23);
             this.buttonDebugDirect.TabIndex = 9;
@@ -454,7 +466,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.label3);
             this.splitContainer1.Panel2.Controls.Add(this.textBox2);
-            this.splitContainer1.Size = new System.Drawing.Size(443, 111);
+            this.splitContainer1.Size = new System.Drawing.Size(443, 154);
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -472,7 +484,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer2.Size = new System.Drawing.Size(443, 149);
+            this.splitContainer2.Size = new System.Drawing.Size(443, 142);
             this.splitContainer2.SplitterDistance = 213;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -484,7 +496,7 @@
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(213, 149);
+            this.panel4.Size = new System.Drawing.Size(213, 142);
             this.panel4.TabIndex = 0;
             // 
             // tabControl1
@@ -496,7 +508,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(226, 149);
+            this.tabControl1.Size = new System.Drawing.Size(226, 142);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
@@ -505,7 +517,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 24);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(218, 121);
+            this.tabPage1.Size = new System.Drawing.Size(218, 114);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "ログ";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -518,7 +530,7 @@
             this.textBoxChatLog.Name = "textBoxChatLog";
             this.textBoxChatLog.ReadOnly = true;
             this.textBoxChatLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxChatLog.Size = new System.Drawing.Size(212, 115);
+            this.textBoxChatLog.Size = new System.Drawing.Size(212, 108);
             this.textBoxChatLog.TabIndex = 1;
             // 
             // tabPage2
@@ -527,7 +539,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 24);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(218, 121);
+            this.tabPage2.Size = new System.Drawing.Size(218, 114);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "リクエスト";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -540,7 +552,7 @@
             this.textBoxRequest.Name = "textBoxRequest";
             this.textBoxRequest.ReadOnly = true;
             this.textBoxRequest.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxRequest.Size = new System.Drawing.Size(212, 115);
+            this.textBoxRequest.Size = new System.Drawing.Size(212, 108);
             this.textBoxRequest.TabIndex = 2;
             this.textBoxRequest.WordWrap = false;
             // 
@@ -550,7 +562,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 24);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(218, 121);
+            this.tabPage3.Size = new System.Drawing.Size(218, 114);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "レスポンス";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -563,7 +575,7 @@
             this.textBoxResponse.Name = "textBoxResponse";
             this.textBoxResponse.ReadOnly = true;
             this.textBoxResponse.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxResponse.Size = new System.Drawing.Size(212, 115);
+            this.textBoxResponse.Size = new System.Drawing.Size(212, 108);
             this.textBoxResponse.TabIndex = 2;
             this.textBoxResponse.WordWrap = false;
             // 
@@ -582,15 +594,15 @@
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer1);
             this.splitContainer3.Panel2.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.splitContainer3.Size = new System.Drawing.Size(443, 264);
-            this.splitContainer3.SplitterDistance = 149;
+            this.splitContainer3.Size = new System.Drawing.Size(443, 300);
+            this.splitContainer3.SplitterDistance = 142;
             this.splitContainer3.TabIndex = 0;
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelTokens});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 308);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 344);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(553, 22);
             this.statusStrip1.TabIndex = 1;
@@ -598,7 +610,9 @@
             // labelTokens
             // 
             this.labelTokens.Name = "labelTokens";
-            this.labelTokens.Size = new System.Drawing.Size(0, 17);
+            this.labelTokens.Size = new System.Drawing.Size(507, 17);
+            this.labelTokens.Spring = true;
+            this.labelTokens.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panel3
             // 
@@ -608,14 +622,14 @@
             this.panel3.Location = new System.Drawing.Point(0, 44);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.panel3.Size = new System.Drawing.Size(553, 264);
+            this.panel3.Size = new System.Drawing.Size(553, 300);
             this.panel3.TabIndex = 2;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(553, 330);
+            this.ClientSize = new System.Drawing.Size(553, 366);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.panel1);
@@ -710,6 +724,7 @@
         private System.Windows.Forms.TextBox textBoxRequest;
         private System.Windows.Forms.TextBox textBoxResponse;
         private System.Windows.Forms.ToolStripStatusLabel labelTokens;
+        private System.Windows.Forms.CheckBox checkBoxMini;
     }
 }
 

@@ -15,12 +15,23 @@ namespace IriamCommentReader
         public FormPreference()
         {
             InitializeComponent();
+
+            comboBoxModel.Items.Clear();
+            comboBoxModel.BeginUpdate();
+            comboBoxModel.Items.AddRange(Preference.ModelWhiteList?.ToArray());
+            comboBoxModel.EndUpdate();
+
+            comboBoxMiniModel.Items.Clear();
+            comboBoxMiniModel.BeginUpdate();
+            comboBoxMiniModel.Items.AddRange(Preference.MiniModelWhiteList?.ToArray());
+            comboBoxMiniModel.EndUpdate();
         }
 
         private void FormPreference_Load(object sender, EventArgs e)
         {
             textBoxAPIKey.Text = Preference.Instance.APIKey;
-            // comboBoxModel.Text = Preference.Instance.Model;
+            comboBoxModel.Text = Preference.Instance.Model;
+            comboBoxMiniModel.Text = Preference.Instance.MiniModel;
             numericTemperature.Value = (Decimal)Preference.Instance.Temperature;
             numericTopP.Value = (Decimal)Preference.Instance.TopP;
             textBoxSystem.Text = Preference.Instance.SystemPrompt;
@@ -39,7 +50,8 @@ namespace IriamCommentReader
         private void buttonOK_Click(object sender, EventArgs e)
         {
             Preference.Instance.APIKey = textBoxAPIKey.Text;
-            // Preference.Instance.Model = comboBoxModel.Text;
+            Preference.Instance.Model = comboBoxModel.Text;
+            Preference.Instance.MiniModel = comboBoxMiniModel.Text;
             Preference.Instance.Temperature = (float)numericTemperature.Value;
             Preference.Instance.TopP = (float)numericTopP.Value;
             Preference.Instance.SystemPrompt = textBoxSystem.Text;
@@ -68,6 +80,11 @@ namespace IriamCommentReader
         }
 
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBoxMiniModel_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

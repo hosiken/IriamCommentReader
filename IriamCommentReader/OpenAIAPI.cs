@@ -10,7 +10,10 @@ namespace IriamCommentReader
 {
     public class OpenAIAPI : LMBase
     {
+        public bool IsGPT5 => Model.StartsWith("gpt-5") && !Model.Contains("chat");
         public bool IsGPT52 => Model == "gpt-5.1" || Model == "gpt-5.2";
+        public bool IsOx => Model.StartsWith("o");
+        public bool IsPro => Model.ToLowerInvariant().Contains("pro");
 
         public OpenAIAPI(string apiKey) : base(apiKey)
         {
@@ -30,6 +33,8 @@ namespace IriamCommentReader
 
         public override string GetRequestJson(string systemPrompt, string userPrompt, string fileBase64 = null)
         {
+            if (IsPro) { throw new NotImplementedException("そのモデルを使うなんてとんでもない!"); }
+
             // 1. input配列の構築
             var inputList = new List<object>();
 
@@ -105,39 +110,69 @@ namespace IriamCommentReader
             };
 
             // 2. リクエストボディの構築
-            var requestBody = new
+            if (IsGPT5)
             {
-                model = this.Model, // "gpt-5-mini" など
-
-                input = inputList,
-
-                // テキスト生成設定にスキーマを埋め込む
-                text = new
+                var requestBody = new
                 {
-                    format = responseSchema, // 作成したスキーマをセット
-                    verbosity = "low"
-                },
+                    model = this.Model, // "gpt-5-mini" など
 
-                reasoning = new
+                    input = inputList,
+
+                    // テキスト生成設定にスキーマを埋め込む
+                    text = new
+                    {
+                        format = responseSchema, // 作成したスキーマをセット
+                        verbosity = "low"
+                    },
+
+                    reasoning = new
+                    {
+                        effort = IsGPT52 ? "none" : "minimal",
+                        summary = "concise"
+                    },
+
+                    tools = new List<object>(),
+
+                    store = true,
+
+                    include = new string[]
+                    {
+                    }
+                };
+
+                return JsonConvert.SerializeObject(requestBody, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+            else
+            {
+                var requestBody = new
                 {
-                    effort = IsGPT52 ? "none" : "minimal",
-                    summary = "concise"
-                },
+                    model = this.Model, // "gpt-5-mini" など
 
-                tools = new List<object>(),
+                    input = inputList,
 
-                store = true,
+                    // テキスト生成設定にスキーマを埋め込む
+                    text = new
+                    {
+                        format = responseSchema // 作成したスキーマをセット
+                    },
 
-                include = new string[]
-                {
-                }
-            };
+                    tools = new List<object>(),
 
-            return JsonConvert.SerializeObject(requestBody, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    store = true,
+
+                    include = new string[]
+                    {
+                    }
+                };
+
+                return JsonConvert.SerializeObject(requestBody, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
         }
 
         public override async Task<string> RequestAsync(string requestJson)
         {
+            if (IsPro) { throw new NotImplementedException("そのモデルを使うなんてとんでもない!"); }
+
             var requestUrl = "https://api.openai.com/v1/responses";
             var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
             request.Headers.Add("Authorization", $"Bearer {this.APIKey}");
@@ -159,7 +194,7 @@ namespace IriamCommentReader
             LastResponse = jsonResponse;
             dynamic responseObject = JsonConvert.DeserializeObject(jsonResponse);
 
-            string responseText = responseObject.output[IsGPT52 ? 0 : 1].content[0].text;
+            string responseText = responseObject.output[IsGPT52 || (!IsGPT5 && !IsOx) ? 0 : 1].content[0].text;
 
             LastUsage.inputTokens = responseObject.usage.input_tokens;
             LastUsage.outputTokens = responseObject.usage.output_tokens;
