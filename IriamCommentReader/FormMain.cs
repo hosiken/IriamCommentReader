@@ -1,14 +1,19 @@
+using Newtonsoft.Json;
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Windows.UI.Xaml.Media;
+using static IriamCommentReader.FormMain;
+using static System.Net.Mime.MediaTypeNames;
+using Image = System.Drawing.Image;
 
 namespace IriamCommentReader
 {
@@ -88,16 +93,44 @@ namespace IriamCommentReader
 
         public static Image CaptureRegion(Rectangle region)
         {
-            // 指定された領域のBitmapを作成
             Bitmap bmp = new Bitmap(region.Width, region.Height, PixelFormat.Format32bppArgb);
-            _shot = bmp;
 
             using (Graphics graphics = Graphics.FromImage(bmp))
             {
-                // デスクトップの指定された領域をBitmapにコピー
                 graphics.CopyFromScreen(region.Location, Point.Empty, region.Size);
             }
 
+            // 2. リサイズ判定
+            if (Preference.Instance.ImageResizeEnable && Preference.Instance.ImageResizeWidth < region.Width)
+            {
+                float rate = (float)Preference.Instance.ImageResizeWidth / (float)region.Width;
+                int newWidth = Preference.Instance.ImageResizeWidth;
+                int newHeight = (int)(region.Height * rate);
+
+                // リサイズ用の空のBitmapを作成
+                Bitmap resizedBitmap = new Bitmap(newWidth, newHeight, PixelFormat.Format32bppArgb);
+
+                // リサイズ用BitmapのGraphicsを作成
+                using (Graphics g = Graphics.FromImage(resizedBitmap))
+                {
+                    // 画質の設定 (HighQualityBicubic は綺麗ですが負荷は少し高いです。ドット絵ならNearestNeighborで)
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+                    // 元の画像(bmp)を、新しいサイズに合わせて描画
+                    g.DrawImage(bmp, 0, 0, newWidth, newHeight);
+                }
+
+                // リサイズ版を作ったので、元の巨大な画像はメモリから開放する
+                bmp.Dispose();
+
+                _shot = resizedBitmap;
+                return resizedBitmap;
+            }
+
+            // リサイズ不要な場合
+            _shot = bmp;
             return bmp;
         }
 
@@ -203,7 +236,7 @@ namespace IriamCommentReader
             }
             else
             {
-                textBoxChatLog.AppendText("本日分のトークンを使い切りました.\r\n");
+                textBoxChatLog.AppendText("本日分のトークンを使い切りました. 日本時間で午前9時にリセットされます.\r\n");
                 return;
             }
 
@@ -264,29 +297,49 @@ namespace IriamCommentReader
                         foreach(var comment in commentList.Comments)
                         {
                             transcribedText += $"{comment.Name} | {comment.Message}\r\n";
-                            _readText.Add($"{comment.Name} | {comment.Message}");
                         }
 
                         // _readTextの末尾から最大10件を改行で連結
-                        var lastStr = string.Join("\r\n", _readText.Skip(Math.Max(0, _readText.Count - 10)));
+                        var recentRead = _readText.Skip(Math.Max(0, _readText.Count - 10));
+                        var lastStr = string.Join("\r\n", recentRead);
 
                         // プロンプトには直近最大8件の履歴を使用する
                         var prompt = Preference.Instance.Prompt.Replace(TextString, lastStr);
                         textBoxPrompt.Text = prompt;
-                        if (transcribedText != "")
-                        {
-                            textBoxChatLog.AppendText(transcribedText + (transcribedText[transcribedText.Length - 1] == '\n' ? "" : "\r\n"));
-                        }
                         string speakText = ""; // transcribedText.Replace(" | ", "さん、");
                         string[] chats = transcribedText.Replace("\r\n", "\n").Split(new[] { '\n', '\r' });
                         var beforeTalker = "";
                         foreach (var chat in chats)
                         {
+                            if (chat == "") { continue; }
+
+                            if (Preference.Instance.SimilarityChatSkip)
+                            {
+                                bool skip = false;
+                                foreach (var recentChat in recentRead)
+                                {
+                                    var similarity = TextCompare.Compare(chat, recentChat);
+                                    if (similarity >= Preference.Instance.ChatSimilarity)
+                                    {
+                                        // textBoxChatLog.AppendText($"{chat}\r\n{recentChat}\r\n→{similarity}\r\n\r\n");
+                                        skip = true;
+                                        break;
+                                    }
+                                }
+
+                                if (skip)
+                                {
+                                    continue;
+                                }
+                            }
+
                             string[] chatElem = chat.Split(new string[] { " | " }, StringSplitOptions.None);
                             if (chatElem.Length == 1)
                             {
                                 speakText += $"{chatElem[0]}\n";
                                 beforeTalker = "";
+                                _readText.Add(chat);
+                                textBoxChatLog.AppendText(chat + "\r\n");
                             }
                             else if (chatElem.Length > 1)
                             {
@@ -299,6 +352,8 @@ namespace IriamCommentReader
                                     beforeTalker = chatElem[0];
                                     speakText += $"{chatElem[0]}さん、{chatElem[1]}\n";
                                 }
+                                _readText.Add(chat);
+                                textBoxChatLog.AppendText(chat + "\r\n");
                             }
                         }
                         await BouyomiTalk.SpeakAsync(speakText, Preference.Instance.BouyomiURL, Preference.Instance.BouyomiParam);

@@ -171,13 +171,15 @@ namespace IriamCommentReader
         private const int DefaultAutoExecInterval = 60;
         private const string DefaultModel = "gpt-5.2";
         private const string DefaultMiniModel = "gpt-5-mini";
-        private const string DefaultSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、「なし」と出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
+        private const string DefaultSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultInitPrompt = "【直近読み上げたテキスト】\r\n(ありません。この指示が初回ですので全文取得します)";
-        private const string DefaultPrompt = "【直近読み上げたテキスト】\r\n{{text}}";
+        private const string DefaultPrompt = "【直近読み上げたテキスト】\r\n{{text}}\r\n\r\n(これより前の行は読み上げ済みなので、レスポンスに出力しないてください)";
         private const string DefaultBouyomiURL = "http://localhost:50080/Talk";
         private const string DefaultBouyomiParam = "?text={{text}}";
         private const float DefaultSimilarity = 0.5f;
+        private const float DefaultChatSimilarity = 0.5f;
         private const int DefaultSimilarRetryInterval = 1;
+        private const int DefaultImageResizeWidth = 800;
 
         public string APIKey { get; set; }
         public string Model { get; set; }
@@ -193,6 +195,10 @@ namespace IriamCommentReader
         public float Similarity { get; set; }
         public bool SimilarityRetryEnable { get; set; }
         public int SimilarRetryInterval { get; set; }
+        public bool SimilarityChatSkip { get; set; }
+        public float ChatSimilarity { get; set; }
+        public bool ImageResizeEnable { get; set; }
+        public int ImageResizeWidth { get; set; }
         public string BouyomiURL { get; set; }
         public string BouyomiParam { get; set; }
         public bool AutoExecEnable { get; set; }
@@ -225,6 +231,10 @@ namespace IriamCommentReader
             Similarity = DefaultSimilarity;
             SimilarityRetryEnable = true;
             SimilarRetryInterval = DefaultSimilarRetryInterval;
+            SimilarityChatSkip = true;
+            ImageResizeEnable = true;
+            ImageResizeWidth = DefaultImageResizeWidth;
+            ChatSimilarity = DefaultChatSimilarity;
             BouyomiURL = DefaultBouyomiURL;
             BouyomiParam = BouyomiParam;
             UseBase64 = true;
@@ -256,6 +266,10 @@ namespace IriamCommentReader
             WriteFloat(SectionName, "Similarity", Similarity);
             WriteBool(SectionName, "SimilarityRetryEnable", SimilarityRetryEnable);
             WriteInt(SectionName, "SimilarRetryInterval", SimilarRetryInterval);
+            WriteBool(SectionName, "SimilarityChatSkip", SimilarityChatSkip);
+            WriteFloat(SectionName, "ChatSimilarity", ChatSimilarity);
+            WriteBool(SectionName, "ImageResizeEnable", ImageResizeEnable);
+            WriteInt(SectionName, "ImageResizeWidth", ImageResizeWidth);
             WriteStr(SectionName, "BouyomiURL", BouyomiURL);
             WriteStr(SectionName, "BouyomiParam", BouyomiParam);
             WriteBool(SectionName, "UseBase64", UseBase64);
@@ -296,6 +310,10 @@ namespace IriamCommentReader
             pref.Similarity = ReadFloat(SectionName, "Similarity", DefaultSimilarity);
             pref.SimilarityRetryEnable = ReadBool(SectionName, "SimilarityRetryEnable", true);
             pref.SimilarRetryInterval = ReadInt(SectionName, "SimilarRetryInterval", DefaultSimilarRetryInterval);
+            pref.SimilarityChatSkip = ReadBool(SectionName, "SimilarityChatSkip", true);
+            pref.ChatSimilarity = ReadFloat(SectionName, "ChatSimilarity", DefaultChatSimilarity);
+            pref.ImageResizeEnable = ReadBool(SectionName, "ImageResizeEnable", true);
+            pref.ImageResizeWidth = ReadInt(SectionName, "ImageResizeWidth", DefaultImageResizeWidth);
             pref.BouyomiURL = ReadStr(SectionName, "BouyomiURL", DefaultBouyomiURL);
             pref.BouyomiParam = ReadStr(SectionName, "BouyomiParam", DefaultBouyomiParam);
             pref.UseBase64 = ReadBool(SectionName, "UseBase64", true);
