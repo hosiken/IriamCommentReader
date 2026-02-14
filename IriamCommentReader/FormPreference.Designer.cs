@@ -441,7 +441,7 @@ namespace IriamCommentReader
             0,
             0});
             this.numericImageResizeWidth.Minimum = new decimal(new int[] {
-            360,
+            100,
             0,
             0,
             0});

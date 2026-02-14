@@ -179,7 +179,7 @@ namespace IriamCommentReader
         private const float DefaultSimilarity = 0.5f;
         private const float DefaultChatSimilarity = 0.5f;
         private const int DefaultSimilarRetryInterval = 1;
-        private const int DefaultImageResizeWidth = 800;
+        private const int DefaultImageResizeWidth = 400;
 
         public string APIKey { get; set; }
         public string Model { get; set; }
