@@ -11,7 +11,7 @@ namespace IriamCommentReader
     public class OpenAIAPI : LMBase
     {
         public bool IsGPT5 => Model.StartsWith("gpt-5") && !Model.Contains("chat");
-        public bool IsGPT52 => Model == "gpt-5.1" || Model == "gpt-5.2";
+        public bool IsLaterGPT51 => Model == "gpt-5.1" || Model == "gpt-5.2" || Model.StartsWith("gpt-5.4");
         public bool IsOx => Model.StartsWith("o");
         public bool IsPro => Model.ToLowerInvariant().Contains("pro");
 
@@ -127,7 +127,7 @@ namespace IriamCommentReader
 
                     reasoning = new
                     {
-                        effort = IsGPT52 ? "none" : "minimal",
+                        effort = IsLaterGPT51 ? "none" : "minimal",
                         summary = "concise"
                     },
 
@@ -194,7 +194,7 @@ namespace IriamCommentReader
             LastResponse = jsonResponse;
             dynamic responseObject = JsonConvert.DeserializeObject(jsonResponse);
 
-            string responseText = responseObject.output[IsGPT52 || (!IsGPT5 && !IsOx) ? 0 : 1].content[0].text;
+            string responseText = responseObject.output[IsLaterGPT51 || (!IsGPT5 && !IsOx) ? 0 : 1].content[0].text;
 
             LastUsage.inputTokens = responseObject.usage.input_tokens;
             LastUsage.outputTokens = responseObject.usage.output_tokens;
