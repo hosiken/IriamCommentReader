@@ -161,16 +161,16 @@ namespace IriamCommentReader
 
         public static readonly List<string> ModelWhiteList = new List<string>()
         {
-            "gpt-5.2", "gpt-5.1", "gpt-5", "gpt-5-chat-latest", "gpt-4.1", "gpt-4o", "o3", "o1"
+            "gpt-5.4", "gpt-5.2", "gpt-5.1", "gpt-5", "gpt-5-chat-latest", "gpt-4.1", "gpt-4o-2024-11-20", "o3", "o1"
         };
         public static readonly List<string> MiniModelWhiteList = new List<string>()
         {
-            "gpt-5-mini", "gpt-5-nano", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "o4-mini", "o3-mini"
+            "gpt-5.4-mini", "gpt-5.4-nano", "gpt-5-mini", "gpt-5-nano", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "o4-mini", "o3-mini"
         };
 
         private const int DefaultAutoExecInterval = 60;
-        private const string DefaultModel = "gpt-5.2";
-        private const string DefaultMiniModel = "gpt-5-mini";
+        private const string DefaultModel = "gpt-5.4";
+        private const string DefaultMiniModel = "gpt-5.4-mini";
         private const string DefaultSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultInitPrompt = "【直近読み上げたテキスト】\r\n(ありません。この指示が初回ですので全文取得します)";
         private const string DefaultPrompt = "【直近読み上げたテキスト】\r\n{{text}}\r\n\r\n(これより前の行は読み上げ済みなので、レスポンスに出力しないてください)";
