@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,11 +22,15 @@ namespace IriamCommentReader
     public partial class FormMain : Form
     {
         private const string TextString = "{{text}}";
-        private readonly LMBase _api;
+        private bool _useOpenAI = false;
+        private readonly OpenAIAPI _apiOpenAI;
+        private readonly GeminiAPI _apiGemini;
+        private LMBase CurrentAPI => _useOpenAI ? (LMBase)_apiOpenAI : _apiGemini;
         private static Image _shot;
         private int _apiCount = 0;
         static string _prevText = "";
         public List<string> _readText = new List<string>();
+
 
         private static GeminiSchema _commentSchema = new GeminiSchema
         {
@@ -41,8 +46,9 @@ namespace IriamCommentReader
                                     Properties = new Dictionary<string, GeminiSchema> {
                                         { "name", new GeminiSchema { Type = "string", Description = "ユーザー名" } },
                                         { "comment", new GeminiSchema { Type = "string", Description = "コメント" } }
-                                    }
-                                }
+                                    },
+                                 Required = new List<string> { "comment" }
+                               }
                             } }
                         },
             Required = new List<string> { "comments" }
@@ -73,7 +79,12 @@ namespace IriamCommentReader
             textBoxTop.Text = Preference.Instance.CaptureRect.Y.ToString();
             textBoxWidth.Text = Preference.Instance.CaptureRect.Width.ToString();
             textBoxHeight.Text = Preference.Instance.CaptureRect.Height.ToString();
-            _api = new OpenAIAPI("APIキーをここに入れる"); // Replace with your actual API key
+            _apiOpenAI = new OpenAIAPI("APIキーをここに入れる"); // Replace with your actual API key
+            _apiGemini = new GeminiAPI("APIキーをここに入れる"); // Replace with your actual API key
+            _apiGemini.Schema = _commentSchema;
+            _apiGemini.TopK = 40;
+            _apiGemini.FrequencyPenalty = 1.0f;
+            _apiGemini.PresencePenalty = 1.0f;
             ShowLeftTokens();
         }
 
@@ -214,55 +225,72 @@ namespace IriamCommentReader
             timerQuery.Enabled = false;
             timerQuery.Enabled = checkBoxAuto.Checked;
 
-            Preference.Instance.CheckAndUpdateTokenDate();
             var leftTokens = 0;
             var model = "";
             bool miniModel = false;
-            if (Preference.Instance.LeftTokens > 0 && !checkBoxMini.Checked)
+
+            if (_useOpenAI)
             {
-                model = Preference.Instance.Model;
-                leftTokens = Preference.Instance.LeftTokens;
-            }
-            else if (Preference.Instance.LeftMiniTokens > 0)
-            {
-                model = Preference.Instance.MiniModel;
-                miniModel = true;
-                leftTokens = Preference.Instance.LeftMiniTokens;
-            }
-            else if (Preference.Instance.LeftTokens > 0 && checkBoxMini.Checked)
-            {
-                model = Preference.Instance.Model;
-                leftTokens = Preference.Instance.LeftTokens;
+                Preference.Instance.CheckAndUpdateTokenDate();
+
+                if (Preference.Instance.LeftTokens > 0 && !checkBoxMini.Checked)
+                {
+                    model = Preference.Instance.Model;
+                    leftTokens = Preference.Instance.LeftTokens;
+                }
+                else if (Preference.Instance.LeftMiniTokens > 0)
+                {
+                    model = Preference.Instance.MiniModel;
+                    miniModel = true;
+                    leftTokens = Preference.Instance.LeftMiniTokens;
+                }
+                else if (Preference.Instance.LeftTokens > 0 && checkBoxMini.Checked)
+                {
+                    model = Preference.Instance.Model;
+                    leftTokens = Preference.Instance.LeftTokens;
+                }
+                else
+                {
+                    textBoxChatLog.AppendText("本日分のトークンを使い切りました. 日本時間で午前9時にリセットされます.\r\n");
+                    return;
+                }
             }
             else
             {
-                textBoxChatLog.AppendText("本日分のトークンを使い切りました. 日本時間で午前9時にリセットされます.\r\n");
-                return;
+                model = "gemma-4-31b-it";
+                // model = "gemini-3.1-flash-lite-preview";
             }
 
             buttonQuery.Enabled = false;
+
             {
                 string systemPrompt = Preference.Instance.SystemPrompt;
                 string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
                 try
                 {
-                    _api.APIKey = Preference.Instance.APIKey;
+                    _apiOpenAI.APIKey = Preference.Instance.APIKey;
                     // _api.Model = Preference.Instance.Model;
-                    _api.Model = model;
-                    _api.Temperature = Preference.Instance.Temperature;
-                    _api.TopP = Preference.Instance.TopP;
+                    CurrentAPI.Model = model;
+                    CurrentAPI.Temperature = Preference.Instance.Temperature;
+                    CurrentAPI.TopP = Preference.Instance.TopP;
 
-                    string jsonResponse;
+                    textBoxResponse.Clear();
+
+                    string jsonResponse = string.Empty;
                     // if (Preference.Instance.UseBase64)
                     {
                         using (var ms = new MemoryStream())
                         {
                             _shot.Save(ms, ImageFormat.Jpeg);
                             var base64 = Convert.ToBase64String(ms.ToArray());
-                            // var jsonText = _geminiAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64, schema: _commentSchema);
-                            var jsonText = _api.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64);
+                            var jsonText = CurrentAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64);
                             textBoxRequest.Text = jsonText;
-                            jsonResponse = await _api.RequestAsync(jsonText);
+                            await CurrentAPI.RequestStreamAsync(jsonText, token => {
+                                // UIスレッドへの Dispatcher.Invoke などが必要な場合があります
+                                textBoxResponse.AppendText(token);
+                                jsonResponse += token;
+                            });
+                            // CurrentAPI.RequestStreamAsync(jsonText, (part) => textBoxResponse.AppendText(part));
                         }
                     }
                     // else
@@ -272,22 +300,25 @@ namespace IriamCommentReader
                     //  jsonResponse = await _geminiAPI.RequestAsync(jsonText);
                     // }
 
-                    textBoxResponse.Text = _api.LastResponse;
-                    textBox2.Text = jsonResponse; // Display transcribed text in a textbox
+                    // textBoxResponse.Text = CurrentAPI.LastResponse;
+                    textBox2.Text = jsonResponse.Trim('`'); // Display transcribed text in a textbox
                     _apiCount++;
-                    leftTokens -= _api.LastUsage.totalTokens;
                     labelAPICount.Text = $"API回数:{_apiCount}";
 
-                    if (miniModel)
+                    if (_useOpenAI)
                     {
-                        Preference.Instance.LeftMiniTokens = leftTokens;
+                        leftTokens -= CurrentAPI.LastUsage.totalTokens;
+                        if (miniModel)
+                        {
+                            Preference.Instance.LeftMiniTokens = leftTokens;
+                        }
+                        else
+                        {
+                            Preference.Instance.LeftTokens = leftTokens;
+                        }
+                        Preference.Instance.SaveTokens();
+                        ShowLeftTokens($" | 使用: {CurrentAPI.Model} ↑{CurrentAPI.LastUsage.inputTokens} + ↓{CurrentAPI.LastUsage.outputTokens} = {CurrentAPI.LastUsage.totalTokens} (残 {(CurrentAPI.LastUsage.outputTokens > 0 ? leftTokens / CurrentAPI.LastUsage.totalTokens : 0)} 回)");
                     }
-                    else
-                    {
-                        Preference.Instance.LeftTokens = leftTokens;
-                    }
-                    Preference.Instance.SaveTokens();
-                    ShowLeftTokens($" | 使用: {_api.Model} ↑{_api.LastUsage.inputTokens} + ↓{_api.LastUsage.outputTokens} = {_api.LastUsage.totalTokens} (残 {(_api.LastUsage.outputTokens > 0 ? leftTokens / _api.LastUsage.totalTokens : 0)} 回)");
 
                     var commentList = JsonConvert.DeserializeObject<CommentList>(jsonResponse);
 
@@ -363,14 +394,17 @@ namespace IriamCommentReader
                 {
                     if (ex is System.Net.Http.HttpRequestException && ex.Message.Contains("429"))
                     {
-                        textBoxChatLog.AppendText("APIの呼び出し回数制限(429)に達しました.\r\n");
+                        textBoxChatLog.AppendText("Gemini APIの呼び出し回数制限(429)に達しました.\r\n");
                         // 必要ならリトライ処理や待機処理を追加
                     }
                     else
                     {
                         textBoxChatLog.AppendText($"Error: {ex.Message}\r\n");
                     }
-                    textBoxResponse.Text = _api.LastResponse;
+                    if (CurrentAPI.LastResponse != "")
+                    {
+                        textBoxResponse.Text = CurrentAPI.LastResponse;
+                    }
                 }
             }
             buttonQuery.Enabled = true;
@@ -414,7 +448,7 @@ namespace IriamCommentReader
 
         private void textBoxAPIKey_TextChanged(object sender, EventArgs e)
         {
-            _api.APIKey = ((TextBox)sender).Text;
+            CurrentAPI.APIKey = ((TextBox)sender).Text;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -433,7 +467,7 @@ namespace IriamCommentReader
 
         private void comboBoxModel_TextChanged(object sender, EventArgs e)
         {
-            _api.Model = ((ComboBox)sender).Text;
+            CurrentAPI.Model = ((ComboBox)sender).Text;
         }
 
         private void buttonPreference_Click(object sender, EventArgs e)
@@ -521,11 +555,11 @@ namespace IriamCommentReader
             string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
             try
             {
-                _api.APIKey = Preference.Instance.APIKey;
-                _api.Model = Preference.Instance.Model;
-                _api.Temperature = Preference.Instance.Temperature;
-                _api.TopP = Preference.Instance.TopP;
-                var jsonResponse = await _api.RequestAsync(userPrompt);
+                CurrentAPI.APIKey = Preference.Instance.APIKey;
+                CurrentAPI.Model = Preference.Instance.Model;
+                CurrentAPI.Temperature = Preference.Instance.Temperature;
+                CurrentAPI.TopP = Preference.Instance.TopP;
+                var jsonResponse = await CurrentAPI.RequestAsync(userPrompt);
                 textBox2.Text = jsonResponse;
             }
             catch (Exception ex)

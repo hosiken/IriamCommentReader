@@ -1,15 +1,12 @@
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using Windows.Management.Deployment.Preview;
-using System.Configuration;
-using System.Data;
-using IriamCommentReader.Properties;
 
 namespace IriamCommentReader
 {
@@ -34,12 +31,15 @@ namespace IriamCommentReader
     public class GeminiAPI : LMBase
     {
         public bool IsModelGemini25 => Model != null && Model.Contains("-2.5");
+        public bool IsThinkingConfigEnable => Model != null && (Model.StartsWith("gemini-3") || Model.StartsWith("gemma-4"));
         public bool IsModelGeminiPro => Model != null && Model.Contains("-pro");
+        public GeminiSchema Schema { get; set; }
+        public GeminiThinkingConfig ThinkingConfig { get; set; } = new GeminiThinkingConfig();
 
         public class GeminiThinkingConfig
         {
-            [JsonProperty("thinkingBudget")]
-            public int ThinkingBudget { get; set; } = -1;
+            [JsonProperty("thinkingLevel")]
+            public string ThinkingLevel { get; set; } = "HIGH";
         }
 
         public GeminiAPI(string apiKey) : base(apiKey)
@@ -141,16 +141,19 @@ namespace IriamCommentReader
                 { "maxOutputTokens", 8192 }
             };
 
-            // Gemini 2.5はThinking Budgetを指定する
-            if (IsModelGemini25)
+            if (TopK.HasValue) generationConfig["topK"] = TopK.Value;
+            // if (FrequencyPenalty.HasValue) generationConfig["frequencyPenalty"] = FrequencyPenalty.Value;
+            // if (PresencePenalty.HasValue) generationConfig["presencePenalty"] = PresencePenalty.Value;
+
+            if (IsThinkingConfigEnable)
             {
-                generationConfig.Add("thinkingConfig", thinkingConfig ?? new GeminiThinkingConfig() { ThinkingBudget = IsModelGeminiPro ? 0 : -1 });
+                generationConfig.Add("thinkingConfig", thinkingConfig ?? ThinkingConfig ?? new GeminiThinkingConfig());
             }
 
-            if (schema != null)
+            if (schema != null || Schema != null)
             {
                 generationConfig["responseMimeType"] = "application/json";
-                generationConfig["responseSchema"] = schema;
+                generationConfig["responseSchema"] = schema ?? Schema;
             }
             else
             {
@@ -199,7 +202,6 @@ namespace IriamCommentReader
                 contents = contentsList.ToArray(),
                 systemInstruction = new
                 {
-                    role = "user",
                     parts = new object[]
                     {
                         new { text = systemPrompt }
@@ -237,6 +239,62 @@ namespace IriamCommentReader
 
             transcribedText = transcribedText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
             return transcribedText;
+        }
+
+        public override async Task RequestStreamAsync(string requestJson, Action<string> onTokenReceived, System.Threading.CancellationToken cancellationToken = default)
+        {
+            // streamGenerateContent を使用。alt=sse は解析を容易にするため付与
+            var generateUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{Model}:streamGenerateContent?alt=sse&key={APIKey}";
+            var generateRequest = new HttpRequestMessage(HttpMethod.Post, generateUrl);
+            generateRequest.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            // ResponseHeadersRead を指定して、全体が終わる前にストリームを取得開始する
+            using (var response = await _client.SendAsync(generateRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
+            {
+                response.EnsureSuccessStatusCode();
+
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var reader = new StreamReader(stream))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        if (cancellationToken.IsCancellationRequested) break;
+
+                        var line = await reader.ReadLineAsync();
+                        if (string.IsNullOrWhiteSpace(line) || !line.StartsWith("data: ")) continue;
+
+                        var dataStr = line.Substring(6).Trim();
+                        if (dataStr == "[DONE]") break;
+
+                        // dynamic でパース（Newtonsoft.Jsonを使用）
+                        dynamic responseObject = JsonConvert.DeserializeObject(dataStr);
+
+                        if (responseObject.candidates != null && responseObject.candidates.Count > 0)
+                        {
+                            var parts = responseObject.candidates[0].content.parts;
+                            if (parts != null)
+                            {
+                                foreach (var part in parts)
+                                {
+                                    string text = part.text;
+                                    if (!string.IsNullOrEmpty(text))
+                                    {
+                                        // ここでUIなどの呼び出し元へ通知
+                                        onTokenReceived?.Invoke(text.Replace("\n", "\r\n"));
+                                    }
+                                }
+                            }
+                        }
+                        // --- トークン情報の更新 ---
+                        if (responseObject.usageMetadata != null)
+                        {
+                            this.LastUsage.inputTokens = responseObject.usageMetadata.promptTokenCount;
+                            this.LastUsage.outputTokens = responseObject.usageMetadata.candidatesTokenCount;
+                            this.LastUsage.totalTokens = responseObject.usageMetadata.totalTokenCount;
+                        }
+                    }
+                }
+            }
         }
 
         public override async Task<string> RequestAsync(string systemPrompt, string userPrompt, string fileUri = null, string fileBase64 = null)

@@ -1,10 +1,12 @@
-using System;
-using System.Drawing;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace IriamCommentReader
 {
@@ -112,35 +114,23 @@ namespace IriamCommentReader
             // 2. リクエストボディの構築
             if (IsGPT5)
             {
-                var requestBody = new
+                var requestObject = new Dictionary<string, object>
                 {
-                    model = this.Model, // "gpt-5-mini" など
-
-                    input = inputList,
-
-                    // テキスト生成設定にスキーマを埋め込む
-                    text = new
-                    {
-                        format = responseSchema, // 作成したスキーマをセット
-                        verbosity = "low"
-                    },
-
-                    reasoning = new
-                    {
-                        effort = IsLaterGPT51 ? "none" : "minimal",
-                        summary = "concise"
-                    },
-
-                    tools = new List<object>(),
-
-                    store = true,
-
-                    include = new string[]
-                    {
-                    }
+                    { "model", this.Model },
+                    { "input", inputList },
+                    { "stream", true }, // ここで切り替え
+                    { "text", new { format = responseSchema } },
+                    { "tools", new List<object>() },
+                    { "store", true }
                 };
 
-                return JsonConvert.SerializeObject(requestBody, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                // GPT-5 / o1 系の推論設定
+                if (IsGPT5 || IsOx)
+                {
+                    requestObject["reasoning"] = new { effort = IsLaterGPT51 ? "none" : "minimal", summary = "concise" };
+                }
+
+                return JsonConvert.SerializeObject(requestObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             }
             else
             {
@@ -209,5 +199,63 @@ namespace IriamCommentReader
             var requestJson = GetRequestJson(systemPrompt, userPrompt, fileBase64);
             return await RequestAsync(requestJson);
         }
+
+        public override async Task RequestStreamAsync(string requestJson, Action<string> onTokenReceived, System.Threading.CancellationToken cancellationToken = default)
+        {
+            var requestUrl = "https://api.openai.com/v1/responses";
+            var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+            request.Headers.Add("Authorization", $"Bearer {this.APIKey}");
+            request.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            using (var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
+            {
+                response.EnsureSuccessStatusCode();
+
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var reader = new StreamReader(stream))
+                {
+                    while (!reader.EndOfStream && !cancellationToken.IsCancellationRequested)
+                    {
+                        var line = await reader.ReadLineAsync();
+                        if (string.IsNullOrWhiteSpace(line) || !line.StartsWith("data: ")) continue;
+
+                        var dataStr = line.Substring(6).Trim();
+                        if (dataStr == "[DONE]") break;
+
+                        try
+                        {
+                            dynamic ev = JsonConvert.DeserializeObject(dataStr);
+                            // Debug.WriteLine($"{ev.type}");
+                            // OpenAI v1/responses API の仕様: テキストは response.text_delta で届く
+                            if (ev.type == "response.output_text.delta")
+                            {
+                                string chunk = ev.delta;
+                                if (!string.IsNullOrEmpty(chunk))
+                                {
+                                    onTokenReceived?.Invoke(chunk.Replace("\n", "\r\n"));
+                                }
+                            }
+                            // --- トークン情報の更新 ---
+                            else if (ev.type == "response.completed")
+                            {
+                                if (ev.response?.usage != null)
+                                {
+                                    this.LastUsage.inputTokens = ev.response.usage.input_tokens;
+                                    this.LastUsage.outputTokens = ev.response.usage.output_tokens;
+                                    this.LastUsage.totalTokens = ev.response.usage.total_tokens;
+                                }
+                            }
+                        }
+                        catch { /* パースエラーはスキップ */ }
+                    }
+                }
+            }
+        }
+
+        // public override Task RequestStreamAsync(string systemPrompt, string userPrompt, string fileBase64, Action<string> onTokenReceived, System.Threading.CancellationToken cancellationToken = default)
+        // {
+        // var requestJson = GetRequestJsonInternal(systemPrompt, userPrompt, fileBase64, true);
+        //     return RequestStreamAsync(requestJson, onTokenReceived, cancellationToken);
+        // }
     }
 }
