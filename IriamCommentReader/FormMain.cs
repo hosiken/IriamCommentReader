@@ -277,6 +277,7 @@ namespace IriamCommentReader
 
             if (string.IsNullOrEmpty(Pref.APIKey))
             {
+                _prevText = "";
                 textBoxChatLog.AppendText($"{Pref.CurrentProvider.ToString()} : API キーが設定されていません.\r\n");
                 checkBoxAuto.Checked = false;
                 timerQuery.Enabled = false;
@@ -336,7 +337,8 @@ namespace IriamCommentReader
                     // }
 
                     textBoxResponse.Text = CurrentAPI.LastResponse;
-                    textBox2.Text = jsonResponse.Trim('\n').Trim('\r').Trim('`'); // Display transcribed text in a textbox
+                    jsonResponse = jsonResponse.Trim('\n').Trim('\r').Trim('`').Replace("```json", string.Empty).Replace("```", string.Empty); // Gemma 4はJSONの末尾に ``` をつけてくることがある
+                    textBox2.Text = jsonResponse; // Display transcribed text in a textbox
                     _apiCount++;
                     labelAPICount.Text = $"API回数:{_apiCount}";
 
