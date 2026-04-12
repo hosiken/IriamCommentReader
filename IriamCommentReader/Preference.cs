@@ -8,6 +8,23 @@ using System.Windows.Forms;
 
 namespace IriamCommentReader
 {
+    public enum APIProviderType
+    {
+        Gemini = 0,
+        OpenAI,
+    }
+
+    public static class DictionaryExtensions
+    {
+        public static TValue GetValueOrDefault<TKey, TValue>(
+            this IDictionary<TKey, TValue> dict,
+            TKey key,
+            TValue defaultValue = default)
+        {
+            return dict.TryGetValue(key, out var value) ? value : defaultValue;
+        }
+    }
+
     public class PreferenceBase
     {
         protected const string ReturnStr = "{\\n}";
@@ -159,21 +176,60 @@ namespace IriamCommentReader
     {
         public static Preference Instance { get; set; } = new Preference();
 
-        public static readonly List<string> ModelWhiteList = new List<string>()
+        public static readonly List<string> GeminiModelList = new List<string>()
+        {
+            "gemma-4-31b-it", "gemma-4-26b-a4b-it", "gemini-3.1-flash-lite-preview", "gemini-3.1-flash-lite"
+        };
+
+        public static readonly List<string> OpenAIModelWhiteList = new List<string>()
         {
             "gpt-5.4", "gpt-5.2", "gpt-5.1", "gpt-5", "gpt-5-chat-latest", "gpt-4.1", "gpt-4o-2024-11-20", "o3", "o1"
         };
-        public static readonly List<string> MiniModelWhiteList = new List<string>()
+        public static readonly List<string> OpenAIMiniModelWhiteList = new List<string>()
         {
             "gpt-5.4-mini", "gpt-5.4-nano", "gpt-5-mini", "gpt-5-nano", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "o4-mini", "o3-mini"
         };
 
         private const int DefaultAutoExecInterval = 60;
-        private const string DefaultModel = "gpt-5.4";
-        private const string DefaultMiniModel = "gpt-5.4-mini";
-        private const string DefaultSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
-        private const string DefaultInitPrompt = "【直近読み上げたテキスト】\r\n(ありません。この指示が初回ですので全文取得します)";
-        private const string DefaultPrompt = "【直近読み上げたテキスト】\r\n{{text}}\r\n\r\n(これより前の行は読み上げ済みなので、レスポンスに出力しないてください)";
+
+        private const string DefaultGeminiModel = "gemini-3.1-flash-lite-preview";
+        private const string DefaultGeminiMiniModel = "gemma-4-31b-it";
+        private const string DefaultGeminiSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\n\nフォーマット:\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\n- システムメッセージはnameなし(空文字列)でcommentのみとする\n- 絵文字は省略する、若葉マークに注意\n- 水色や灰色などは名前です。黒色はチャット本文です\n- 3点リーダーは…に統一する\n- 新しいチャットは下に追加されていく\n- 【直近読み上げたテキスト】が指定されている場合は…\n    - 同じテキストを再出力してはいけません。\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
+        private const string DefaultGeminiInitPrompt = "【直近読み上げたテキスト】\r\n(ありません。この指示が初回ですので全文取得します)";
+        private const string DefaultGeminiPrompt = "【直近読み上げたテキスト】\r\n{{text}}\r\n\r\n(これより前の行は読み上げ済みなので、レスポンスに出力しないてください)";
+
+        private const string DefaultOpenAIModel = "gpt-5.4";
+        private const string DefaultOpenAIMiniModel = "gpt-5.4-mini";
+        private const string DefaultOpenAISystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
+        private const string DefaultOpenAIInitPrompt = DefaultGeminiInitPrompt;
+        private const string DefaultOpenAIPrompt = DefaultGeminiPrompt;
+
+        private static readonly Dictionary<APIProviderType, string> DefaultModels = new Dictionary<APIProviderType, string>()
+        {
+            { APIProviderType.Gemini, DefaultGeminiModel },
+            { APIProviderType.OpenAI, DefaultOpenAIModel },
+        };
+        private static readonly Dictionary<APIProviderType, string> DefaultMiniModels = new Dictionary<APIProviderType, string>()
+        {
+            { APIProviderType.Gemini, DefaultGeminiMiniModel },
+            { APIProviderType.OpenAI, DefaultOpenAIMiniModel },
+        };
+        private static readonly Dictionary<APIProviderType, string> DefaultSystemPrompts = new Dictionary<APIProviderType, string>()
+        {
+            { APIProviderType.Gemini, DefaultGeminiSystemPrompt },
+            { APIProviderType.OpenAI, DefaultOpenAISystemPrompt },
+        };
+        private static readonly Dictionary<APIProviderType, string> DefaultInitPrompts = new Dictionary<APIProviderType, string>()
+        {
+            { APIProviderType.Gemini, DefaultGeminiInitPrompt },
+            { APIProviderType.OpenAI, DefaultOpenAIInitPrompt },
+        };
+        private static readonly Dictionary<APIProviderType, string> DefaultPrompts = new Dictionary<APIProviderType, string>()
+        {
+            { APIProviderType.Gemini, DefaultGeminiPrompt },
+            { APIProviderType.OpenAI, DefaultOpenAIPrompt },
+        };
+
         private const string DefaultBouyomiURL = "http://localhost:50080/Talk";
         private const string DefaultBouyomiParam = "?text={{text}}";
         private const float DefaultSimilarity = 0.5f;
@@ -181,14 +237,27 @@ namespace IriamCommentReader
         private const int DefaultSimilarRetryInterval = 1;
         private const int DefaultImageResizeWidth = 400;
 
-        public string APIKey { get; set; }
-        public string Model { get; set; }
-        public string MiniModel { get; set; }
-        public float Temperature { get; set; }
-        public float TopP { get; set; } = 0.0f;
-        public string SystemPrompt { get; set; }
-        public string InitPrompt { get; set; }
-        public string Prompt { get; set; }
+        public APIProviderType CurrentProvider { get; set; } = APIProviderType.Gemini;
+        public bool IsStreaming { get; set; } = true;
+
+        public string APIKey => APIKeys[CurrentProvider];
+        public string Model => Models[CurrentProvider];
+        public string MiniModel => MiniModels[CurrentProvider];
+        public float Temperature => Temperatures[CurrentProvider];
+        public float TopP => TopPs[CurrentProvider];
+        public string SystemPrompt => SystemPrompts[CurrentProvider];
+        public string InitPrompt => InitPrompts[CurrentProvider];
+        public string Prompt => Prompts[CurrentProvider];
+
+        public Dictionary<APIProviderType, string> APIKeys { get; set; } = new Dictionary<APIProviderType, string>();
+        public Dictionary<APIProviderType, string> Models { get; set; } = new Dictionary<APIProviderType, string>();
+        public Dictionary<APIProviderType, string> MiniModels { get; set; } = new Dictionary<APIProviderType, string>();
+        public Dictionary<APIProviderType, float> Temperatures { get; set; } = new Dictionary<APIProviderType, float>();
+        public Dictionary<APIProviderType, float> TopPs { get; set; } = new Dictionary<APIProviderType, float>();
+        public Dictionary<APIProviderType, string> SystemPrompts { get; set; } = new Dictionary<APIProviderType, string>();
+        public Dictionary<APIProviderType, string> InitPrompts { get; set; } = new Dictionary<APIProviderType, string>();
+        public Dictionary<APIProviderType, string> Prompts { get; set; } = new Dictionary<APIProviderType, string>();
+
         public bool SkipNameAll { get; set; }
         public bool SkipName { get; set; }
         public bool SimilarOnly { get; set; }
@@ -218,13 +287,17 @@ namespace IriamCommentReader
             AutoExecInterval = DefaultAutoExecInterval;
             CaptureRect = new Rect(0, 0, 0, 0);
 
-            Model = DefaultModel;
-            MiniModel = DefaultMiniModel;
-            Temperature = 0.0f;
-            TopP = 0.0f;
-            SystemPrompt = DefaultSystemPrompt;
-            InitPrompt = DefaultInitPrompt;
-            Prompt = DefaultPrompt;
+            foreach (APIProviderType provider in Enum.GetValues(typeof(APIProviderType)))
+            {
+                Models[provider] = DefaultModels[provider];
+                MiniModels[provider] = DefaultMiniModels[provider];
+                Temperatures[provider] = 0.0f;
+                TopPs[provider] = 0.0f;
+                SystemPrompts[provider] = DefaultSystemPrompts[provider];
+                InitPrompts[provider] = DefaultInitPrompts[provider];
+                Prompts[provider] = DefaultPrompts[provider];
+            }
+
             SkipNameAll = false;
             SkipName = true;
             SimilarOnly = true;
@@ -252,14 +325,19 @@ namespace IriamCommentReader
             WriteInt(SectionName, "CaptureRectWidth", CaptureRect.Width);
             WriteInt(SectionName, "CaptureRectHeight", CaptureRect.Height);
 
-            WriteStr(SectionName, "APIKey", APIKey);
-            WriteStr(SectionName, "Model", Model);
-            WriteStr(SectionName, "MiniModel", MiniModel);
-            WriteFloat(SectionName, "Temperature", Temperature);
-            WriteFloat(SectionName, "TopP", TopP);
-            WriteStr(SectionName, "SystemPrompt", SystemPrompt);
-            WriteStr(SectionName, "InitPrompt", InitPrompt);
-            WriteStr(SectionName, "Prompt", Prompt);
+            foreach (APIProviderType provider in Enum.GetValues(typeof(APIProviderType)))
+            {
+                string section = provider.ToString();
+                WriteStr(section, "APIKey", APIKeys.GetValueOrDefault(provider));
+                WriteStr(section, "Model", Models.GetValueOrDefault(provider));
+                WriteStr(section, "MiniModel", MiniModels.GetValueOrDefault(provider));
+                WriteFloat(section, "Temperature", Temperatures.GetValueOrDefault(provider, 0.0f));
+                WriteFloat(section, "TopP", TopPs.GetValueOrDefault(provider, 0.0f));
+                WriteStr(section, "SystemPrompt", SystemPrompts.GetValueOrDefault(provider));
+                WriteStr(section, "InitPrompt", InitPrompts.GetValueOrDefault(provider));
+                WriteStr(section, "Prompt", Prompts.GetValueOrDefault(provider));
+            }
+
             WriteBool(SectionName, "SkipNameAll", SkipNameAll);
             WriteBool(SectionName, "SkipName", SkipName);
             WriteBool(SectionName, "SimilarOnly", SimilarOnly);
@@ -296,14 +374,19 @@ namespace IriamCommentReader
             pref.CaptureRect.Width = ReadInt(SectionName, "CaptureRectWidth", 100);
             pref.CaptureRect.Height = ReadInt(SectionName, "CaptureRectHeight", 100);
 
-            pref.APIKey = ReadStr(SectionName, "APIKey", "");
-            pref.Model = ReadStr(SectionName, "Model", DefaultModel);
-            pref.MiniModel = ReadStr(SectionName, "MiniModel", DefaultMiniModel);
-            pref.Temperature = ReadFloat(SectionName, "Temperature", 0.0f);
-            pref.TopP = ReadFloat(SectionName, "TopP", 0.0f);
-            pref.SystemPrompt = ReadStr(SectionName, "SystemPrompt", DefaultSystemPrompt);
-            pref.InitPrompt = ReadStr(SectionName, "InitPrompt", DefaultInitPrompt);
-            pref.Prompt = ReadStr(SectionName, "Prompt", DefaultPrompt);
+            foreach (APIProviderType provider in Enum.GetValues(typeof(APIProviderType)))
+            {
+                string section = provider.ToString();
+                pref.APIKeys[provider] = ReadStr(section, "APIKey", "");
+                pref.Models[provider] = ReadStr(section, "Model", DefaultModels[provider]);
+                pref.MiniModels[provider] = ReadStr(section, "MiniModel", DefaultMiniModels[provider]);
+                pref.Temperatures[provider] = ReadFloat(section, "Temperature", 0.0f);
+                pref.TopPs[provider] = ReadFloat(section, "TopP", 0.0f);
+                pref.SystemPrompts[provider] = ReadStr(section, "SystemPrompt", DefaultSystemPrompts[provider]);
+                pref.InitPrompts[provider] = ReadStr(section, "InitPrompt", DefaultInitPrompts[provider]);
+                pref.Prompts[provider] = ReadStr(section, "Prompt", DefaultPrompts[provider]);
+            }
+
             pref.SkipNameAll = ReadBool(SectionName, "SkipNameAll", false);
             pref.SkipName = ReadBool(SectionName, "SkipName", true);
             pref.SimilarOnly = ReadBool(SectionName, "SimilarOnly", true);
@@ -323,13 +406,13 @@ namespace IriamCommentReader
             pref.LeftMiniTokens = ReadInt(SectionName, "LeftMiniTokens", 0);
             pref.CheckAndUpdateTokenDate();
 
-            if (!ModelWhiteList.Contains(pref.Model))
+            if (!OpenAIModelWhiteList.Contains(pref.Models[APIProviderType.OpenAI]))
             {
-                pref.Model = DefaultModel;
+                pref.Models[APIProviderType.OpenAI] = DefaultOpenAIModel;
             }
-            if (!MiniModelWhiteList.Contains(pref.MiniModel))
+            if (!OpenAIMiniModelWhiteList.Contains(pref.MiniModels[APIProviderType.OpenAI]))
             {
-                pref.MiniModel = DefaultMiniModel;
+                pref.MiniModels[APIProviderType.OpenAI] = DefaultOpenAIMiniModel;
             }
             return pref;
         }

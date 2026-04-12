@@ -228,6 +228,14 @@ namespace IriamCommentReader
 
             var generateJsonResponse = await generateResponse.Content.ReadAsStringAsync();
             dynamic generateResponseObject = JsonConvert.DeserializeObject(generateJsonResponse);
+
+            if (generateResponseObject.usageMetadata != null)
+            {
+                this.LastUsage.inputTokens = (int)generateResponseObject.usageMetadata.promptTokenCount;
+                this.LastUsage.outputTokens = (int)generateResponseObject.usageMetadata.candidatesTokenCount;
+                this.LastUsage.totalTokens = (int)generateResponseObject.usageMetadata.totalTokenCount;
+            }
+
             string transcribedText = "";
             if (generateResponseObject.candidates[0].content.parts != null)
             {

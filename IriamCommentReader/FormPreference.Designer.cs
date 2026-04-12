@@ -28,23 +28,23 @@ namespace IriamCommentReader
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBoxModel = new System.Windows.Forms.ComboBox();
+            this.comboBoxOpenAIModel = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBoxAPIKey = new System.Windows.Forms.TextBox();
+            this.textBoxOpenAIAPIKey = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBoxSystem = new System.Windows.Forms.TextBox();
+            this.textBoxOpenAISystem = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBoxInitPrompt = new System.Windows.Forms.TextBox();
+            this.textBoxOpenAIInitPrompt = new System.Windows.Forms.TextBox();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonDefualt = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.numericTemperature = new System.Windows.Forms.NumericUpDown();
-            this.numericTopP = new System.Windows.Forms.NumericUpDown();
+            this.numericOpenAITemperature = new System.Windows.Forms.NumericUpDown();
+            this.numericOpenAITopP = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBoxPrompt = new System.Windows.Forms.TextBox();
+            this.textBoxOpenAIPrompt = new System.Windows.Forms.TextBox();
             this.checkBoxSkipNameAll = new System.Windows.Forms.CheckBox();
             this.checkBoxSkipName = new System.Windows.Forms.CheckBox();
             this.comboBoxBouyomiURL = new System.Windows.Forms.ComboBox();
@@ -56,51 +56,75 @@ namespace IriamCommentReader
             this.numericSimilarRetryInterval = new System.Windows.Forms.NumericUpDown();
             this.checkBoxSimilarityRetryEnable = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.comboBoxMiniModel = new System.Windows.Forms.ComboBox();
+            this.comboBoxOpenAIMiniModel = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
             this.checkBoxSimilarityChatSkip = new System.Windows.Forms.CheckBox();
             this.numericChatSimilarity = new System.Windows.Forms.NumericUpDown();
             this.numericImageResizeWidth = new System.Windows.Forms.NumericUpDown();
             this.checkBoxImageResizeEnable = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.numericTemperature)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericTopP)).BeginInit();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBoxGeminiAPIKey = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.comboBoxGeminiModel = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.textBoxGeminiSystem = new System.Windows.Forms.TextBox();
+            this.comboBoxGeminiModel2 = new System.Windows.Forms.ComboBox();
+            this.textBoxGeminiInitPrompt = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.numericGeminiTemperature = new System.Windows.Forms.NumericUpDown();
+            this.label18 = new System.Windows.Forms.Label();
+            this.numericGeminiTopP = new System.Windows.Forms.NumericUpDown();
+            this.textBoxGeminiPrompt = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            ((System.ComponentModel.ISupportInitialize)(this.numericOpenAITemperature)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericOpenAITopP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSimilarity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSimilarRetryInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericChatSimilarity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericImageResizeWidth)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericGeminiTemperature)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericGeminiTopP)).BeginInit();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // comboBoxModel
+            // comboBoxOpenAIModel
             // 
-            this.comboBoxModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxModel.FormattingEnabled = true;
-            this.comboBoxModel.Location = new System.Drawing.Point(88, 39);
-            this.comboBoxModel.Name = "comboBoxModel";
-            this.comboBoxModel.Size = new System.Drawing.Size(133, 23);
-            this.comboBoxModel.TabIndex = 3;
+            this.comboBoxOpenAIModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxOpenAIModel.FormattingEnabled = true;
+            this.comboBoxOpenAIModel.Location = new System.Drawing.Point(81, 32);
+            this.comboBoxOpenAIModel.Name = "comboBoxOpenAIModel";
+            this.comboBoxOpenAIModel.Size = new System.Drawing.Size(133, 23);
+            this.comboBoxOpenAIModel.TabIndex = 3;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 42);
+            this.label6.Location = new System.Drawing.Point(6, 35);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(36, 15);
             this.label6.TabIndex = 2;
             this.label6.Text = "モデル";
             // 
-            // textBoxAPIKey
+            // textBoxOpenAIAPIKey
             // 
-            this.textBoxAPIKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxOpenAIAPIKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAPIKey.Location = new System.Drawing.Point(88, 12);
-            this.textBoxAPIKey.Name = "textBoxAPIKey";
-            this.textBoxAPIKey.Size = new System.Drawing.Size(378, 23);
-            this.textBoxAPIKey.TabIndex = 1;
+            this.textBoxOpenAIAPIKey.Location = new System.Drawing.Point(81, 5);
+            this.textBoxOpenAIAPIKey.Name = "textBoxOpenAIAPIKey";
+            this.textBoxOpenAIAPIKey.Size = new System.Drawing.Size(359, 23);
+            this.textBoxOpenAIAPIKey.TabIndex = 1;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 15);
+            this.label5.Location = new System.Drawing.Point(6, 8);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(47, 15);
             this.label5.TabIndex = 0;
@@ -109,44 +133,44 @@ namespace IriamCommentReader
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 104);
+            this.label1.Location = new System.Drawing.Point(6, 97);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 15);
             this.label1.TabIndex = 10;
             this.label1.Text = "システムプロンプト";
             // 
-            // textBoxSystem
+            // textBoxOpenAISystem
             // 
-            this.textBoxSystem.AcceptsReturn = true;
-            this.textBoxSystem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxOpenAISystem.AcceptsReturn = true;
+            this.textBoxOpenAISystem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSystem.Location = new System.Drawing.Point(15, 122);
-            this.textBoxSystem.Multiline = true;
-            this.textBoxSystem.Name = "textBoxSystem";
-            this.textBoxSystem.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxSystem.Size = new System.Drawing.Size(451, 133);
-            this.textBoxSystem.TabIndex = 11;
+            this.textBoxOpenAISystem.Location = new System.Drawing.Point(8, 115);
+            this.textBoxOpenAISystem.Multiline = true;
+            this.textBoxOpenAISystem.Name = "textBoxOpenAISystem";
+            this.textBoxOpenAISystem.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxOpenAISystem.Size = new System.Drawing.Size(432, 91);
+            this.textBoxOpenAISystem.TabIndex = 11;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 258);
+            this.label2.Location = new System.Drawing.Point(7, 209);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 15);
             this.label2.TabIndex = 12;
             this.label2.Text = "初期プロンプト";
             // 
-            // textBoxInitPrompt
+            // textBoxOpenAIInitPrompt
             // 
-            this.textBoxInitPrompt.AcceptsReturn = true;
-            this.textBoxInitPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxOpenAIInitPrompt.AcceptsReturn = true;
+            this.textBoxOpenAIInitPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxInitPrompt.Location = new System.Drawing.Point(15, 276);
-            this.textBoxInitPrompt.Multiline = true;
-            this.textBoxInitPrompt.Name = "textBoxInitPrompt";
-            this.textBoxInitPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxInitPrompt.Size = new System.Drawing.Size(451, 70);
-            this.textBoxInitPrompt.TabIndex = 13;
+            this.textBoxOpenAIInitPrompt.Location = new System.Drawing.Point(9, 227);
+            this.textBoxOpenAIInitPrompt.Multiline = true;
+            this.textBoxOpenAIInitPrompt.Name = "textBoxOpenAIInitPrompt";
+            this.textBoxOpenAIInitPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxOpenAIInitPrompt.Size = new System.Drawing.Size(432, 70);
+            this.textBoxOpenAIInitPrompt.TabIndex = 13;
             // 
             // buttonOK
             // 
@@ -185,52 +209,52 @@ namespace IriamCommentReader
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 76);
+            this.label3.Location = new System.Drawing.Point(6, 69);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(83, 15);
             this.label3.TabIndex = 6;
             this.label3.Text = "Temperature";
             // 
-            // numericTemperature
+            // numericOpenAITemperature
             // 
-            this.numericTemperature.DecimalPlaces = 2;
-            this.numericTemperature.Increment = new decimal(new int[] {
+            this.numericOpenAITemperature.DecimalPlaces = 2;
+            this.numericOpenAITemperature.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.numericTemperature.Location = new System.Drawing.Point(99, 74);
-            this.numericTemperature.Maximum = new decimal(new int[] {
+            this.numericOpenAITemperature.Location = new System.Drawing.Point(92, 67);
+            this.numericOpenAITemperature.Maximum = new decimal(new int[] {
             20,
             0,
             0,
             65536});
-            this.numericTemperature.Name = "numericTemperature";
-            this.numericTemperature.Size = new System.Drawing.Size(72, 23);
-            this.numericTemperature.TabIndex = 7;
+            this.numericOpenAITemperature.Name = "numericOpenAITemperature";
+            this.numericOpenAITemperature.Size = new System.Drawing.Size(72, 23);
+            this.numericOpenAITemperature.TabIndex = 7;
             // 
-            // numericTopP
+            // numericOpenAITopP
             // 
-            this.numericTopP.DecimalPlaces = 2;
-            this.numericTopP.Increment = new decimal(new int[] {
+            this.numericOpenAITopP.DecimalPlaces = 2;
+            this.numericOpenAITopP.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.numericTopP.Location = new System.Drawing.Point(227, 74);
-            this.numericTopP.Maximum = new decimal(new int[] {
+            this.numericOpenAITopP.Location = new System.Drawing.Point(220, 67);
+            this.numericOpenAITopP.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             65536});
-            this.numericTopP.Name = "numericTopP";
-            this.numericTopP.Size = new System.Drawing.Size(72, 23);
-            this.numericTopP.TabIndex = 9;
+            this.numericOpenAITopP.Name = "numericOpenAITopP";
+            this.numericOpenAITopP.Size = new System.Drawing.Size(72, 23);
+            this.numericOpenAITopP.TabIndex = 9;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(186, 76);
+            this.label4.Location = new System.Drawing.Point(179, 69);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(35, 15);
             this.label4.TabIndex = 8;
@@ -239,23 +263,23 @@ namespace IriamCommentReader
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(13, 349);
+            this.label7.Location = new System.Drawing.Point(7, 300);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(119, 15);
             this.label7.TabIndex = 14;
             this.label7.Text = "チャット更新時プロンプト";
             // 
-            // textBoxPrompt
+            // textBoxOpenAIPrompt
             // 
-            this.textBoxPrompt.AcceptsReturn = true;
-            this.textBoxPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxOpenAIPrompt.AcceptsReturn = true;
+            this.textBoxOpenAIPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPrompt.Location = new System.Drawing.Point(15, 367);
-            this.textBoxPrompt.Multiline = true;
-            this.textBoxPrompt.Name = "textBoxPrompt";
-            this.textBoxPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxPrompt.Size = new System.Drawing.Size(451, 73);
-            this.textBoxPrompt.TabIndex = 15;
+            this.textBoxOpenAIPrompt.Location = new System.Drawing.Point(9, 318);
+            this.textBoxOpenAIPrompt.Multiline = true;
+            this.textBoxOpenAIPrompt.Name = "textBoxOpenAIPrompt";
+            this.textBoxOpenAIPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxOpenAIPrompt.Size = new System.Drawing.Size(432, 73);
+            this.textBoxOpenAIPrompt.TabIndex = 15;
             // 
             // checkBoxSkipNameAll
             // 
@@ -385,20 +409,20 @@ namespace IriamCommentReader
             this.label10.TabIndex = 22;
             this.label10.Text = "秒";
             // 
-            // comboBoxMiniModel
+            // comboBoxOpenAIMiniModel
             // 
-            this.comboBoxMiniModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxMiniModel.FormattingEnabled = true;
-            this.comboBoxMiniModel.Location = new System.Drawing.Point(333, 39);
-            this.comboBoxMiniModel.Name = "comboBoxMiniModel";
-            this.comboBoxMiniModel.Size = new System.Drawing.Size(133, 23);
-            this.comboBoxMiniModel.TabIndex = 5;
-            this.comboBoxMiniModel.SelectedIndexChanged += new System.EventHandler(this.comboBoxMiniModel_SelectedIndexChanged);
+            this.comboBoxOpenAIMiniModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxOpenAIMiniModel.FormattingEnabled = true;
+            this.comboBoxOpenAIMiniModel.Location = new System.Drawing.Point(307, 32);
+            this.comboBoxOpenAIMiniModel.Name = "comboBoxOpenAIMiniModel";
+            this.comboBoxOpenAIMiniModel.Size = new System.Drawing.Size(133, 23);
+            this.comboBoxOpenAIMiniModel.TabIndex = 5;
+            this.comboBoxOpenAIMiniModel.SelectedIndexChanged += new System.EventHandler(this.comboBoxMiniModel_SelectedIndexChanged);
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(240, 42);
+            this.label11.Location = new System.Drawing.Point(231, 35);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(61, 15);
             this.label11.TabIndex = 4;
@@ -464,6 +488,237 @@ namespace IriamCommentReader
             this.checkBoxImageResizeEnable.Text = "APIに送る画像を縮小する (横幅)";
             this.checkBoxImageResizeEnable.UseVisualStyleBackColor = true;
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(12, 12);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(454, 428);
+            this.tabControl1.TabIndex = 34;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.label12);
+            this.tabPage1.Controls.Add(this.textBoxGeminiAPIKey);
+            this.tabPage1.Controls.Add(this.label13);
+            this.tabPage1.Controls.Add(this.comboBoxGeminiModel);
+            this.tabPage1.Controls.Add(this.label14);
+            this.tabPage1.Controls.Add(this.label15);
+            this.tabPage1.Controls.Add(this.textBoxGeminiSystem);
+            this.tabPage1.Controls.Add(this.comboBoxGeminiModel2);
+            this.tabPage1.Controls.Add(this.textBoxGeminiInitPrompt);
+            this.tabPage1.Controls.Add(this.label16);
+            this.tabPage1.Controls.Add(this.label17);
+            this.tabPage1.Controls.Add(this.numericGeminiTemperature);
+            this.tabPage1.Controls.Add(this.label18);
+            this.tabPage1.Controls.Add(this.numericGeminiTopP);
+            this.tabPage1.Controls.Add(this.textBoxGeminiPrompt);
+            this.tabPage1.Controls.Add(this.label19);
+            this.tabPage1.Location = new System.Drawing.Point(4, 24);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(446, 400);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Gemini";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 8);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(47, 15);
+            this.label12.TabIndex = 16;
+            this.label12.Text = "APIキー";
+            // 
+            // textBoxGeminiAPIKey
+            // 
+            this.textBoxGeminiAPIKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxGeminiAPIKey.Location = new System.Drawing.Point(81, 5);
+            this.textBoxGeminiAPIKey.Name = "textBoxGeminiAPIKey";
+            this.textBoxGeminiAPIKey.Size = new System.Drawing.Size(359, 23);
+            this.textBoxGeminiAPIKey.TabIndex = 17;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 35);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(36, 15);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "モデル";
+            // 
+            // comboBoxGeminiModel
+            // 
+            this.comboBoxGeminiModel.FormattingEnabled = true;
+            this.comboBoxGeminiModel.Location = new System.Drawing.Point(81, 32);
+            this.comboBoxGeminiModel.Name = "comboBoxGeminiModel";
+            this.comboBoxGeminiModel.Size = new System.Drawing.Size(133, 23);
+            this.comboBoxGeminiModel.TabIndex = 19;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(6, 97);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(89, 15);
+            this.label14.TabIndex = 26;
+            this.label14.Text = "システムプロンプト";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(231, 35);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(60, 15);
+            this.label15.TabIndex = 20;
+            this.label15.Text = "予備モデル";
+            // 
+            // textBoxGeminiSystem
+            // 
+            this.textBoxGeminiSystem.AcceptsReturn = true;
+            this.textBoxGeminiSystem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxGeminiSystem.Location = new System.Drawing.Point(8, 115);
+            this.textBoxGeminiSystem.Multiline = true;
+            this.textBoxGeminiSystem.Name = "textBoxGeminiSystem";
+            this.textBoxGeminiSystem.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxGeminiSystem.Size = new System.Drawing.Size(432, 91);
+            this.textBoxGeminiSystem.TabIndex = 27;
+            // 
+            // comboBoxGeminiModel2
+            // 
+            this.comboBoxGeminiModel2.FormattingEnabled = true;
+            this.comboBoxGeminiModel2.Location = new System.Drawing.Point(307, 32);
+            this.comboBoxGeminiModel2.Name = "comboBoxGeminiModel2";
+            this.comboBoxGeminiModel2.Size = new System.Drawing.Size(133, 23);
+            this.comboBoxGeminiModel2.TabIndex = 21;
+            // 
+            // textBoxGeminiInitPrompt
+            // 
+            this.textBoxGeminiInitPrompt.AcceptsReturn = true;
+            this.textBoxGeminiInitPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxGeminiInitPrompt.Location = new System.Drawing.Point(9, 227);
+            this.textBoxGeminiInitPrompt.Multiline = true;
+            this.textBoxGeminiInitPrompt.Name = "textBoxGeminiInitPrompt";
+            this.textBoxGeminiInitPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxGeminiInitPrompt.Size = new System.Drawing.Size(432, 70);
+            this.textBoxGeminiInitPrompt.TabIndex = 29;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(7, 209);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(75, 15);
+            this.label16.TabIndex = 28;
+            this.label16.Text = "初期プロンプト";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 69);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(83, 15);
+            this.label17.TabIndex = 22;
+            this.label17.Text = "Temperature";
+            // 
+            // numericGeminiTemperature
+            // 
+            this.numericGeminiTemperature.DecimalPlaces = 2;
+            this.numericGeminiTemperature.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericGeminiTemperature.Location = new System.Drawing.Point(92, 67);
+            this.numericGeminiTemperature.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            65536});
+            this.numericGeminiTemperature.Name = "numericGeminiTemperature";
+            this.numericGeminiTemperature.Size = new System.Drawing.Size(72, 23);
+            this.numericGeminiTemperature.TabIndex = 23;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(179, 69);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(35, 15);
+            this.label18.TabIndex = 24;
+            this.label18.Text = "TopP";
+            // 
+            // numericGeminiTopP
+            // 
+            this.numericGeminiTopP.DecimalPlaces = 2;
+            this.numericGeminiTopP.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericGeminiTopP.Location = new System.Drawing.Point(220, 67);
+            this.numericGeminiTopP.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericGeminiTopP.Name = "numericGeminiTopP";
+            this.numericGeminiTopP.Size = new System.Drawing.Size(72, 23);
+            this.numericGeminiTopP.TabIndex = 25;
+            // 
+            // textBoxGeminiPrompt
+            // 
+            this.textBoxGeminiPrompt.AcceptsReturn = true;
+            this.textBoxGeminiPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxGeminiPrompt.Location = new System.Drawing.Point(9, 318);
+            this.textBoxGeminiPrompt.Multiline = true;
+            this.textBoxGeminiPrompt.Name = "textBoxGeminiPrompt";
+            this.textBoxGeminiPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxGeminiPrompt.Size = new System.Drawing.Size(432, 73);
+            this.textBoxGeminiPrompt.TabIndex = 31;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(7, 300);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(119, 15);
+            this.label19.TabIndex = 30;
+            this.label19.Text = "チャット更新時プロンプト";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.label5);
+            this.tabPage2.Controls.Add(this.textBoxOpenAIAPIKey);
+            this.tabPage2.Controls.Add(this.label6);
+            this.tabPage2.Controls.Add(this.comboBoxOpenAIModel);
+            this.tabPage2.Controls.Add(this.label1);
+            this.tabPage2.Controls.Add(this.label11);
+            this.tabPage2.Controls.Add(this.textBoxOpenAISystem);
+            this.tabPage2.Controls.Add(this.comboBoxOpenAIMiniModel);
+            this.tabPage2.Controls.Add(this.textBoxOpenAIInitPrompt);
+            this.tabPage2.Controls.Add(this.label2);
+            this.tabPage2.Controls.Add(this.label3);
+            this.tabPage2.Controls.Add(this.numericOpenAITemperature);
+            this.tabPage2.Controls.Add(this.label4);
+            this.tabPage2.Controls.Add(this.numericOpenAITopP);
+            this.tabPage2.Controls.Add(this.textBoxOpenAIPrompt);
+            this.tabPage2.Controls.Add(this.label7);
+            this.tabPage2.Location = new System.Drawing.Point(4, 24);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(446, 400);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "OpenAI";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
             // FormPreference
             // 
             this.AcceptButton = this.buttonOK;
@@ -471,12 +726,11 @@ namespace IriamCommentReader
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(478, 692);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.numericImageResizeWidth);
             this.Controls.Add(this.checkBoxImageResizeEnable);
             this.Controls.Add(this.checkBoxSimilarityChatSkip);
             this.Controls.Add(this.numericChatSimilarity);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.comboBoxMiniModel);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.checkBoxSimilarityRetryEnable);
             this.Controls.Add(this.numericSimilarRetryInterval);
@@ -488,23 +742,9 @@ namespace IriamCommentReader
             this.Controls.Add(this.label8);
             this.Controls.Add(this.checkBoxSkipName);
             this.Controls.Add(this.checkBoxSkipNameAll);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.textBoxPrompt);
-            this.Controls.Add(this.numericTopP);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.numericTemperature);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.buttonDefualt);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBoxInitPrompt);
-            this.Controls.Add(this.textBoxSystem);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBoxModel);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBoxAPIKey);
-            this.Controls.Add(this.label5);
             this.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -513,12 +753,19 @@ namespace IriamCommentReader
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "環境設定";
             this.Load += new System.EventHandler(this.FormPreference_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.numericTemperature)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericTopP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericOpenAITemperature)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericOpenAITopP)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSimilarity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSimilarRetryInterval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericChatSimilarity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericImageResizeWidth)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericGeminiTemperature)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericGeminiTopP)).EndInit();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -526,23 +773,23 @@ namespace IriamCommentReader
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboBoxModel;
+        private System.Windows.Forms.ComboBox comboBoxOpenAIModel;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBoxAPIKey;
+        private System.Windows.Forms.TextBox textBoxOpenAIAPIKey;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBoxSystem;
+        private System.Windows.Forms.TextBox textBoxOpenAISystem;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBoxInitPrompt;
+        private System.Windows.Forms.TextBox textBoxOpenAIInitPrompt;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonDefualt;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.NumericUpDown numericTemperature;
-        private System.Windows.Forms.NumericUpDown numericTopP;
+        private System.Windows.Forms.NumericUpDown numericOpenAITemperature;
+        private System.Windows.Forms.NumericUpDown numericOpenAITopP;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBoxPrompt;
+        private System.Windows.Forms.TextBox textBoxOpenAIPrompt;
         private System.Windows.Forms.CheckBox checkBoxSkipNameAll;
         private System.Windows.Forms.CheckBox checkBoxSkipName;
         private System.Windows.Forms.ComboBox comboBoxBouyomiURL;
@@ -554,11 +801,30 @@ namespace IriamCommentReader
         private System.Windows.Forms.NumericUpDown numericSimilarRetryInterval;
         private System.Windows.Forms.CheckBox checkBoxSimilarityRetryEnable;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.ComboBox comboBoxMiniModel;
+        private System.Windows.Forms.ComboBox comboBoxOpenAIMiniModel;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox checkBoxSimilarityChatSkip;
         private System.Windows.Forms.NumericUpDown numericChatSimilarity;
         private System.Windows.Forms.NumericUpDown numericImageResizeWidth;
         private System.Windows.Forms.CheckBox checkBoxImageResizeEnable;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox textBoxGeminiAPIKey;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox comboBoxGeminiModel;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox textBoxGeminiSystem;
+        private System.Windows.Forms.ComboBox comboBoxGeminiModel2;
+        private System.Windows.Forms.TextBox textBoxGeminiInitPrompt;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.NumericUpDown numericGeminiTemperature;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.NumericUpDown numericGeminiTopP;
+        private System.Windows.Forms.TextBox textBoxGeminiPrompt;
+        private System.Windows.Forms.Label label19;
     }
 }

@@ -22,10 +22,10 @@ namespace IriamCommentReader
     public partial class FormMain : Form
     {
         private const string TextString = "{{text}}";
-        private bool _useOpenAI = false;
+        private bool UseOpenAI => Preference.Instance.CurrentProvider == APIProviderType.OpenAI;
         private readonly OpenAIAPI _apiOpenAI;
         private readonly GeminiAPI _apiGemini;
-        private LMBase CurrentAPI => _useOpenAI ? (LMBase)_apiOpenAI : _apiGemini;
+        private LMBase CurrentAPI => UseOpenAI ? (LMBase)_apiOpenAI : _apiGemini;
         private static Image _shot;
         private int _apiCount = 0;
         static string _prevText = "";
@@ -79,8 +79,8 @@ namespace IriamCommentReader
             textBoxTop.Text = Preference.Instance.CaptureRect.Y.ToString();
             textBoxWidth.Text = Preference.Instance.CaptureRect.Width.ToString();
             textBoxHeight.Text = Preference.Instance.CaptureRect.Height.ToString();
-            _apiOpenAI = new OpenAIAPI("APIキーをここに入れる"); // Replace with your actual API key
-            _apiGemini = new GeminiAPI("APIキーをここに入れる"); // Replace with your actual API key
+            _apiOpenAI = new OpenAIAPI("");
+            _apiGemini = new GeminiAPI("");
             _apiGemini.Schema = _commentSchema;
             _apiGemini.TopK = 40;
             _apiGemini.FrequencyPenalty = 1.0f;
@@ -99,7 +99,14 @@ namespace IriamCommentReader
 
         public void ShowLeftTokens(string appendText = "")
         {
-            labelTokens.Text = $"残りトークン: [{Preference.Instance.Model}] {Preference.Instance.LeftTokens} / [{Preference.Instance.MiniModel}] {Preference.Instance.LeftMiniTokens}{appendText}";
+            if (UseOpenAI)
+            {
+                labelTokens.Text = $"残りトークン: [{Preference.Instance.Model}] {Preference.Instance.LeftTokens} / [{Preference.Instance.MiniModel}] {Preference.Instance.LeftMiniTokens}{appendText}";
+            }
+            else
+            {
+                labelTokens.Text = $"現在のモデル: {Preference.Instance.Model} / {Preference.Instance.MiniModel}{appendText}";
+            }
         }
 
         public static Image CaptureRegion(Rectangle region)
@@ -229,7 +236,7 @@ namespace IriamCommentReader
             var model = "";
             bool miniModel = false;
 
-            if (_useOpenAI)
+            if (UseOpenAI)
             {
                 Preference.Instance.CheckAndUpdateTokenDate();
 
@@ -268,7 +275,7 @@ namespace IriamCommentReader
                 string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
                 try
                 {
-                    _apiOpenAI.APIKey = Preference.Instance.APIKey;
+                    CurrentAPI.APIKey = Preference.Instance.APIKey;
                     // _api.Model = Preference.Instance.Model;
                     CurrentAPI.Model = model;
                     CurrentAPI.Temperature = Preference.Instance.Temperature;
@@ -285,12 +292,18 @@ namespace IriamCommentReader
                             var base64 = Convert.ToBase64String(ms.ToArray());
                             var jsonText = CurrentAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64);
                             textBoxRequest.Text = jsonText;
-                            await CurrentAPI.RequestStreamAsync(jsonText, token => {
-                                // UIスレッドへの Dispatcher.Invoke などが必要な場合があります
-                                textBoxResponse.AppendText(token);
-                                jsonResponse += token;
-                            });
-                            // CurrentAPI.RequestStreamAsync(jsonText, (part) => textBoxResponse.AppendText(part));
+                            if (Preference.Instance.IsStreaming)
+                            {
+                                await CurrentAPI.RequestStreamAsync(jsonText, token => {
+                                    // UIスレッドへの Dispatcher.Invoke などが必要な場合があります
+                                    textBoxResponse.AppendText(token);
+                                    jsonResponse += token;
+                                });
+                            }
+                            else
+                            {
+                                jsonResponse = await CurrentAPI.RequestAsync(jsonText);
+                            }
                         }
                     }
                     // else
@@ -305,7 +318,7 @@ namespace IriamCommentReader
                     _apiCount++;
                     labelAPICount.Text = $"API回数:{_apiCount}";
 
-                    if (_useOpenAI)
+                    if (UseOpenAI)
                     {
                         leftTokens -= CurrentAPI.LastUsage.totalTokens;
                         if (miniModel)
@@ -318,6 +331,10 @@ namespace IriamCommentReader
                         }
                         Preference.Instance.SaveTokens();
                         ShowLeftTokens($" | 使用: {CurrentAPI.Model} ↑{CurrentAPI.LastUsage.inputTokens} + ↓{CurrentAPI.LastUsage.outputTokens} = {CurrentAPI.LastUsage.totalTokens} (残 {(CurrentAPI.LastUsage.outputTokens > 0 ? leftTokens / CurrentAPI.LastUsage.totalTokens : 0)} 回)");
+                    }
+                    else
+                    {
+                        ShowLeftTokens($" | 使用: {CurrentAPI.Model} ↑{CurrentAPI.LastUsage.inputTokens} + ↓{CurrentAPI.LastUsage.outputTokens} = {CurrentAPI.LastUsage.totalTokens}");
                     }
 
                     var commentList = JsonConvert.DeserializeObject<CommentList>(jsonResponse);
