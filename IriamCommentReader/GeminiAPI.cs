@@ -257,7 +257,7 @@ namespace IriamCommentReader
             var generateRequest = new HttpRequestMessage(HttpMethod.Post, generateUrl);
             generateRequest.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
-            LastResponse = "";
+            LastResponse = string.Empty;
 
             // ResponseHeadersRead を指定して、全体が終わる前にストリームを取得開始する
             using (var response = await _client.SendAsync(generateRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken))

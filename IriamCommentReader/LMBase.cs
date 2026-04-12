@@ -17,8 +17,8 @@ namespace IriamCommentReader
         public int? TopK { get; set; } = 40;
         public float? FrequencyPenalty { get; set; }
         public float? PresencePenalty { get; set; }
-        
-        public string LastResponse { get; set; }
+
+        public string LastResponse { get; set; } = string.Empty;
         public UsageInfo LastUsage { get; set; } = new UsageInfo();
 
         public LMBase(string apiKey)

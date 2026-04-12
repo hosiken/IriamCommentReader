@@ -206,7 +206,7 @@ namespace IriamCommentReader
             var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
             request.Headers.Add("Authorization", $"Bearer {this.APIKey}");
             request.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-            LastResponse = "";
+            LastResponse = string.Empty;
 
             using (var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
             {
