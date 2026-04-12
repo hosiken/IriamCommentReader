@@ -64,6 +64,7 @@ namespace IriamCommentReader
             checkBoxSimilarityRetryEnable.Checked = Preference.Instance.SimilarityRetryEnable;
             numericSimilarRetryInterval.Value = (Decimal)Preference.Instance.SimilarRetryInterval;
             checkBoxSimilarityChatSkip.Checked = Preference.Instance.SimilarityChatSkip;
+            numericChatSimilarity.Value = (Decimal)Preference.Instance.ChatSimilarity;
             checkBoxImageResizeEnable.Checked = Preference.Instance.ImageResizeEnable;
             numericImageResizeWidth.Value = (Decimal)Preference.Instance.ImageResizeWidth;
             comboBoxBouyomiURL.Text = Preference.Instance.BouyomiURL;
@@ -88,6 +89,7 @@ namespace IriamCommentReader
             Preference.Instance.SimilarityRetryEnable = checkBoxSimilarityRetryEnable.Checked;
             Preference.Instance.SimilarRetryInterval = (int)numericSimilarRetryInterval.Value;
             Preference.Instance.SimilarityChatSkip = checkBoxSimilarityChatSkip.Checked;
+            Preference.Instance.ChatSimilarity = (float)numericChatSimilarity.Value;
             Preference.Instance.ImageResizeEnable = checkBoxImageResizeEnable.Checked;
             Preference.Instance.ImageResizeWidth = (int)numericImageResizeWidth.Value;
             Preference.Instance.BouyomiURL = comboBoxBouyomiURL.Text;

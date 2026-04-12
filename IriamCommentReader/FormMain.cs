@@ -264,8 +264,7 @@ namespace IriamCommentReader
             }
             else
             {
-                model = "gemma-4-31b-it";
-                // model = "gemini-3.1-flash-lite-preview";
+                model = Preference.Instance.Model;
             }
 
             buttonQuery.Enabled = false;
@@ -347,13 +346,7 @@ namespace IriamCommentReader
                             transcribedText += $"{comment.Name} | {comment.Message}\r\n";
                         }
 
-                        // _readTextの末尾から最大10件を改行で連結
                         var recentRead = _readText.Skip(Math.Max(0, _readText.Count - 10));
-                        var lastStr = string.Join("\r\n", recentRead);
-
-                        // プロンプトには直近最大8件の履歴を使用する
-                        var prompt = Preference.Instance.Prompt.Replace(TextString, lastStr);
-                        textBoxPrompt.Text = prompt;
                         string speakText = ""; // transcribedText.Replace(" | ", "さん、");
                         string[] chats = transcribedText.Replace("\r\n", "\n").Split(new[] { '\n', '\r' });
                         var beforeTalker = "";
@@ -404,6 +397,15 @@ namespace IriamCommentReader
                                 textBoxChatLog.AppendText(chat + "\r\n");
                             }
                         }
+
+                        // _readTextの末尾から最大10件を改行で連結
+                        recentRead = _readText.Skip(Math.Max(0, _readText.Count - 10));
+                        var lastStr = string.Join("\r\n", recentRead);
+
+                        // プロンプトには直近最大8件の履歴を使用する
+                        var prompt = Preference.Instance.Prompt.Replace(TextString, lastStr);
+                        textBoxPrompt.Text = prompt;
+
                         await BouyomiTalk.SpeakAsync(speakText, Preference.Instance.BouyomiURL, Preference.Instance.BouyomiParam);
                     }
                 }

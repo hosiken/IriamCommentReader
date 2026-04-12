@@ -232,8 +232,8 @@ namespace IriamCommentReader
 
         private const string DefaultBouyomiURL = "http://localhost:50080/Talk";
         private const string DefaultBouyomiParam = "?text={{text}}";
-        private const float DefaultSimilarity = 0.5f;
-        private const float DefaultChatSimilarity = 0.5f;
+        private const float DefaultSimilarity = 0.6f;
+        private const float DefaultChatSimilarity = 0.8f;
         private const int DefaultSimilarRetryInterval = 1;
         private const int DefaultImageResizeWidth = 400;
 
