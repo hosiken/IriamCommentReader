@@ -66,7 +66,10 @@ namespace IriamCommentReader
 
         protected static void WriteStr(string section, string key, string value)
         {
-            value = value.Replace("\r\n", ReturnStr).Replace("\r", ReturnStr).Replace("\n", ReturnStr);
+            if (value != null)
+            {
+                value = value.Replace("\r\n", ReturnStr).Replace("\r", ReturnStr).Replace("\n", ReturnStr);
+            }
             WritePrivateProfileString(section, key, value, IniFilePath);
         }
 
@@ -338,6 +341,16 @@ namespace IriamCommentReader
                 WriteStr(section, "Prompt", Prompts.GetValueOrDefault(provider));
             }
 
+            // 旧設定は削除する
+            WriteStr(SectionName, "APIKey", null);
+            WriteStr(SectionName, "Model", null);
+            WriteStr(SectionName, "MiniModel", null);
+            WriteStr(SectionName, "Temperature", null);
+            WriteStr(SectionName, "TopP", null);
+            WriteStr(SectionName, "SystemPrompt", null);
+            WriteStr(SectionName, "InitPrompt", null);
+            WriteStr(SectionName, "Prompt", null);
+
             WriteBool(SectionName, "SkipNameAll", SkipNameAll);
             WriteBool(SectionName, "SkipName", SkipName);
             WriteBool(SectionName, "SimilarOnly", SimilarOnly);
@@ -386,6 +399,16 @@ namespace IriamCommentReader
                 pref.InitPrompts[provider] = ReadStr(section, "InitPrompt", DefaultInitPrompts[provider]);
                 pref.Prompts[provider] = ReadStr(section, "Prompt", DefaultPrompts[provider]);
             }
+
+            // 旧設定が残っている場合は、OpenAIの設定として読み込む
+            pref.APIKeys[APIProviderType.OpenAI] = ReadStr(SectionName, "APIKey", pref.APIKeys[APIProviderType.OpenAI]);
+            pref.Models[APIProviderType.OpenAI] = ReadStr(SectionName, "Model", pref.Models[APIProviderType.OpenAI]);
+            pref.MiniModels[APIProviderType.OpenAI] = ReadStr(SectionName, "MiniModel", pref.MiniModels[APIProviderType.OpenAI]);
+            pref.Temperatures[APIProviderType.OpenAI] = ReadFloat(SectionName, "Temperature", pref.Temperatures[APIProviderType.OpenAI]);
+            pref.TopPs[APIProviderType.OpenAI] = ReadFloat(SectionName, "TopP", pref.TopPs[APIProviderType.OpenAI]);
+            pref.SystemPrompts[APIProviderType.OpenAI] = ReadStr(SectionName, "SystemPrompt", pref.SystemPrompts[APIProviderType.OpenAI]);
+            pref.InitPrompts[APIProviderType.OpenAI] = ReadStr(SectionName, "InitPrompt", pref.InitPrompts[APIProviderType.OpenAI]);
+            pref.Prompts[APIProviderType.OpenAI] = ReadStr(SectionName, "Prompt", pref.Prompts[APIProviderType.OpenAI]);
 
             pref.SkipNameAll = ReadBool(SectionName, "SkipNameAll", false);
             pref.SkipName = ReadBool(SectionName, "SkipName", true);
