@@ -67,6 +67,7 @@ namespace IriamCommentReader
             numericChatSimilarity.Value = (Decimal)Preference.Instance.ChatSimilarity;
             checkBoxImageResizeEnable.Checked = Preference.Instance.ImageResizeEnable;
             numericImageResizeWidth.Value = (Decimal)Preference.Instance.ImageResizeWidth;
+            checkBoxStream.Checked = Preference.Instance.IsStreaming;
             comboBoxBouyomiURL.Text = Preference.Instance.BouyomiURL;
             comboBoxBouyomiParam.Text = Preference.Instance.BouyomiParam;
         }
@@ -92,6 +93,7 @@ namespace IriamCommentReader
             Preference.Instance.ChatSimilarity = (float)numericChatSimilarity.Value;
             Preference.Instance.ImageResizeEnable = checkBoxImageResizeEnable.Checked;
             Preference.Instance.ImageResizeWidth = (int)numericImageResizeWidth.Value;
+            Preference.Instance.IsStreaming = checkBoxStream.Checked;
             Preference.Instance.BouyomiURL = comboBoxBouyomiURL.Text;
             Preference.Instance.BouyomiParam = comboBoxBouyomiParam.Text;
             Preference.Instance.Save();

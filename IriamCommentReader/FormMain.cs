@@ -1,9 +1,7 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -11,9 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
-using Windows.UI.Xaml.Media;
-using static IriamCommentReader.FormMain;
-using static System.Net.Mime.MediaTypeNames;
 using Image = System.Drawing.Image;
 
 namespace IriamCommentReader
@@ -22,7 +17,8 @@ namespace IriamCommentReader
     public partial class FormMain : Form
     {
         private const string TextString = "{{text}}";
-        private bool UseOpenAI => Preference.Instance.CurrentProvider == APIProviderType.OpenAI;
+        private static Preference Pref => Preference.Instance;
+        private bool UseOpenAI => Pref.CurrentProvider == APIProviderType.OpenAI;
         private readonly OpenAIAPI _apiOpenAI;
         private readonly GeminiAPI _apiGemini;
         private LMBase CurrentAPI => UseOpenAI ? (LMBase)_apiOpenAI : _apiGemini;
@@ -73,39 +69,43 @@ namespace IriamCommentReader
         {
             InitializeComponent();
             Preference.Instance = Preference.Load();
-            checkBoxAuto.Checked = Preference.Instance.AutoExecEnable;
-            numericInterval.Value = Preference.Instance.AutoExecInterval;
-            textBoxLeft.Text = Preference.Instance.CaptureRect.X.ToString();
-            textBoxTop.Text = Preference.Instance.CaptureRect.Y.ToString();
-            textBoxWidth.Text = Preference.Instance.CaptureRect.Width.ToString();
-            textBoxHeight.Text = Preference.Instance.CaptureRect.Height.ToString();
+            checkBoxAuto.Checked = Pref.AutoExecEnable;
+            numericInterval.Value = Pref.AutoExecInterval;
+            textBoxLeft.Text = Pref.CaptureRect.X.ToString();
+            textBoxTop.Text = Pref.CaptureRect.Y.ToString();
+            textBoxWidth.Text = Pref.CaptureRect.Width.ToString();
+            textBoxHeight.Text = Pref.CaptureRect.Height.ToString();
             _apiOpenAI = new OpenAIAPI("");
             _apiGemini = new GeminiAPI("");
             _apiGemini.Schema = _commentSchema;
             _apiGemini.TopK = 40;
             _apiGemini.FrequencyPenalty = 1.0f;
             _apiGemini.PresencePenalty = 1.0f;
-            ShowLeftTokens();
+            UpdateAPIProviderDisplay();
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Preference.Instance.AutoExecEnable = checkBoxAuto.Checked;
-            Preference.Instance.AutoExecInterval = (int)numericInterval.Value;
-            Preference.Instance.CaptureRect = new Rect(int.Parse(textBoxLeft.Text), int.Parse(textBoxTop.Text), 
+            Pref.AutoExecEnable = checkBoxAuto.Checked;
+            Pref.AutoExecInterval = (int)numericInterval.Value;
+            Pref.CaptureRect = new Rect(int.Parse(textBoxLeft.Text), int.Parse(textBoxTop.Text), 
                 int.Parse(textBoxWidth.Text), int.Parse(textBoxHeight.Text));
-            Preference.Instance.Save();
+            Pref.Save();
         }
 
         public void ShowLeftTokens(string appendText = "")
         {
-            if (UseOpenAI)
+            if (Pref.ProviderAllEnded)
             {
-                labelTokens.Text = $"残りトークン: [{Preference.Instance.Model}] {Preference.Instance.LeftTokens} / [{Preference.Instance.MiniModel}] {Preference.Instance.LeftMiniTokens}{appendText}";
+                labelTokens.Text = $"API をすべて使い切りました{appendText}";
+            }
+            else if (UseOpenAI)
+            {
+                labelTokens.Text = $"残りトークン: [{Pref.Model}] {Pref.LeftTokens} / [{Pref.MiniModel}] {Pref.LeftMiniTokens}{appendText}";
             }
             else
             {
-                labelTokens.Text = $"現在のモデル: {Preference.Instance.Model} / {Preference.Instance.MiniModel}{appendText}";
+                labelTokens.Text = $"現在のモデル: {Pref.Model} / {Pref.MiniModel}{appendText}";
             }
         }
 
@@ -119,10 +119,10 @@ namespace IriamCommentReader
             }
 
             // 2. リサイズ判定
-            if (Preference.Instance.ImageResizeEnable && Preference.Instance.ImageResizeWidth < region.Width)
+            if (Pref.ImageResizeEnable && Pref.ImageResizeWidth < region.Width)
             {
-                float rate = (float)Preference.Instance.ImageResizeWidth / (float)region.Width;
-                int newWidth = Preference.Instance.ImageResizeWidth;
+                float rate = (float)Pref.ImageResizeWidth / (float)region.Width;
+                int newWidth = Pref.ImageResizeWidth;
                 int newHeight = (int)(region.Height * rate);
 
                 // リサイズ用の空のBitmapを作成
@@ -207,16 +207,16 @@ namespace IriamCommentReader
                 return;
             }
 
-            if (Preference.Instance.SimilarOnly)
+            if (Pref.SimilarOnly)
             {
                 var text = OCRPicture(_shot).Text.Replace(" ", "");
                 var similarity = TextCompare.Compare(text, _prevText);
-                labelSimilarity.Text = $"似: {similarity:F2}/{Preference.Instance.Similarity:F2}";
-                if (similarity >= Preference.Instance.Similarity)
+                labelSimilarity.Text = $"似: {similarity:F2}/{Pref.Similarity:F2}";
+                if (similarity >= Pref.Similarity)
                 {
                     labelSimilarity.ForeColor = Color.Blue;
-                    timerSimilarRetry.Interval = Preference.Instance.SimilarRetryInterval * 1000;
-                    timerSimilarRetry.Enabled = Preference.Instance.SimilarityRetryEnable;
+                    timerSimilarRetry.Interval = Pref.SimilarRetryInterval * 1000;
+                    timerSimilarRetry.Enabled = Pref.SimilarityRetryEnable;
                     return;
                 }
                 _prevText = text;
@@ -234,56 +234,79 @@ namespace IriamCommentReader
 
             var leftTokens = 0;
             var model = "";
+            bool mainModelEnded = UseOpenAI
+                ? Pref.LeftTokens <= 0
+                : Pref.GemimiMainModelReachedLimit;
+            bool subModelEnded = UseOpenAI
+                ? Pref.LeftMiniTokens <= 0
+                : false;
             bool miniModel = false;
 
-            if (UseOpenAI)
-            {
-                Preference.Instance.CheckAndUpdateTokenDate();
+            Pref.CheckAndUpdateTokenDate();
 
-                if (Preference.Instance.LeftTokens > 0 && !checkBoxMini.Checked)
-                {
-                    model = Preference.Instance.Model;
-                    leftTokens = Preference.Instance.LeftTokens;
-                }
-                else if (Preference.Instance.LeftMiniTokens > 0)
-                {
-                    model = Preference.Instance.MiniModel;
-                    miniModel = true;
-                    leftTokens = Preference.Instance.LeftMiniTokens;
-                }
-                else if (Preference.Instance.LeftTokens > 0 && checkBoxMini.Checked)
-                {
-                    model = Preference.Instance.Model;
-                    leftTokens = Preference.Instance.LeftTokens;
-                }
-                else
-                {
-                    textBoxChatLog.AppendText("本日分のトークンを使い切りました. 日本時間で午前9時にリセットされます.\r\n");
-                    return;
-                }
+            if (!mainModelEnded && !checkBoxMini.Checked)
+            {
+                miniModel = false;
+            }
+            else if (!subModelEnded)
+            {
+                miniModel = true;
+            }
+            else if (!mainModelEnded)
+            {
+                miniModel = false;
             }
             else
             {
-                model = Preference.Instance.Model;
+                if (UseOpenAI)
+                {
+                    textBoxChatLog.AppendText("OpenAI の本日分のトークンを使い切りました. 日本時間で午前9時にリセットされます.\r\n");
+                    Pref.ProviderEnded = true;
+                    if (!Pref.ProviderAllEnded && !string.IsNullOrEmpty(Pref.APIKeys[APIProviderType.Gemini]))
+                    {
+                        textBoxChatLog.AppendText("使用する AI を Gemini に切り替えます.\r\n");
+                        Pref.CurrentProvider = APIProviderType.Gemini;
+                        UpdateAPIProviderDisplay();
+                    }
+                }
+                return;
+            }
+
+            model = miniModel ? Pref.MiniModel : Pref.Model;
+            leftTokens = miniModel ? Pref.LeftMiniTokens : Pref.LeftTokens;
+
+            if (string.IsNullOrEmpty(Pref.APIKey))
+            {
+                textBoxChatLog.AppendText($"{Pref.CurrentProvider.ToString()} : API キーが設定されていません.\r\n");
+                checkBoxAuto.Checked = false;
+                timerQuery.Enabled = false;
+                return;
+            }
+
+            if (Pref.ProviderAllEnded)
+            {
+                textBoxChatLog.AppendText("本日の API はすべて使い切りました. 今日はもう読み上げられません.\r\n");
+                checkBoxAuto.Checked = false;
+                timerQuery.Enabled = false;
+                return;
             }
 
             buttonQuery.Enabled = false;
+            textBoxResponse.Clear();
 
             {
-                string systemPrompt = Preference.Instance.SystemPrompt;
+                string systemPrompt = Pref.SystemPrompt;
                 string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
                 try
                 {
-                    CurrentAPI.APIKey = Preference.Instance.APIKey;
-                    // _api.Model = Preference.Instance.Model;
+                    CurrentAPI.APIKey = Pref.APIKey;
+                    // _api.Model = Pref.Model;
                     CurrentAPI.Model = model;
-                    CurrentAPI.Temperature = Preference.Instance.Temperature;
-                    CurrentAPI.TopP = Preference.Instance.TopP;
-
-                    textBoxResponse.Clear();
+                    CurrentAPI.Temperature = Pref.Temperature;
+                    CurrentAPI.TopP = Pref.TopP;
 
                     string jsonResponse = string.Empty;
-                    // if (Preference.Instance.UseBase64)
+                    // if (Pref.UseBase64)
                     {
                         using (var ms = new MemoryStream())
                         {
@@ -291,7 +314,7 @@ namespace IriamCommentReader
                             var base64 = Convert.ToBase64String(ms.ToArray());
                             var jsonText = CurrentAPI.GetRequestJson(systemPrompt, userPrompt, fileBase64: base64);
                             textBoxRequest.Text = jsonText;
-                            if (Preference.Instance.IsStreaming)
+                            if (Pref.IsStreaming)
                             {
                                 await CurrentAPI.RequestStreamAsync(jsonText, token => {
                                     // UIスレッドへの Dispatcher.Invoke などが必要な場合があります
@@ -312,8 +335,8 @@ namespace IriamCommentReader
                     //  jsonResponse = await _geminiAPI.RequestAsync(jsonText);
                     // }
 
-                    // textBoxResponse.Text = CurrentAPI.LastResponse;
-                    textBox2.Text = jsonResponse.Trim('`'); // Display transcribed text in a textbox
+                    textBoxResponse.Text = CurrentAPI.LastResponse;
+                    textBox2.Text = jsonResponse.Trim('\n').Trim('\r').Trim('`'); // Display transcribed text in a textbox
                     _apiCount++;
                     labelAPICount.Text = $"API回数:{_apiCount}";
 
@@ -322,13 +345,13 @@ namespace IriamCommentReader
                         leftTokens -= CurrentAPI.LastUsage.totalTokens;
                         if (miniModel)
                         {
-                            Preference.Instance.LeftMiniTokens = leftTokens;
+                            Pref.LeftMiniTokens = leftTokens;
                         }
                         else
                         {
-                            Preference.Instance.LeftTokens = leftTokens;
+                            Pref.LeftTokens = leftTokens;
                         }
-                        Preference.Instance.SaveTokens();
+                        Pref.SaveTokens();
                         ShowLeftTokens($" | 使用: {CurrentAPI.Model} ↑{CurrentAPI.LastUsage.inputTokens} + ↓{CurrentAPI.LastUsage.outputTokens} = {CurrentAPI.LastUsage.totalTokens} (残 {(CurrentAPI.LastUsage.outputTokens > 0 ? leftTokens / CurrentAPI.LastUsage.totalTokens : 0)} 回)");
                     }
                     else
@@ -354,13 +377,13 @@ namespace IriamCommentReader
                         {
                             if (chat == "") { continue; }
 
-                            if (Preference.Instance.SimilarityChatSkip)
+                            if (Pref.SimilarityChatSkip)
                             {
                                 bool skip = false;
                                 foreach (var recentChat in recentRead)
                                 {
                                     var similarity = TextCompare.Compare(chat, recentChat);
-                                    if (similarity >= Preference.Instance.ChatSimilarity)
+                                    if (similarity >= Pref.ChatSimilarity)
                                     {
                                         // textBoxChatLog.AppendText($"{chat}\r\n{recentChat}\r\n→{similarity}\r\n\r\n");
                                         skip = true;
@@ -384,7 +407,7 @@ namespace IriamCommentReader
                             }
                             else if (chatElem.Length > 1)
                             {
-                                if ((beforeTalker == chatElem[0] && Preference.Instance.SkipName) || Preference.Instance.SkipNameAll)
+                                if ((beforeTalker == chatElem[0] && Pref.SkipName) || Pref.SkipNameAll)
                                 {
                                     speakText += $"{chatElem[1]}\n";
                                 }
@@ -403,24 +426,44 @@ namespace IriamCommentReader
                         var lastStr = string.Join("\r\n", recentRead);
 
                         // プロンプトには直近最大8件の履歴を使用する
-                        var prompt = Preference.Instance.Prompt.Replace(TextString, lastStr);
+                        var prompt = Pref.Prompt.Replace(TextString, lastStr);
                         textBoxPrompt.Text = prompt;
 
-                        await BouyomiTalk.SpeakAsync(speakText, Preference.Instance.BouyomiURL, Preference.Instance.BouyomiParam);
+                        await BouyomiTalk.SpeakAsync(speakText, Pref.BouyomiURL, Pref.BouyomiParam);
                     }
                 }
                 catch (Exception ex)
                 {
+                    _prevText = "";
+
                     if (ex is System.Net.Http.HttpRequestException && ex.Message.Contains("429"))
                     {
                         textBoxChatLog.AppendText("Gemini APIの呼び出し回数制限(429)に達しました.\r\n");
-                        // 必要ならリトライ処理や待機処理を追加
+                        if (Pref.CurrentProvider == APIProviderType.Gemini)
+                        {
+                            if (!Pref.GemimiMainModelReachedLimit)
+                            {
+                                Pref.GemimiMainModelReachedLimit = true;
+                                textBoxChatLog.AppendText("メインモデルの制限に達したため、次のリクエストから予備モデルを使用します.\r\n");
+                                UpdateAPIProviderDisplay();
+                            }
+                        }
+                        else if (!string.IsNullOrEmpty(Pref.APIKeys[APIProviderType.OpenAI]))
+                        {
+                            Pref.ProviderEnded = true;
+                            if (!Pref.ProviderAllEnded && !string.IsNullOrEmpty(Pref.APIKeys[APIProviderType.OpenAI]))
+                            {
+                                textBoxChatLog.AppendText("Geminiの全モデルを使い切ったため、OpenAI に切り替えます。.\r\n");
+                                Pref.CurrentProvider = APIProviderType.OpenAI;
+                                UpdateAPIProviderDisplay();
+                            }
+                        }
                     }
                     else
                     {
                         textBoxChatLog.AppendText($"Error: {ex.Message}\r\n");
                     }
-                    if (CurrentAPI.LastResponse != "")
+                    if (!string.IsNullOrEmpty(CurrentAPI.LastResponse))
                     {
                         textBoxResponse.Text = CurrentAPI.LastResponse;
                     }
@@ -444,7 +487,7 @@ namespace IriamCommentReader
 
         private async void button4_Click(object sender, EventArgs e)
         {
-            await BouyomiTalk.SpeakAsync("読み上げテスト", Preference.Instance.BouyomiURL, Preference.Instance.BouyomiParam);
+            await BouyomiTalk.SpeakAsync("読み上げテスト", Pref.BouyomiURL, Pref.BouyomiParam);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -502,7 +545,7 @@ namespace IriamCommentReader
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            textBoxPrompt.Text = Preference.Instance.InitPrompt;
+            textBoxPrompt.Text = Pref.InitPrompt;
         }
 
         private void buttonClearLog_Click(object sender, EventArgs e)
@@ -512,12 +555,12 @@ namespace IriamCommentReader
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            textBoxPrompt.Text = Preference.Instance.InitPrompt;
+            textBoxPrompt.Text = Pref.InitPrompt;
         }
 
         private void labelSimilarity_DoubleClick(object sender, EventArgs e)
         {
-            if (Preference.Instance.SimilarOnly)
+            if (Pref.SimilarOnly)
             {
                 _prevText = "";
                 labelSimilarity.Text = "類似リセット済";
@@ -570,14 +613,14 @@ namespace IriamCommentReader
         {
             buttonDebugDirect.Enabled = false;
 
-            string systemPrompt = Preference.Instance.SystemPrompt;
+            string systemPrompt = Pref.SystemPrompt;
             string userPrompt = textBoxPrompt.Text ?? "."; // Get user prompt from a textbox
             try
             {
-                CurrentAPI.APIKey = Preference.Instance.APIKey;
-                CurrentAPI.Model = Preference.Instance.Model;
-                CurrentAPI.Temperature = Preference.Instance.Temperature;
-                CurrentAPI.TopP = Preference.Instance.TopP;
+                CurrentAPI.APIKey = Pref.APIKey;
+                CurrentAPI.Model = Pref.Model;
+                CurrentAPI.Temperature = Pref.Temperature;
+                CurrentAPI.TopP = Pref.TopP;
                 var jsonResponse = await CurrentAPI.RequestAsync(userPrompt);
                 textBox2.Text = jsonResponse;
             }
@@ -631,6 +674,21 @@ namespace IriamCommentReader
             MenuImagePaste.Enabled = Clipboard.ContainsImage();
             MenuImageCopy.Enabled = pictureBox1.Image != null;
             MenuImageSave.Enabled = pictureBox1.Image != null;
+        }
+
+        private void toolStripMenuItemToggleAI_Click(object sender, EventArgs e)
+        {
+            var menu = (ToolStripMenuItem)sender;
+            var tag = menu.Tag.ToString();
+            APIProviderType type = (APIProviderType)(int.Parse(tag));
+            Pref.CurrentProvider = type;
+            UpdateAPIProviderDisplay();
+        }
+
+        private void UpdateAPIProviderDisplay()
+        {
+            toolStripDropDownButtonAPIProvider.Text = Pref.CurrentProvider.ToString();
+            ShowLeftTokens();
         }
     }
 }

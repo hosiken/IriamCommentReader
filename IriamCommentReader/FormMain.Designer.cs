@@ -74,6 +74,9 @@
             this.textBoxResponse = new System.Windows.Forms.TextBox();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripDropDownButtonAPIProvider = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripMenuItemGemini = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemOpenAI = new System.Windows.Forms.ToolStripMenuItem();
             this.labelTokens = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -599,16 +602,45 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripDropDownButtonAPIProvider,
             this.labelTokens});
             this.statusStrip1.Location = new System.Drawing.Point(0, 344);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(553, 22);
             this.statusStrip1.TabIndex = 1;
             // 
+            // toolStripDropDownButtonAPIProvider
+            // 
+            this.toolStripDropDownButtonAPIProvider.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButtonAPIProvider.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemGemini,
+            this.toolStripMenuItemOpenAI});
+            this.toolStripDropDownButtonAPIProvider.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButtonAPIProvider.Name = "toolStripDropDownButtonAPIProvider";
+            this.toolStripDropDownButtonAPIProvider.Size = new System.Drawing.Size(54, 20);
+            this.toolStripDropDownButtonAPIProvider.Text = "Gemni";
+            this.toolStripDropDownButtonAPIProvider.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // toolStripMenuItemGemini
+            // 
+            this.toolStripMenuItemGemini.Name = "toolStripMenuItemGemini";
+            this.toolStripMenuItemGemini.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemGemini.Tag = "0";
+            this.toolStripMenuItemGemini.Text = "Gemini";
+            this.toolStripMenuItemGemini.Click += new System.EventHandler(this.toolStripMenuItemToggleAI_Click);
+            // 
+            // toolStripMenuItemOpenAI
+            // 
+            this.toolStripMenuItemOpenAI.Name = "toolStripMenuItemOpenAI";
+            this.toolStripMenuItemOpenAI.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemOpenAI.Tag = "1";
+            this.toolStripMenuItemOpenAI.Text = "OpenAI";
+            this.toolStripMenuItemOpenAI.Click += new System.EventHandler(this.toolStripMenuItemToggleAI_Click);
+            // 
             // labelTokens
             // 
             this.labelTokens.Name = "labelTokens";
-            this.labelTokens.Size = new System.Drawing.Size(538, 17);
+            this.labelTokens.Size = new System.Drawing.Size(453, 17);
             this.labelTokens.Spring = true;
             this.labelTokens.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -633,7 +665,7 @@
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Name = "FormMain";
-            this.Text = "IriamCommentReader 20260406";
+            this.Text = "IriamCommentReader 20260412";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -723,6 +755,9 @@
         private System.Windows.Forms.TextBox textBoxResponse;
         private System.Windows.Forms.ToolStripStatusLabel labelTokens;
         private System.Windows.Forms.CheckBox checkBoxMini;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButtonAPIProvider;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemGemini;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemOpenAI;
     }
 }
 

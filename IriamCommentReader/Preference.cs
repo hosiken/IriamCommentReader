@@ -11,7 +11,7 @@ namespace IriamCommentReader
     public enum APIProviderType
     {
         Gemini = 0,
-        OpenAI,
+        OpenAI = 1,
     }
 
     public static class DictionaryExtensions
@@ -195,8 +195,8 @@ namespace IriamCommentReader
 
         private const int DefaultAutoExecInterval = 60;
 
-        private const string DefaultGeminiModel = "gemini-3.1-flash-lite-preview";
-        private const string DefaultGeminiMiniModel = "gemma-4-31b-it";
+        private const string DefaultGeminiModel = "gemma-4-31b-it";
+        private const string DefaultGeminiMiniModel = "gemini-3.1-flash-lite-preview";
         private const string DefaultGeminiSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultGeminiInitPrompt = "【直近読み上げたテキスト】\r\n(ありません。この指示が初回ですので全文取得します)";
         private const string DefaultGeminiPrompt = "【直近読み上げたテキスト】\r\n{{text}}\r\n\r\n(これより前の行は読み上げ済みなので、レスポンスに出力しないてください)";
@@ -241,7 +241,10 @@ namespace IriamCommentReader
         private const int DefaultImageResizeWidth = 400;
 
         public APIProviderType CurrentProvider { get; set; } = APIProviderType.Gemini;
-        public bool IsStreaming { get; set; } = true;
+        public bool GemimiMainModelReachedLimit { get; set; } = false;
+        public Dictionary<APIProviderType, bool> ProviderEndeds { get; set; } = new Dictionary<APIProviderType, bool>();
+        public bool ProviderEnded { get => ProviderEndeds[CurrentProvider]; set { ProviderEndeds[CurrentProvider] = value; } }
+        public bool ProviderAllEnded => ProviderEndeds[APIProviderType.Gemini] && ProviderEndeds[APIProviderType.OpenAI];
 
         public string APIKey => APIKeys[CurrentProvider];
         public string Model => Models[CurrentProvider];
@@ -277,12 +280,21 @@ namespace IriamCommentReader
         public int AutoExecInterval { get; set; }
         public Rect CaptureRect { get; set; } = new Rect(0, 0, 100, 100);
         public bool UseBase64 { get; set; }
+        public bool IsStreaming { get; set; }
         public int TokenLastDate { get; set; }
         public int LeftTokens { get; set; }
         public int LeftMiniTokens { get; set; }
 
         // INI ファイルに書き込むセクション名（任意）
         private const string SectionName = "Preference";
+
+        public Preference()
+        {
+            foreach (APIProviderType provider in Enum.GetValues(typeof(APIProviderType)))
+            {
+                ProviderEndeds[provider] = false;
+            }
+        }
 
         public void ResetToDefault()
         {
@@ -314,6 +326,7 @@ namespace IriamCommentReader
             BouyomiURL = DefaultBouyomiURL;
             BouyomiParam = BouyomiParam;
             UseBase64 = true;
+            IsStreaming = true;
         }
 
         /// <summary>
@@ -364,6 +377,7 @@ namespace IriamCommentReader
             WriteStr(SectionName, "BouyomiURL", BouyomiURL);
             WriteStr(SectionName, "BouyomiParam", BouyomiParam);
             WriteBool(SectionName, "UseBase64", UseBase64);
+            WriteBool(SectionName, "IsStreaming", IsStreaming);
         }
 
         public void SaveTokens()
@@ -401,14 +415,14 @@ namespace IriamCommentReader
             }
 
             // 旧設定が残っている場合は、OpenAIの設定として読み込む
-            pref.APIKeys[APIProviderType.OpenAI] = ReadStr(SectionName, "APIKey", pref.APIKeys[APIProviderType.OpenAI]);
-            pref.Models[APIProviderType.OpenAI] = ReadStr(SectionName, "Model", pref.Models[APIProviderType.OpenAI]);
-            pref.MiniModels[APIProviderType.OpenAI] = ReadStr(SectionName, "MiniModel", pref.MiniModels[APIProviderType.OpenAI]);
-            pref.Temperatures[APIProviderType.OpenAI] = ReadFloat(SectionName, "Temperature", pref.Temperatures[APIProviderType.OpenAI]);
-            pref.TopPs[APIProviderType.OpenAI] = ReadFloat(SectionName, "TopP", pref.TopPs[APIProviderType.OpenAI]);
-            pref.SystemPrompts[APIProviderType.OpenAI] = ReadStr(SectionName, "SystemPrompt", pref.SystemPrompts[APIProviderType.OpenAI]);
-            pref.InitPrompts[APIProviderType.OpenAI] = ReadStr(SectionName, "InitPrompt", pref.InitPrompts[APIProviderType.OpenAI]);
-            pref.Prompts[APIProviderType.OpenAI] = ReadStr(SectionName, "Prompt", pref.Prompts[APIProviderType.OpenAI]);
+            // pref.APIKeys[APIProviderType.OpenAI] = ReadStr(SectionName, "APIKey", pref.APIKeys[APIProviderType.OpenAI]);
+            // pref.Models[APIProviderType.OpenAI] = ReadStr(SectionName, "Model", pref.Models[APIProviderType.OpenAI]);
+            // pref.MiniModels[APIProviderType.OpenAI] = ReadStr(SectionName, "MiniModel", pref.MiniModels[APIProviderType.OpenAI]);
+            // pref.Temperatures[APIProviderType.OpenAI] = ReadFloat(SectionName, "Temperature", pref.Temperatures[APIProviderType.OpenAI]);
+            // pref.TopPs[APIProviderType.OpenAI] = ReadFloat(SectionName, "TopP", pref.TopPs[APIProviderType.OpenAI]);
+            // pref.SystemPrompts[APIProviderType.OpenAI] = ReadStr(SectionName, "SystemPrompt", pref.SystemPrompts[APIProviderType.OpenAI]);
+            // pref.InitPrompts[APIProviderType.OpenAI] = ReadStr(SectionName, "InitPrompt", pref.InitPrompts[APIProviderType.OpenAI]);
+            // pref.Prompts[APIProviderType.OpenAI] = ReadStr(SectionName, "Prompt", pref.Prompts[APIProviderType.OpenAI]);
 
             pref.SkipNameAll = ReadBool(SectionName, "SkipNameAll", false);
             pref.SkipName = ReadBool(SectionName, "SkipName", true);
@@ -423,6 +437,7 @@ namespace IriamCommentReader
             pref.BouyomiURL = ReadStr(SectionName, "BouyomiURL", DefaultBouyomiURL);
             pref.BouyomiParam = ReadStr(SectionName, "BouyomiParam", DefaultBouyomiParam);
             pref.UseBase64 = ReadBool(SectionName, "UseBase64", true);
+            pref.IsStreaming = ReadBool(SectionName, "IsStreaming", true);
 
             pref.TokenLastDate = ReadInt(SectionName, "TokenLastDate", 0);
             pref.LeftTokens = ReadInt(SectionName, "LeftTokens", 0);
@@ -452,7 +467,7 @@ namespace IriamCommentReader
             // 3. 保存されている日付と比較
             if (TokenLastDate != todayInt)
             {
-                // 4. 今日のお菓子な日付で上書き保存
+                // 4. 今日の日付で上書き保存
                 TokenLastDate = todayInt;
                 LeftTokens = 150000;
                 LeftMiniTokens = 1500000;

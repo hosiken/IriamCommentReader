@@ -246,6 +246,7 @@ namespace IriamCommentReader
             }
 
             transcribedText = transcribedText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
+            LastResponse = transcribedText;
             return transcribedText;
         }
 
@@ -289,6 +290,7 @@ namespace IriamCommentReader
                                     {
                                         // ここでUIなどの呼び出し元へ通知
                                         onTokenReceived?.Invoke(text.Replace("\n", "\r\n"));
+                                        LastResponse += text.Replace("\n", "\r\n");
                                     }
                                 }
                             }

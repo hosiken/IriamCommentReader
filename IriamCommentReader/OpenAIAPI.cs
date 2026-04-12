@@ -206,6 +206,7 @@ namespace IriamCommentReader
             var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
             request.Headers.Add("Authorization", $"Bearer {this.APIKey}");
             request.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            LastResponse = "";
 
             using (var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
             {
@@ -233,6 +234,7 @@ namespace IriamCommentReader
                                 if (!string.IsNullOrEmpty(chunk))
                                 {
                                     onTokenReceived?.Invoke(chunk.Replace("\n", "\r\n"));
+                                    LastResponse += chunk.Replace("\n", "\r\n");
                                 }
                             }
                             // --- トークン情報の更新 ---
