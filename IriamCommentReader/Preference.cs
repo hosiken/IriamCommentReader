@@ -262,7 +262,7 @@ namespace IriamCommentReader
         private const float DefaultSimilarity = 0.6f;
         private const float DefaultChatSimilarity = 0.8f;
         private const int DefaultSimilarRetryInterval = 1;
-        private const int DefaultImageResizeWidth = 400;
+        private const int DefaultImageResizeWidth = 800;
 
         public Provider CurrentProvider { get; set; } = Provider.Gemini;
         public bool GemimiMainModelReachedLimit { get; set; } = false;
