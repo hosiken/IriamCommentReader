@@ -217,12 +217,12 @@ namespace IriamCommentReader
 
         private const string DefaultOpenAIModel = "gpt-5.4";
         private const string DefaultOpenAIMiniModel = "gpt-5.4-mini";
-        private const string DefaultOpenAISystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\r\n\r\r\nフォーマット:\r\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\r\n- 絵文字は省略する、若葉マークに注意\r\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\r\n- 3点リーダーは…に統一する\r\r\n- 新しいチャットは下に追加されていく\r\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\r\n    - 同じテキストを再出力してはいけません。\r\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
+        private const string DefaultOpenAISystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultOpenAIInitPrompt = DefaultGeminiInitPrompt;
         private const string DefaultOpenAIPrompt = DefaultGeminiPrompt;
 
         private const string DefaultCompatibleModel = "gemma-4-e4b-it";
-        private const string DefaultCompatibleSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\r\n\r\r\nフォーマット:\r\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\r\n- 絵文字は省略する、若葉マークに注意\r\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\r\n- 3点リーダーは…に統一する\r\r\n- 新しいチャットは下に追加されていく\r\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\r\n    - 同じテキストを再出力してはいけません。\r\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
+        private const string DefaultCompatibleSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは…に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\n    - 同じテキストを再出力してはいけません。\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultCompatibleInitPrompt = DefaultGeminiInitPrompt;
         private const string DefaultCompatiblePrompt = DefaultGeminiPrompt;
 
