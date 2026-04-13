@@ -593,6 +593,8 @@ namespace IriamCommentReader
         private void buttonReset_Click(object sender, EventArgs e)
         {
             textBoxPrompt.Text = Pref.InitPrompt;
+            _prevText = "";
+            _readText.Clear();
         }
 
         private void labelSimilarity_DoubleClick(object sender, EventArgs e)
