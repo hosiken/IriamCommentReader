@@ -82,6 +82,23 @@ namespace IriamCommentReader
             this.label19 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.checkBoxStream = new System.Windows.Forms.CheckBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label20 = new System.Windows.Forms.Label();
+            this.textBoxCompatibleBaseURL = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.comboBoxCompatibleModel = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.textBoxCompatibleSystem = new System.Windows.Forms.TextBox();
+            this.textBoxCompatibleInitPrompt = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.numericCompatibleTemperature = new System.Windows.Forms.NumericUpDown();
+            this.label26 = new System.Windows.Forms.Label();
+            this.numericCompatibleTopP = new System.Windows.Forms.NumericUpDown();
+            this.textBoxCompatiblePrompt = new System.Windows.Forms.TextBox();
+            this.label27 = new System.Windows.Forms.Label();
+            this.textBoxCompatibleAPIKey = new System.Windows.Forms.TextBox();
+            this.label28 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericOpenAITemperature)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericOpenAITopP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSimilarity)).BeginInit();
@@ -93,6 +110,9 @@ namespace IriamCommentReader
             ((System.ComponentModel.ISupportInitialize)(this.numericGeminiTemperature)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericGeminiTopP)).BeginInit();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCompatibleTemperature)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCompatibleTopP)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBoxOpenAIModel
@@ -493,6 +513,7 @@ namespace IriamCommentReader
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -725,10 +746,206 @@ namespace IriamCommentReader
             this.checkBoxStream.AutoSize = true;
             this.checkBoxStream.Location = new System.Drawing.Point(263, 446);
             this.checkBoxStream.Name = "checkBoxStream";
-            this.checkBoxStream.Size = new System.Drawing.Size(187, 19);
+            this.checkBoxStream.Size = new System.Drawing.Size(178, 19);
             this.checkBoxStream.TabIndex = 2;
-            this.checkBoxStream.Text = "レンスポンスをストリームで受信する";
+            this.checkBoxStream.Text = "レスポンスをストリームで受信する";
             this.checkBoxStream.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.label28);
+            this.tabPage3.Controls.Add(this.label20);
+            this.tabPage3.Controls.Add(this.textBoxCompatibleAPIKey);
+            this.tabPage3.Controls.Add(this.textBoxCompatibleBaseURL);
+            this.tabPage3.Controls.Add(this.label21);
+            this.tabPage3.Controls.Add(this.comboBoxCompatibleModel);
+            this.tabPage3.Controls.Add(this.label22);
+            this.tabPage3.Controls.Add(this.textBoxCompatibleSystem);
+            this.tabPage3.Controls.Add(this.textBoxCompatibleInitPrompt);
+            this.tabPage3.Controls.Add(this.label24);
+            this.tabPage3.Controls.Add(this.label25);
+            this.tabPage3.Controls.Add(this.numericCompatibleTemperature);
+            this.tabPage3.Controls.Add(this.label26);
+            this.tabPage3.Controls.Add(this.numericCompatibleTopP);
+            this.tabPage3.Controls.Add(this.textBoxCompatiblePrompt);
+            this.tabPage3.Controls.Add(this.label27);
+            this.tabPage3.Location = new System.Drawing.Point(4, 24);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(446, 400);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "互換API";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(6, 8);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(60, 15);
+            this.label20.TabIndex = 0;
+            this.label20.Text = "ベースURL";
+            // 
+            // textBoxCompatibleBaseURL
+            // 
+            this.textBoxCompatibleBaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCompatibleBaseURL.Location = new System.Drawing.Point(81, 5);
+            this.textBoxCompatibleBaseURL.Name = "textBoxCompatibleBaseURL";
+            this.textBoxCompatibleBaseURL.Size = new System.Drawing.Size(133, 23);
+            this.textBoxCompatibleBaseURL.TabIndex = 1;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(6, 35);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(36, 15);
+            this.label21.TabIndex = 4;
+            this.label21.Text = "モデル";
+            // 
+            // comboBoxCompatibleModel
+            // 
+            this.comboBoxCompatibleModel.FormattingEnabled = true;
+            this.comboBoxCompatibleModel.Location = new System.Drawing.Point(81, 32);
+            this.comboBoxCompatibleModel.Name = "comboBoxCompatibleModel";
+            this.comboBoxCompatibleModel.Size = new System.Drawing.Size(359, 23);
+            this.comboBoxCompatibleModel.TabIndex = 5;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(6, 97);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(89, 15);
+            this.label22.TabIndex = 10;
+            this.label22.Text = "システムプロンプト";
+            // 
+            // textBoxCompatibleSystem
+            // 
+            this.textBoxCompatibleSystem.AcceptsReturn = true;
+            this.textBoxCompatibleSystem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCompatibleSystem.Location = new System.Drawing.Point(8, 115);
+            this.textBoxCompatibleSystem.Multiline = true;
+            this.textBoxCompatibleSystem.Name = "textBoxCompatibleSystem";
+            this.textBoxCompatibleSystem.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxCompatibleSystem.Size = new System.Drawing.Size(432, 91);
+            this.textBoxCompatibleSystem.TabIndex = 11;
+            // 
+            // textBoxCompatibleInitPrompt
+            // 
+            this.textBoxCompatibleInitPrompt.AcceptsReturn = true;
+            this.textBoxCompatibleInitPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCompatibleInitPrompt.Location = new System.Drawing.Point(9, 227);
+            this.textBoxCompatibleInitPrompt.Multiline = true;
+            this.textBoxCompatibleInitPrompt.Name = "textBoxCompatibleInitPrompt";
+            this.textBoxCompatibleInitPrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxCompatibleInitPrompt.Size = new System.Drawing.Size(432, 70);
+            this.textBoxCompatibleInitPrompt.TabIndex = 13;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(7, 209);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(75, 15);
+            this.label24.TabIndex = 12;
+            this.label24.Text = "初期プロンプト";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(6, 69);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(83, 15);
+            this.label25.TabIndex = 6;
+            this.label25.Text = "Temperature";
+            // 
+            // numericCompatibleTemperature
+            // 
+            this.numericCompatibleTemperature.DecimalPlaces = 2;
+            this.numericCompatibleTemperature.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericCompatibleTemperature.Location = new System.Drawing.Point(92, 67);
+            this.numericCompatibleTemperature.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            65536});
+            this.numericCompatibleTemperature.Name = "numericCompatibleTemperature";
+            this.numericCompatibleTemperature.Size = new System.Drawing.Size(72, 23);
+            this.numericCompatibleTemperature.TabIndex = 7;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(179, 69);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(35, 15);
+            this.label26.TabIndex = 8;
+            this.label26.Text = "TopP";
+            // 
+            // numericCompatibleTopP
+            // 
+            this.numericCompatibleTopP.DecimalPlaces = 2;
+            this.numericCompatibleTopP.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericCompatibleTopP.Location = new System.Drawing.Point(220, 67);
+            this.numericCompatibleTopP.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericCompatibleTopP.Name = "numericCompatibleTopP";
+            this.numericCompatibleTopP.Size = new System.Drawing.Size(72, 23);
+            this.numericCompatibleTopP.TabIndex = 9;
+            // 
+            // textBoxCompatiblePrompt
+            // 
+            this.textBoxCompatiblePrompt.AcceptsReturn = true;
+            this.textBoxCompatiblePrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCompatiblePrompt.Location = new System.Drawing.Point(9, 318);
+            this.textBoxCompatiblePrompt.Multiline = true;
+            this.textBoxCompatiblePrompt.Name = "textBoxCompatiblePrompt";
+            this.textBoxCompatiblePrompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxCompatiblePrompt.Size = new System.Drawing.Size(432, 73);
+            this.textBoxCompatiblePrompt.TabIndex = 0;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(7, 300);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(119, 15);
+            this.label27.TabIndex = 14;
+            this.label27.Text = "チャット更新時プロンプト";
+            // 
+            // textBoxCompatibleAPIKey
+            // 
+            this.textBoxCompatibleAPIKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCompatibleAPIKey.Location = new System.Drawing.Point(308, 5);
+            this.textBoxCompatibleAPIKey.Name = "textBoxCompatibleAPIKey";
+            this.textBoxCompatibleAPIKey.Size = new System.Drawing.Size(133, 23);
+            this.textBoxCompatibleAPIKey.TabIndex = 3;
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(233, 8);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(47, 15);
+            this.label28.TabIndex = 2;
+            this.label28.Text = "APIキー";
             // 
             // FormPreference
             // 
@@ -778,6 +995,10 @@ namespace IriamCommentReader
             ((System.ComponentModel.ISupportInitialize)(this.numericGeminiTopP)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCompatibleTemperature)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericCompatibleTopP)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -839,5 +1060,22 @@ namespace IriamCommentReader
         private System.Windows.Forms.TextBox textBoxGeminiPrompt;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.CheckBox checkBoxStream;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox textBoxCompatibleAPIKey;
+        private System.Windows.Forms.TextBox textBoxCompatibleBaseURL;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.ComboBox comboBoxCompatibleModel;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.TextBox textBoxCompatibleSystem;
+        private System.Windows.Forms.TextBox textBoxCompatibleInitPrompt;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.NumericUpDown numericCompatibleTemperature;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.NumericUpDown numericCompatibleTopP;
+        private System.Windows.Forms.TextBox textBoxCompatiblePrompt;
+        private System.Windows.Forms.Label label27;
     }
 }

@@ -8,10 +8,11 @@ using System.Windows.Forms;
 
 namespace IriamCommentReader
 {
-    public enum APIProviderType
+    public enum Provider
     {
         Gemini = 0,
         OpenAI = 1,
+        Compatible = 2,
     }
 
     public static class DictionaryExtensions
@@ -21,7 +22,15 @@ namespace IriamCommentReader
             TKey key,
             TValue defaultValue = default)
         {
-            return dict.TryGetValue(key, out var value) ? value : defaultValue;
+            if (dict.TryGetValue(key, out var value))
+            {
+                return value;
+            }
+            else
+            {
+                dict[key] = defaultValue;
+                return defaultValue;
+            }
         }
     }
 
@@ -193,6 +202,11 @@ namespace IriamCommentReader
             "gpt-5.4-mini", "gpt-5.4-nano", "gpt-5-mini", "gpt-5-nano", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "o4-mini", "o3-mini"
         };
 
+        public static readonly List<string> OpenModelList = new List<string>()
+        {
+            "qwen3.5-2b", "qwen3.5-4b", "qwen3.5-9b", "qwen3.5-27b", "qwen3.5-35b-a3b", "gemma-4-e2b-it", "gemma-4-e4b-it", "gemma-4-26b-a4b-it", "gemma-4-31b-it"
+        };
+
         private const int DefaultAutoExecInterval = 60;
 
         private const string DefaultGeminiModel = "gemma-4-31b-it";
@@ -207,30 +221,40 @@ namespace IriamCommentReader
         private const string DefaultOpenAIInitPrompt = DefaultGeminiInitPrompt;
         private const string DefaultOpenAIPrompt = DefaultGeminiPrompt;
 
-        private static readonly Dictionary<APIProviderType, string> DefaultModels = new Dictionary<APIProviderType, string>()
+        private const string DefaultCompatibleModel = "gemma-4-e4b-it";
+        private const string DefaultCompatibleSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\r\n\r\r\nフォーマット:\r\r\n- 原則として名前 + メッセージというフォーマットですので、nameとcommentを分けてください\r\r\n- システムメッセージはnameなし(空文字列)でcommentのみとする\r\r\n- 絵文字は省略する、若葉マークに注意\r\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\r\n- 3点リーダーは…に統一する\r\r\n- 新しいチャットは下に追加されていく\r\r\n- 【直近読み上げたテキスト】が指定されている場合は…\r\r\n    - 同じテキストを再出力してはいけません。\r\r\n    - 【直近読み上げたテキスト】よりも下の行に追加された続きのみ出力してください\r\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\r\n    - 【直近読み上げたテキスト】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
+        private const string DefaultCompatibleInitPrompt = DefaultGeminiInitPrompt;
+        private const string DefaultCompatiblePrompt = DefaultGeminiPrompt;
+
+        private static readonly Dictionary<Provider, string> DefaultModels = new Dictionary<Provider, string>()
         {
-            { APIProviderType.Gemini, DefaultGeminiModel },
-            { APIProviderType.OpenAI, DefaultOpenAIModel },
+            { Provider.Gemini, DefaultGeminiModel },
+            { Provider.OpenAI, DefaultOpenAIModel },
+            { Provider.Compatible, DefaultCompatibleModel },
         };
-        private static readonly Dictionary<APIProviderType, string> DefaultMiniModels = new Dictionary<APIProviderType, string>()
+        private static readonly Dictionary<Provider, string> DefaultMiniModels = new Dictionary<Provider, string>()
         {
-            { APIProviderType.Gemini, DefaultGeminiMiniModel },
-            { APIProviderType.OpenAI, DefaultOpenAIMiniModel },
+            { Provider.Gemini, DefaultGeminiMiniModel },
+            { Provider.OpenAI, DefaultOpenAIMiniModel },
+            { Provider.Compatible, string.Empty },
         };
-        private static readonly Dictionary<APIProviderType, string> DefaultSystemPrompts = new Dictionary<APIProviderType, string>()
+        private static readonly Dictionary<Provider, string> DefaultSystemPrompts = new Dictionary<Provider, string>()
         {
-            { APIProviderType.Gemini, DefaultGeminiSystemPrompt },
-            { APIProviderType.OpenAI, DefaultOpenAISystemPrompt },
+            { Provider.Gemini, DefaultGeminiSystemPrompt },
+            { Provider.OpenAI, DefaultOpenAISystemPrompt },
+            { Provider.Compatible, DefaultCompatibleSystemPrompt },
         };
-        private static readonly Dictionary<APIProviderType, string> DefaultInitPrompts = new Dictionary<APIProviderType, string>()
+        private static readonly Dictionary<Provider, string> DefaultInitPrompts = new Dictionary<Provider, string>()
         {
-            { APIProviderType.Gemini, DefaultGeminiInitPrompt },
-            { APIProviderType.OpenAI, DefaultOpenAIInitPrompt },
+            { Provider.Gemini, DefaultGeminiInitPrompt },
+            { Provider.OpenAI, DefaultOpenAIInitPrompt },
+            { Provider.Compatible, DefaultCompatibleInitPrompt },
         };
-        private static readonly Dictionary<APIProviderType, string> DefaultPrompts = new Dictionary<APIProviderType, string>()
+        private static readonly Dictionary<Provider, string> DefaultPrompts = new Dictionary<Provider, string>()
         {
-            { APIProviderType.Gemini, DefaultGeminiPrompt },
-            { APIProviderType.OpenAI, DefaultOpenAIPrompt },
+            { Provider.Gemini, DefaultGeminiPrompt },
+            { Provider.OpenAI, DefaultOpenAIPrompt },
+            { Provider.Compatible, DefaultCompatiblePrompt },
         };
 
         private const string DefaultBouyomiURL = "http://localhost:50080/Talk";
@@ -240,29 +264,36 @@ namespace IriamCommentReader
         private const int DefaultSimilarRetryInterval = 1;
         private const int DefaultImageResizeWidth = 400;
 
-        public APIProviderType CurrentProvider { get; set; } = APIProviderType.Gemini;
+        public Provider CurrentProvider { get; set; } = Provider.Gemini;
         public bool GemimiMainModelReachedLimit { get; set; } = false;
-        public Dictionary<APIProviderType, bool> ProviderEndeds { get; set; } = new Dictionary<APIProviderType, bool>();
+        public Dictionary<Provider, bool> ProviderEndeds { get; set; } = new Dictionary<Provider, bool>();
         public bool ProviderEnded { get => ProviderEndeds[CurrentProvider]; set { ProviderEndeds[CurrentProvider] = value; } }
-        public bool ProviderAllEnded => ProviderEndeds[APIProviderType.Gemini] && ProviderEndeds[APIProviderType.OpenAI];
+        public bool ProviderAllEnded => ProviderEndeds[Provider.Gemini] && ProviderEndeds[Provider.OpenAI];
 
-        public string APIKey => APIKeys[CurrentProvider];
-        public string Model => Models[CurrentProvider];
-        public string MiniModel => MiniModels[CurrentProvider];
-        public float Temperature => Temperatures[CurrentProvider];
-        public float TopP => TopPs[CurrentProvider];
-        public string SystemPrompt => SystemPrompts[CurrentProvider];
-        public string InitPrompt => InitPrompts[CurrentProvider];
-        public string Prompt => Prompts[CurrentProvider];
+        public APIConfig CurrentAPI => APIs[CurrentProvider];
+        public string APIKey => CurrentAPI.APIKey;
+        public string Model => CurrentAPI.Model;
+        public string MiniModel => CurrentAPI.MiniModel;
+        public float Temperature => CurrentAPI.Temperature;
+        public float TopP => CurrentAPI.TopP;
+        public string SystemPrompt => CurrentAPI.SystemPrompt;
+        public string InitPrompt => CurrentAPI.InitPrompt;
+        public string Prompt => CurrentAPI.Prompt;
 
-        public Dictionary<APIProviderType, string> APIKeys { get; set; } = new Dictionary<APIProviderType, string>();
-        public Dictionary<APIProviderType, string> Models { get; set; } = new Dictionary<APIProviderType, string>();
-        public Dictionary<APIProviderType, string> MiniModels { get; set; } = new Dictionary<APIProviderType, string>();
-        public Dictionary<APIProviderType, float> Temperatures { get; set; } = new Dictionary<APIProviderType, float>();
-        public Dictionary<APIProviderType, float> TopPs { get; set; } = new Dictionary<APIProviderType, float>();
-        public Dictionary<APIProviderType, string> SystemPrompts { get; set; } = new Dictionary<APIProviderType, string>();
-        public Dictionary<APIProviderType, string> InitPrompts { get; set; } = new Dictionary<APIProviderType, string>();
-        public Dictionary<APIProviderType, string> Prompts { get; set; } = new Dictionary<APIProviderType, string>();
+        public class APIConfig
+        {
+            public string BaseURL { get; set; }
+            public string APIKey { get; set; }
+            public string Model { get; set; }
+            public string MiniModel { get; set; }
+            public float Temperature { get; set; }
+            public float TopP { get; set; }
+            public string SystemPrompt { get; set; }
+            public string InitPrompt { get; set; }
+            public string Prompt { get; set; }
+        }
+
+        public Dictionary<Provider, APIConfig> APIs { get; set; } = new Dictionary<Provider, APIConfig>();
 
         public bool SkipNameAll { get; set; }
         public bool SkipName { get; set; }
@@ -290,7 +321,7 @@ namespace IriamCommentReader
 
         public Preference()
         {
-            foreach (APIProviderType provider in Enum.GetValues(typeof(APIProviderType)))
+            foreach (Provider provider in Enum.GetValues(typeof(Provider)))
             {
                 ProviderEndeds[provider] = false;
             }
@@ -302,15 +333,15 @@ namespace IriamCommentReader
             AutoExecInterval = DefaultAutoExecInterval;
             CaptureRect = new Rect(0, 0, 0, 0);
 
-            foreach (APIProviderType provider in Enum.GetValues(typeof(APIProviderType)))
+            foreach (Provider provider in Enum.GetValues(typeof(Provider)))
             {
-                Models[provider] = DefaultModels[provider];
-                MiniModels[provider] = DefaultMiniModels[provider];
-                Temperatures[provider] = 0.0f;
-                TopPs[provider] = 0.0f;
-                SystemPrompts[provider] = DefaultSystemPrompts[provider];
-                InitPrompts[provider] = DefaultInitPrompts[provider];
-                Prompts[provider] = DefaultPrompts[provider];
+                APIs[provider].Model = DefaultModels[provider];
+                APIs[provider].MiniModel = DefaultMiniModels[provider];
+                APIs[provider].Temperature = 0.0f;
+                APIs[provider].TopP = 0.0f;
+                APIs[provider].SystemPrompt = DefaultSystemPrompts[provider];
+                APIs[provider].InitPrompt = DefaultInitPrompts[provider];
+                APIs[provider].Prompt = DefaultPrompts[provider];
             }
 
             SkipNameAll = false;
@@ -341,17 +372,19 @@ namespace IriamCommentReader
             WriteInt(SectionName, "CaptureRectWidth", CaptureRect.Width);
             WriteInt(SectionName, "CaptureRectHeight", CaptureRect.Height);
 
-            foreach (APIProviderType provider in Enum.GetValues(typeof(APIProviderType)))
+            foreach (Provider provider in Enum.GetValues(typeof(Provider)))
             {
                 string section = provider.ToString();
-                WriteStr(section, "APIKey", APIKeys.GetValueOrDefault(provider));
-                WriteStr(section, "Model", Models.GetValueOrDefault(provider));
-                WriteStr(section, "MiniModel", MiniModels.GetValueOrDefault(provider));
-                WriteFloat(section, "Temperature", Temperatures.GetValueOrDefault(provider, 0.0f));
-                WriteFloat(section, "TopP", TopPs.GetValueOrDefault(provider, 0.0f));
-                WriteStr(section, "SystemPrompt", SystemPrompts.GetValueOrDefault(provider));
-                WriteStr(section, "InitPrompt", InitPrompts.GetValueOrDefault(provider));
-                WriteStr(section, "Prompt", Prompts.GetValueOrDefault(provider));
+                var setting = APIs.GetValueOrDefault(provider, new APIConfig());
+                WriteStr(section, "BaseURL", setting.BaseURL);
+                WriteStr(section, "APIKey", setting.APIKey);
+                WriteStr(section, "Model", setting.Model);
+                WriteStr(section, "MiniModel", setting.MiniModel);
+                WriteFloat(section, "Temperature", setting.Temperature);
+                WriteFloat(section, "TopP", setting.TopP);
+                WriteStr(section, "SystemPrompt", setting.SystemPrompt);
+                WriteStr(section, "InitPrompt", setting.InitPrompt);
+                WriteStr(section, "Prompt", setting.Prompt);
             }
 
             // 旧設定は削除する
@@ -401,17 +434,19 @@ namespace IriamCommentReader
             pref.CaptureRect.Width = ReadInt(SectionName, "CaptureRectWidth", 100);
             pref.CaptureRect.Height = ReadInt(SectionName, "CaptureRectHeight", 100);
 
-            foreach (APIProviderType provider in Enum.GetValues(typeof(APIProviderType)))
+            foreach (Provider provider in Enum.GetValues(typeof(Provider)))
             {
                 string section = provider.ToString();
-                pref.APIKeys[provider] = ReadStr(section, "APIKey", "");
-                pref.Models[provider] = ReadStr(section, "Model", DefaultModels[provider]);
-                pref.MiniModels[provider] = ReadStr(section, "MiniModel", DefaultMiniModels[provider]);
-                pref.Temperatures[provider] = ReadFloat(section, "Temperature", 0.0f);
-                pref.TopPs[provider] = ReadFloat(section, "TopP", 0.0f);
-                pref.SystemPrompts[provider] = ReadStr(section, "SystemPrompt", DefaultSystemPrompts[provider]);
-                pref.InitPrompts[provider] = ReadStr(section, "InitPrompt", DefaultInitPrompts[provider]);
-                pref.Prompts[provider] = ReadStr(section, "Prompt", DefaultPrompts[provider]);
+                var setting = pref.APIs.GetValueOrDefault(provider, new APIConfig());
+                setting.BaseURL = ReadStr(section, "BaseURL", "");
+                setting.APIKey = ReadStr(section, "APIKey", "");
+                setting.Model = ReadStr(section, "Model", DefaultModels[provider]);
+                setting.MiniModel = ReadStr(section, "MiniModel", DefaultMiniModels[provider]);
+                setting.Temperature = ReadFloat(section, "Temperature", 0.0f);
+                setting.TopP = ReadFloat(section, "TopP", 0.0f);
+                setting.SystemPrompt = ReadStr(section, "SystemPrompt", DefaultSystemPrompts[provider]);
+                setting.InitPrompt = ReadStr(section, "InitPrompt", DefaultInitPrompts[provider]);
+                setting.Prompt = ReadStr(section, "Prompt", DefaultPrompts[provider]);
             }
 
             // 旧設定が残っている場合は、OpenAIの設定として読み込む
@@ -444,13 +479,13 @@ namespace IriamCommentReader
             pref.LeftMiniTokens = ReadInt(SectionName, "LeftMiniTokens", 0);
             pref.CheckAndUpdateTokenDate();
 
-            if (!OpenAIModelWhiteList.Contains(pref.Models[APIProviderType.OpenAI]))
+            if (!OpenAIModelWhiteList.Contains(pref.APIs[Provider.OpenAI].MiniModel))
             {
-                pref.Models[APIProviderType.OpenAI] = DefaultOpenAIModel;
+                pref.APIs[Provider.OpenAI].Model = DefaultOpenAIModel;
             }
-            if (!OpenAIMiniModelWhiteList.Contains(pref.MiniModels[APIProviderType.OpenAI]))
+            if (!OpenAIMiniModelWhiteList.Contains(pref.APIs[Provider.OpenAI].MiniModel))
             {
-                pref.MiniModels[APIProviderType.OpenAI] = DefaultOpenAIMiniModel;
+                pref.APIs[Provider.OpenAI].MiniModel = DefaultOpenAIMiniModel;
             }
             return pref;
         }

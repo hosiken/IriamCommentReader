@@ -77,6 +77,7 @@
             this.toolStripDropDownButtonAPIProvider = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripMenuItemGemini = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemOpenAI = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemCompatible = new System.Windows.Forms.ToolStripMenuItem();
             this.labelTokens = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -557,6 +558,7 @@
             this.textBoxRequest.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxRequest.Size = new System.Drawing.Size(212, 108);
             this.textBoxRequest.TabIndex = 2;
+            this.textBoxRequest.WordWrap = false;
             // 
             // tabPage3
             // 
@@ -614,12 +616,14 @@
             this.toolStripDropDownButtonAPIProvider.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButtonAPIProvider.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemGemini,
-            this.toolStripMenuItemOpenAI});
+            this.toolStripMenuItemOpenAI,
+            this.toolStripMenuItemCompatible});
             this.toolStripDropDownButtonAPIProvider.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButtonAPIProvider.Name = "toolStripDropDownButtonAPIProvider";
             this.toolStripDropDownButtonAPIProvider.Size = new System.Drawing.Size(54, 20);
             this.toolStripDropDownButtonAPIProvider.Text = "Gemni";
             this.toolStripDropDownButtonAPIProvider.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.toolStripDropDownButtonAPIProvider.DropDownOpening += new System.EventHandler(this.toolStripDropDownButtonAPIProvider_DropDownOpening);
             // 
             // toolStripMenuItemGemini
             // 
@@ -637,10 +641,18 @@
             this.toolStripMenuItemOpenAI.Text = "OpenAI";
             this.toolStripMenuItemOpenAI.Click += new System.EventHandler(this.toolStripMenuItemToggleAI_Click);
             // 
+            // toolStripMenuItemCompatible
+            // 
+            this.toolStripMenuItemCompatible.Name = "toolStripMenuItemCompatible";
+            this.toolStripMenuItemCompatible.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemCompatible.Tag = "2";
+            this.toolStripMenuItemCompatible.Text = "互換API";
+            this.toolStripMenuItemCompatible.Click += new System.EventHandler(this.toolStripMenuItemToggleAI_Click);
+            // 
             // labelTokens
             // 
             this.labelTokens.Name = "labelTokens";
-            this.labelTokens.Size = new System.Drawing.Size(453, 17);
+            this.labelTokens.Size = new System.Drawing.Size(484, 17);
             this.labelTokens.Spring = true;
             this.labelTokens.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -758,6 +770,7 @@
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButtonAPIProvider;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemGemini;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemOpenAI;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCompatible;
     }
 }
 

@@ -18,10 +18,28 @@ namespace IriamCommentReader
     {
         private const string TextString = "{{text}}";
         private static Preference Pref => Preference.Instance;
-        private bool UseOpenAI => Pref.CurrentProvider == APIProviderType.OpenAI;
+        private bool UseOpenAI => Pref.CurrentProvider == Provider.OpenAI;
+        private bool UseGemini => Pref.CurrentProvider == Provider.Gemini;
+        private bool UseCompatible => Pref.CurrentProvider == Provider.Compatible;
         private readonly OpenAIAPI _apiOpenAI;
         private readonly GeminiAPI _apiGemini;
-        private LMBase CurrentAPI => UseOpenAI ? (LMBase)_apiOpenAI : _apiGemini;
+        private readonly CompatibleAPI _apiCompatible;
+        private LMBase CurrentAPI
+        {
+            get
+            {
+                switch (Pref.CurrentProvider)
+                {
+                    case Provider.OpenAI:
+                        return _apiOpenAI;
+                    case Provider.Gemini:
+                    default:
+                        return _apiGemini;
+                    case Provider.Compatible:
+                        return _apiCompatible;
+                }
+            }
+        }
         private static Image _shot;
         private int _apiCount = 0;
         static string _prevText = "";
@@ -77,6 +95,7 @@ namespace IriamCommentReader
             textBoxHeight.Text = Pref.CaptureRect.Height.ToString();
             _apiOpenAI = new OpenAIAPI("");
             _apiGemini = new GeminiAPI("");
+            _apiCompatible = new CompatibleAPI("");
             _apiGemini.Schema = _commentSchema;
             _apiGemini.TopK = 40;
             _apiGemini.FrequencyPenalty = 1.0f;
@@ -105,7 +124,14 @@ namespace IriamCommentReader
             }
             else
             {
-                labelTokens.Text = $"現在のモデル: {Pref.Model} / {Pref.MiniModel}{appendText}";
+                if (string.IsNullOrEmpty(Pref.MiniModel))
+                {
+                    labelTokens.Text = $"現在のモデル: {Pref.Model}{appendText}";
+                }
+                else
+                {
+                    labelTokens.Text = $"現在のモデル: {Pref.Model} / {Pref.MiniModel}{appendText}";
+                }
             }
         }
 
@@ -207,6 +233,11 @@ namespace IriamCommentReader
                 return;
             }
 
+            if (UseCompatible)
+            {
+                _apiCompatible.BaseURL = Pref.APIs[Provider.Compatible].BaseURL;
+            }
+
             if (Pref.SimilarOnly)
             {
                 var text = OCRPicture(_shot).Text.Replace(" ", "");
@@ -262,20 +293,25 @@ namespace IriamCommentReader
                 {
                     textBoxChatLog.AppendText("OpenAI の本日分のトークンを使い切りました. 日本時間で午前9時にリセットされます.\r\n");
                     Pref.ProviderEnded = true;
-                    if (!Pref.ProviderAllEnded && !string.IsNullOrEmpty(Pref.APIKeys[APIProviderType.Gemini]))
+                    if (!Pref.ProviderAllEnded && !string.IsNullOrEmpty(Pref.APIs[Provider.Gemini].MiniModel))
                     {
                         textBoxChatLog.AppendText("使用する AI を Gemini に切り替えます.\r\n");
-                        Pref.CurrentProvider = APIProviderType.Gemini;
+                        Pref.CurrentProvider = Provider.Gemini;
                         UpdateAPIProviderDisplay();
                     }
                 }
                 return;
             }
 
+            if (string.IsNullOrEmpty(Pref.MiniModel))
+            {
+                miniModel = false;
+            }
+
             model = miniModel ? Pref.MiniModel : Pref.Model;
             leftTokens = miniModel ? Pref.LeftMiniTokens : Pref.LeftTokens;
 
-            if (string.IsNullOrEmpty(Pref.APIKey))
+            if (!UseCompatible &&  string.IsNullOrEmpty(Pref.APIKey))
             {
                 _prevText = "";
                 textBoxChatLog.AppendText($"{Pref.CurrentProvider.ToString()} : API キーが設定されていません.\r\n");
@@ -337,7 +373,7 @@ namespace IriamCommentReader
                     // }
 
                     textBoxResponse.Text = CurrentAPI.LastResponse;
-                    jsonResponse = jsonResponse.Trim('\n').Trim('\r').Trim('`').Replace("```json", string.Empty).Replace("```", string.Empty); // Gemma 4はJSONの末尾に ``` をつけてくることがある
+                    jsonResponse = jsonResponse.Trim('\n').Trim('\r').Replace("```json", string.Empty).Replace("```", string.Empty).Trim('`'); // Gemma 4はJSONの末尾に ``` をつけてくることがある
                     textBox2.Text = jsonResponse; // Display transcribed text in a textbox
                     _apiCount++;
                     labelAPICount.Text = $"API回数:{_apiCount}";
@@ -441,7 +477,7 @@ namespace IriamCommentReader
                     if (ex is System.Net.Http.HttpRequestException && ex.Message.Contains("429"))
                     {
                         textBoxChatLog.AppendText("Gemini APIの呼び出し回数制限(429)に達しました.\r\n");
-                        if (Pref.CurrentProvider == APIProviderType.Gemini)
+                        if (UseGemini)
                         {
                             if (!Pref.GemimiMainModelReachedLimit)
                             {
@@ -450,13 +486,13 @@ namespace IriamCommentReader
                                 UpdateAPIProviderDisplay();
                             }
                         }
-                        else if (!string.IsNullOrEmpty(Pref.APIKeys[APIProviderType.OpenAI]))
+                        else if (UseOpenAI && !string.IsNullOrEmpty(Pref.APIs[Provider.OpenAI].MiniModel))
                         {
                             Pref.ProviderEnded = true;
-                            if (!Pref.ProviderAllEnded && !string.IsNullOrEmpty(Pref.APIKeys[APIProviderType.OpenAI]))
+                            if (!Pref.ProviderAllEnded && !string.IsNullOrEmpty(Pref.APIs[Provider.OpenAI].MiniModel))
                             {
                                 textBoxChatLog.AppendText("Geminiの全モデルを使い切ったため、OpenAI に切り替えます。.\r\n");
-                                Pref.CurrentProvider = APIProviderType.OpenAI;
+                                Pref.CurrentProvider = Provider.OpenAI;
                                 UpdateAPIProviderDisplay();
                             }
                         }
@@ -682,15 +718,24 @@ namespace IriamCommentReader
         {
             var menu = (ToolStripMenuItem)sender;
             var tag = menu.Tag.ToString();
-            APIProviderType type = (APIProviderType)(int.Parse(tag));
+            Provider type = (Provider)(int.Parse(tag));
             Pref.CurrentProvider = type;
             UpdateAPIProviderDisplay();
         }
 
         private void UpdateAPIProviderDisplay()
         {
-            toolStripDropDownButtonAPIProvider.Text = Pref.CurrentProvider.ToString();
+            var providerText = $"{(UseCompatible ? "互換API" : Pref.CurrentProvider.ToString())}";
+            toolStripDropDownButtonAPIProvider.Text = providerText;
             ShowLeftTokens();
+        }
+
+        private void toolStripDropDownButtonAPIProvider_DropDownOpening(object sender, EventArgs e)
+        {
+            toolStripMenuItemGemini.Checked = UseGemini;
+            toolStripMenuItemOpenAI.Checked = UseOpenAI;
+            toolStripMenuItemCompatible.Checked = UseCompatible;
+            toolStripMenuItemCompatible.Visible = !string.IsNullOrEmpty(Pref.APIs[Provider.Compatible].BaseURL);
         }
     }
 }

@@ -35,27 +35,42 @@ namespace IriamCommentReader
             comboBoxOpenAIMiniModel.BeginUpdate();
             comboBoxOpenAIMiniModel.Items.AddRange(Preference.OpenAIMiniModelWhiteList?.ToArray());
             comboBoxOpenAIMiniModel.EndUpdate();
+
+            comboBoxCompatibleModel.Items.Clear();
+            comboBoxCompatibleModel.BeginUpdate();
+            comboBoxCompatibleModel.Items.AddRange(Preference.OpenModelList?.ToArray());
+            comboBoxCompatibleModel.EndUpdate();
         }
 
         private void FormPreference_Load(object sender, EventArgs e)
         {
-            textBoxGeminiAPIKey.Text = Preference.Instance.APIKeys[APIProviderType.Gemini];
-            comboBoxGeminiModel.Text = Preference.Instance.Models[APIProviderType.Gemini];
-            comboBoxGeminiModel2.Text = Preference.Instance.MiniModels[APIProviderType.Gemini];
-            numericGeminiTemperature.Value = (Decimal)Preference.Instance.Temperatures[APIProviderType.Gemini];
-            numericGeminiTopP.Value = (Decimal)Preference.Instance.TopPs[APIProviderType.Gemini];
-            textBoxGeminiSystem.Text = Preference.Instance.SystemPrompts[APIProviderType.Gemini];
-            textBoxGeminiInitPrompt.Text = Preference.Instance.InitPrompts[APIProviderType.Gemini];
-            textBoxGeminiPrompt.Text = Preference.Instance.Prompts[APIProviderType.Gemini];
+            textBoxGeminiAPIKey.Text = Preference.Instance.APIs[Provider.Gemini].APIKey;
+            comboBoxGeminiModel.Text = Preference.Instance.APIs[Provider.Gemini].Model;
+            comboBoxGeminiModel2.Text = Preference.Instance.APIs[Provider.Gemini].MiniModel;
+            numericGeminiTemperature.Value = (Decimal)Preference.Instance.APIs[Provider.Gemini].Temperature;
+            numericGeminiTopP.Value = (Decimal)Preference.Instance.APIs[Provider.Gemini].TopP;
+            textBoxGeminiSystem.Text = Preference.Instance.APIs[Provider.Gemini].SystemPrompt;
+            textBoxGeminiInitPrompt.Text = Preference.Instance.APIs[Provider.Gemini].InitPrompt;
+            textBoxGeminiPrompt.Text = Preference.Instance.APIs[Provider.Gemini].Prompt;
+ 
+            textBoxOpenAIAPIKey.Text = Preference.Instance.APIs[Provider.OpenAI].APIKey;
+            comboBoxOpenAIModel.Text = Preference.Instance.APIs[Provider.OpenAI].Model;
+            comboBoxOpenAIMiniModel.Text = Preference.Instance.APIs[Provider.OpenAI].MiniModel;
+            numericOpenAITemperature.Value = (Decimal)Preference.Instance.APIs[Provider.OpenAI].Temperature;
+            numericOpenAITopP.Value = (Decimal)Preference.Instance.APIs[Provider.OpenAI].TopP;
+            textBoxOpenAISystem.Text = Preference.Instance.APIs[Provider.OpenAI].SystemPrompt;
+            textBoxOpenAIInitPrompt.Text = Preference.Instance.APIs[Provider.OpenAI].InitPrompt;
+            textBoxOpenAIPrompt.Text = Preference.Instance.APIs[Provider.OpenAI].Prompt;
 
-            textBoxOpenAIAPIKey.Text = Preference.Instance.APIKeys[APIProviderType.OpenAI];
-            comboBoxOpenAIModel.Text = Preference.Instance.Models[APIProviderType.OpenAI];
-            comboBoxOpenAIMiniModel.Text = Preference.Instance.MiniModels[APIProviderType.OpenAI];
-            numericOpenAITemperature.Value = (Decimal)Preference.Instance.Temperatures[APIProviderType.OpenAI];
-            numericOpenAITopP.Value = (Decimal)Preference.Instance.TopPs[APIProviderType.OpenAI];
-            textBoxOpenAISystem.Text = Preference.Instance.SystemPrompts[APIProviderType.OpenAI];
-            textBoxOpenAIInitPrompt.Text = Preference.Instance.InitPrompts[APIProviderType.OpenAI];
-            textBoxOpenAIPrompt.Text = Preference.Instance.Prompts[APIProviderType.OpenAI];
+            textBoxCompatibleBaseURL.Text = Preference.Instance.APIs[Provider.Compatible].BaseURL;
+            textBoxCompatibleAPIKey.Text = Preference.Instance.APIs[Provider.Compatible].APIKey;
+            comboBoxCompatibleModel.Text = Preference.Instance.APIs[Provider.Compatible].Model;
+            // comboBoxCompatibleMiniModel.Text = Preference.Instance.APIs[Provider.Compatible].MiniModel;
+            numericCompatibleTemperature.Value = (Decimal)Preference.Instance.APIs[Provider.Compatible].Temperature;
+            numericCompatibleTopP.Value = (Decimal)Preference.Instance.APIs[Provider.Compatible].TopP;
+            textBoxCompatibleSystem.Text = Preference.Instance.APIs[Provider.Compatible].SystemPrompt;
+            textBoxCompatibleInitPrompt.Text = Preference.Instance.APIs[Provider.Compatible].InitPrompt;
+            textBoxCompatiblePrompt.Text = Preference.Instance.APIs[Provider.Compatible].Prompt;
 
             checkBoxSkipNameAll.Checked = Preference.Instance.SkipNameAll;
             checkBoxSkipName.Checked = Preference.Instance.SkipName;
@@ -74,14 +89,33 @@ namespace IriamCommentReader
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            Preference.Instance.APIKeys[APIProviderType.Gemini] = textBoxGeminiAPIKey.Text;
-            Preference.Instance.Models[APIProviderType.Gemini] = comboBoxGeminiModel.Text;
-            Preference.Instance.MiniModels[APIProviderType.Gemini] = comboBoxGeminiModel2.Text;
-            Preference.Instance.Temperatures[APIProviderType.Gemini] = (float)numericGeminiTemperature.Value;
-            Preference.Instance.TopPs[APIProviderType.Gemini] = (float)numericGeminiTopP.Value;
-            Preference.Instance.SystemPrompts[APIProviderType.Gemini] = textBoxGeminiSystem.Text;
-            Preference.Instance.InitPrompts[APIProviderType.Gemini] = textBoxGeminiInitPrompt.Text;
-            Preference.Instance.Prompts[APIProviderType.Gemini] = textBoxGeminiPrompt.Text;
+            Preference.Instance.APIs[Provider.Gemini].APIKey = textBoxGeminiAPIKey.Text;
+            Preference.Instance.APIs[Provider.Gemini].Model = comboBoxGeminiModel.Text;
+            Preference.Instance.APIs[Provider.Gemini].MiniModel = comboBoxGeminiModel2.Text;
+            Preference.Instance.APIs[Provider.Gemini].Temperature = (float)numericGeminiTemperature.Value;
+            Preference.Instance.APIs[Provider.Gemini].TopP = (float)numericGeminiTopP.Value;
+            Preference.Instance.APIs[Provider.Gemini].SystemPrompt = textBoxGeminiSystem.Text;
+            Preference.Instance.APIs[Provider.Gemini].InitPrompt = textBoxGeminiInitPrompt.Text;
+            Preference.Instance.APIs[Provider.Gemini].Prompt = textBoxGeminiPrompt.Text;
+
+            Preference.Instance.APIs[Provider.OpenAI].APIKey = textBoxOpenAIAPIKey.Text;
+            Preference.Instance.APIs[Provider.OpenAI].Model = comboBoxOpenAIModel.Text;
+            Preference.Instance.APIs[Provider.OpenAI].MiniModel = comboBoxOpenAIMiniModel.Text;
+            Preference.Instance.APIs[Provider.OpenAI].Temperature = (float)numericOpenAITemperature.Value;
+            Preference.Instance.APIs[Provider.OpenAI].TopP = (float)numericOpenAITopP.Value;
+            Preference.Instance.APIs[Provider.OpenAI].SystemPrompt = textBoxOpenAISystem.Text;
+            Preference.Instance.APIs[Provider.OpenAI].InitPrompt = textBoxOpenAIInitPrompt.Text;
+            Preference.Instance.APIs[Provider.OpenAI].Prompt = textBoxOpenAIPrompt.Text;
+
+            Preference.Instance.APIs[Provider.Compatible].BaseURL = textBoxCompatibleBaseURL.Text;
+            Preference.Instance.APIs[Provider.Compatible].APIKey = textBoxCompatibleAPIKey.Text;
+            Preference.Instance.APIs[Provider.Compatible].Model = comboBoxCompatibleModel.Text;
+            // Preference.Instance.APIs[Provider.Compatible].MiniModel = comboBoxCompatibleMiniModel.Text;
+            Preference.Instance.APIs[Provider.Compatible].Temperature = (float)numericCompatibleTemperature.Value;
+            Preference.Instance.APIs[Provider.Compatible].TopP = (float)numericCompatibleTopP.Value;
+            Preference.Instance.APIs[Provider.Compatible].SystemPrompt = textBoxCompatibleSystem.Text;
+            Preference.Instance.APIs[Provider.Compatible].InitPrompt = textBoxCompatibleInitPrompt.Text;
+            Preference.Instance.APIs[Provider.Compatible].Prompt = textBoxCompatiblePrompt.Text;
 
             Preference.Instance.SkipNameAll = checkBoxSkipNameAll.Checked;
             Preference.Instance.SkipName = checkBoxSkipName.Checked;
