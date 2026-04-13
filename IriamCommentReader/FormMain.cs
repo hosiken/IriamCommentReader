@@ -373,6 +373,7 @@ namespace IriamCommentReader
                     // }
 
                     textBoxResponse.Text = CurrentAPI.LastResponse;
+                    jsonResponse = jsonResponse.Trim('\n').Trim('\r').Replace("json```", string.Empty).Replace("```json", string.Empty).Replace("```", string.Empty).Trim('`'); // Gemma 4はJSONの末尾に ``` をつけてくることがある
                     textBox2.Text = jsonResponse; // Display transcribed text in a textbox
                     _apiCount++;
                     labelAPICount.Text = $"API回数:{_apiCount}";
