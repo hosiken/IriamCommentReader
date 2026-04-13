@@ -114,6 +114,8 @@ namespace IriamCommentReader
                 { "stream", true },
                 { "stream_options", new { include_usage = true } }, // chat/completions のストリームでトークン数を取得するために必要
                 { "response_format", responseSchema }, // 旧: text = new { format = ... }
+                { "temperature", Temperature },
+                { "top_p", TopP },
                 // { "tools", new List<object>() }, // chat/completionsで空配列を渡すとエラーになるモデルがあるため除外推奨
                 // { "store", true } // 必要に応じて追加
             };

@@ -121,7 +121,9 @@ namespace IriamCommentReader
                     { "stream", true }, // ここで切り替え
                     { "text", new { format = responseSchema } },
                     { "tools", new List<object>() },
-                    { "store", true }
+                    { "store", true },
+                    { "temperature", Temperature },
+                    { "top_p", TopP },
                 };
 
                 // GPT-5 / o1 系の推論設定
@@ -149,6 +151,10 @@ namespace IriamCommentReader
                     tools = new List<object>(),
 
                     store = true,
+
+                    temperature = Temperature,
+
+                    top_p = TopP,
 
                     include = new string[]
                     {
