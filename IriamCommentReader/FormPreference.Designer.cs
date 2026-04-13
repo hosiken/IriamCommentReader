@@ -51,10 +51,10 @@ namespace IriamCommentReader
             this.label8 = new System.Windows.Forms.Label();
             this.comboBoxBouyomiParam = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.checkBoxSimilarOnly = new System.Windows.Forms.CheckBox();
+            this.checkBoxSimilarityRetryEnable = new System.Windows.Forms.CheckBox();
             this.numericSimilarity = new System.Windows.Forms.NumericUpDown();
             this.numericSimilarRetryInterval = new System.Windows.Forms.NumericUpDown();
-            this.checkBoxSimilarityRetryEnable = new System.Windows.Forms.CheckBox();
+            this.checkBoxSimilarOnly = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.comboBoxOpenAIMiniModel = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -99,6 +99,8 @@ namespace IriamCommentReader
             this.label27 = new System.Windows.Forms.Label();
             this.textBoxCompatibleAPIKey = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
+            this.numericChatHistoryCount = new System.Windows.Forms.NumericUpDown();
+            this.label23 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericOpenAITemperature)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericOpenAITopP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSimilarity)).BeginInit();
@@ -113,6 +115,7 @@ namespace IriamCommentReader
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericCompatibleTemperature)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericCompatibleTopP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericChatHistoryCount)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBoxOpenAIModel
@@ -200,7 +203,7 @@ namespace IriamCommentReader
             this.buttonOK.Location = new System.Drawing.Point(307, 657);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 18;
+            this.buttonOK.TabIndex = 20;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
@@ -212,7 +215,7 @@ namespace IriamCommentReader
             this.buttonCancel.Location = new System.Drawing.Point(388, 657);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 19;
+            this.buttonCancel.TabIndex = 21;
             this.buttonCancel.Text = "キャンセル";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -222,7 +225,7 @@ namespace IriamCommentReader
             this.buttonDefualt.Location = new System.Drawing.Point(12, 657);
             this.buttonDefualt.Name = "buttonDefualt";
             this.buttonDefualt.Size = new System.Drawing.Size(75, 23);
-            this.buttonDefualt.TabIndex = 17;
+            this.buttonDefualt.TabIndex = 19;
             this.buttonDefualt.Text = "初期設定";
             this.buttonDefualt.UseVisualStyleBackColor = true;
             this.buttonDefualt.Click += new System.EventHandler(this.buttonDefualt_Click);
@@ -330,7 +333,7 @@ namespace IriamCommentReader
             this.comboBoxBouyomiURL.Location = new System.Drawing.Point(88, 599);
             this.comboBoxBouyomiURL.Name = "comboBoxBouyomiURL";
             this.comboBoxBouyomiURL.Size = new System.Drawing.Size(375, 23);
-            this.comboBoxBouyomiURL.TabIndex = 14;
+            this.comboBoxBouyomiURL.TabIndex = 16;
             // 
             // label8
             // 
@@ -338,7 +341,7 @@ namespace IriamCommentReader
             this.label8.Location = new System.Drawing.Point(16, 602);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(66, 15);
-            this.label8.TabIndex = 13;
+            this.label8.TabIndex = 15;
             this.label8.Text = "棒読みURL";
             // 
             // comboBoxBouyomiParam
@@ -350,7 +353,7 @@ namespace IriamCommentReader
             this.comboBoxBouyomiParam.Location = new System.Drawing.Point(88, 625);
             this.comboBoxBouyomiParam.Name = "comboBoxBouyomiParam";
             this.comboBoxBouyomiParam.Size = new System.Drawing.Size(375, 23);
-            this.comboBoxBouyomiParam.TabIndex = 16;
+            this.comboBoxBouyomiParam.TabIndex = 18;
             // 
             // label9
             // 
@@ -358,18 +361,18 @@ namespace IriamCommentReader
             this.label9.Location = new System.Drawing.Point(17, 628);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(70, 15);
-            this.label9.TabIndex = 15;
+            this.label9.TabIndex = 17;
             this.label9.Text = "棒読みパラム";
             // 
-            // checkBoxSimilarOnly
+            // checkBoxSimilarityRetryEnable
             // 
-            this.checkBoxSimilarOnly.AutoSize = true;
-            this.checkBoxSimilarOnly.Location = new System.Drawing.Point(15, 521);
-            this.checkBoxSimilarOnly.Name = "checkBoxSimilarOnly";
-            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(232, 19);
-            this.checkBoxSimilarOnly.TabIndex = 6;
-            this.checkBoxSimilarOnly.Text = "APIをスキップしたとき次の間隔でリトライする";
-            this.checkBoxSimilarOnly.UseVisualStyleBackColor = true;
+            this.checkBoxSimilarityRetryEnable.AutoSize = true;
+            this.checkBoxSimilarityRetryEnable.Location = new System.Drawing.Point(15, 521);
+            this.checkBoxSimilarityRetryEnable.Name = "checkBoxSimilarityRetryEnable";
+            this.checkBoxSimilarityRetryEnable.Size = new System.Drawing.Size(232, 19);
+            this.checkBoxSimilarityRetryEnable.TabIndex = 8;
+            this.checkBoxSimilarityRetryEnable.Text = "APIをスキップしたとき次の間隔でリトライする";
+            this.checkBoxSimilarityRetryEnable.UseVisualStyleBackColor = true;
             // 
             // numericSimilarity
             // 
@@ -387,7 +390,7 @@ namespace IriamCommentReader
             65536});
             this.numericSimilarity.Name = "numericSimilarity";
             this.numericSimilarity.Size = new System.Drawing.Size(72, 23);
-            this.numericSimilarity.TabIndex = 5;
+            this.numericSimilarity.TabIndex = 7;
             // 
             // numericSimilarRetryInterval
             // 
@@ -404,22 +407,22 @@ namespace IriamCommentReader
             0});
             this.numericSimilarRetryInterval.Name = "numericSimilarRetryInterval";
             this.numericSimilarRetryInterval.Size = new System.Drawing.Size(72, 23);
-            this.numericSimilarRetryInterval.TabIndex = 7;
+            this.numericSimilarRetryInterval.TabIndex = 9;
             this.numericSimilarRetryInterval.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
             // 
-            // checkBoxSimilarityRetryEnable
+            // checkBoxSimilarOnly
             // 
-            this.checkBoxSimilarityRetryEnable.AutoSize = true;
-            this.checkBoxSimilarityRetryEnable.Location = new System.Drawing.Point(15, 496);
-            this.checkBoxSimilarityRetryEnable.Name = "checkBoxSimilarityRetryEnable";
-            this.checkBoxSimilarityRetryEnable.Size = new System.Drawing.Size(245, 19);
-            this.checkBoxSimilarityRetryEnable.TabIndex = 4;
-            this.checkBoxSimilarityRetryEnable.Text = "変化が少ない場合はAPIアクセスをスキップする";
-            this.checkBoxSimilarityRetryEnable.UseVisualStyleBackColor = true;
+            this.checkBoxSimilarOnly.AutoSize = true;
+            this.checkBoxSimilarOnly.Location = new System.Drawing.Point(15, 496);
+            this.checkBoxSimilarOnly.Name = "checkBoxSimilarOnly";
+            this.checkBoxSimilarOnly.Size = new System.Drawing.Size(245, 19);
+            this.checkBoxSimilarOnly.TabIndex = 6;
+            this.checkBoxSimilarOnly.Text = "変化が少ない場合はAPIアクセスをスキップする";
+            this.checkBoxSimilarOnly.UseVisualStyleBackColor = true;
             // 
             // label10
             // 
@@ -427,7 +430,7 @@ namespace IriamCommentReader
             this.label10.Location = new System.Drawing.Point(341, 522);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(19, 15);
-            this.label10.TabIndex = 8;
+            this.label10.TabIndex = 10;
             this.label10.Text = "秒";
             // 
             // comboBoxOpenAIMiniModel
@@ -455,7 +458,7 @@ namespace IriamCommentReader
             this.checkBoxSimilarityChatSkip.Location = new System.Drawing.Point(15, 546);
             this.checkBoxSimilarityChatSkip.Name = "checkBoxSimilarityChatSkip";
             this.checkBoxSimilarityChatSkip.Size = new System.Drawing.Size(247, 19);
-            this.checkBoxSimilarityChatSkip.TabIndex = 9;
+            this.checkBoxSimilarityChatSkip.TabIndex = 11;
             this.checkBoxSimilarityChatSkip.Text = "直近に読んだコメントに似ている場合は読まない";
             this.checkBoxSimilarityChatSkip.UseVisualStyleBackColor = true;
             // 
@@ -475,7 +478,7 @@ namespace IriamCommentReader
             65536});
             this.numericChatSimilarity.Name = "numericChatSimilarity";
             this.numericChatSimilarity.Size = new System.Drawing.Size(72, 23);
-            this.numericChatSimilarity.TabIndex = 10;
+            this.numericChatSimilarity.TabIndex = 12;
             // 
             // numericImageResizeWidth
             // 
@@ -492,7 +495,7 @@ namespace IriamCommentReader
             0});
             this.numericImageResizeWidth.Name = "numericImageResizeWidth";
             this.numericImageResizeWidth.Size = new System.Drawing.Size(72, 23);
-            this.numericImageResizeWidth.TabIndex = 12;
+            this.numericImageResizeWidth.TabIndex = 14;
             this.numericImageResizeWidth.Value = new decimal(new int[] {
             360,
             0,
@@ -505,7 +508,7 @@ namespace IriamCommentReader
             this.checkBoxImageResizeEnable.Location = new System.Drawing.Point(16, 571);
             this.checkBoxImageResizeEnable.Name = "checkBoxImageResizeEnable";
             this.checkBoxImageResizeEnable.Size = new System.Drawing.Size(190, 19);
-            this.checkBoxImageResizeEnable.TabIndex = 11;
+            this.checkBoxImageResizeEnable.TabIndex = 13;
             this.checkBoxImageResizeEnable.Text = "APIに送る画像を縮小する (横幅)";
             this.checkBoxImageResizeEnable.UseVisualStyleBackColor = true;
             // 
@@ -947,6 +950,37 @@ namespace IriamCommentReader
             this.label28.TabIndex = 2;
             this.label28.Text = "APIキー";
             // 
+            // numericChatHistoryCount
+            // 
+            this.numericChatHistoryCount.Location = new System.Drawing.Point(395, 471);
+            this.numericChatHistoryCount.Maximum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+            this.numericChatHistoryCount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericChatHistoryCount.Name = "numericChatHistoryCount";
+            this.numericChatHistoryCount.Size = new System.Drawing.Size(65, 23);
+            this.numericChatHistoryCount.TabIndex = 5;
+            this.numericChatHistoryCount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(260, 473);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(129, 15);
+            this.label23.TabIndex = 4;
+            this.label23.Text = "プロンプトのチャット履歴数";
+            // 
             // FormPreference
             // 
             this.AcceptButton = this.buttonOK;
@@ -954,6 +988,8 @@ namespace IriamCommentReader
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(478, 692);
+            this.Controls.Add(this.label23);
+            this.Controls.Add(this.numericChatHistoryCount);
             this.Controls.Add(this.checkBoxStream);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.numericImageResizeWidth);
@@ -961,10 +997,10 @@ namespace IriamCommentReader
             this.Controls.Add(this.checkBoxSimilarityChatSkip);
             this.Controls.Add(this.numericChatSimilarity);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.checkBoxSimilarityRetryEnable);
+            this.Controls.Add(this.checkBoxSimilarOnly);
             this.Controls.Add(this.numericSimilarRetryInterval);
             this.Controls.Add(this.numericSimilarity);
-            this.Controls.Add(this.checkBoxSimilarOnly);
+            this.Controls.Add(this.checkBoxSimilarityRetryEnable);
             this.Controls.Add(this.comboBoxBouyomiParam);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.comboBoxBouyomiURL);
@@ -999,6 +1035,7 @@ namespace IriamCommentReader
             this.tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericCompatibleTemperature)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericCompatibleTopP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericChatHistoryCount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1029,10 +1066,10 @@ namespace IriamCommentReader
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBoxBouyomiParam;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.CheckBox checkBoxSimilarOnly;
+        private System.Windows.Forms.CheckBox checkBoxSimilarityRetryEnable;
         private System.Windows.Forms.NumericUpDown numericSimilarity;
         private System.Windows.Forms.NumericUpDown numericSimilarRetryInterval;
-        private System.Windows.Forms.CheckBox checkBoxSimilarityRetryEnable;
+        private System.Windows.Forms.CheckBox checkBoxSimilarOnly;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ComboBox comboBoxOpenAIMiniModel;
         private System.Windows.Forms.Label label11;
@@ -1077,5 +1114,7 @@ namespace IriamCommentReader
         private System.Windows.Forms.NumericUpDown numericCompatibleTopP;
         private System.Windows.Forms.TextBox textBoxCompatiblePrompt;
         private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.NumericUpDown numericChatHistoryCount;
+        private System.Windows.Forms.Label label23;
     }
 }

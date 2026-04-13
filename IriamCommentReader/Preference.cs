@@ -211,7 +211,7 @@ namespace IriamCommentReader
 
         private const string DefaultGeminiModel = "gemma-4-31b-it";
         private const string DefaultGeminiMiniModel = "gemini-3.1-flash-lite-preview";
-        private const string DefaultGeminiSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットです\r\n    - その場合は、name と comment を分けてください\r\n- 「○○さんが○○しました」のような運営からのメッセージはnameなし(空文字列)でcommentのみとする\r\n- 文字が枠外に見切れている場合は無理に処理せず、無視する\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは … に統一する\r\n- 新しいチャットは下に追加されていく\r\n- 【処理済みcomment】が指定されている場合は…\r\n    - 【処理済みcomment】と同じcommentを再出力してはいけません。\r\n    - 【処理済みcomment】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【処理済みcomment】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
+        private const string DefaultGeminiSystemPrompt = "テキストを文字起こししてほしいです。読み上げソフトに渡すため、追加された分だけを、文字起こししてください。\r\n\r\nフォーマット:\r\n- 原則として名前 + メッセージというフォーマットです\r\n    - その場合は、name と comment を分けてください\r\n- 「○○さんが○○しました」のような運営からのメッセージはnameなし(空文字列)でcommentのみとする\r\n- 文字が枠外に見切れている場合は無理に処理せず、無視する\r\n- 絵文字は省略する、若葉マークに注意\r\n- 水色や灰色などは名前です。黒色はチャット本文です\r\n- 3点リーダーは … に統一する\r\n- 新しいチャットは下に追加されていくため、画像の上部から下に向けてコメントを拾っていく (下から上の順番は厳禁)\r\n- 【処理済みcomment】が指定されている場合は…\r\n    - 【処理済みcomment】と同じcommentを再出力してはいけません。\r\n    - 【処理済みcomment】よりも下の行に追加された続きのみ出力してください\r\n    - 新規の行が下にない(レスポンスに出力すべきテキストがない場合)場合は、空jsonを出力\r\n    - 【処理済みcomment】が読み取ったテキストにない場合は、ログが画面外に流されたものと見なして全文読んでください";
         private const string DefaultGeminiInitPrompt = "【処理済みcomment】\r\n(ありません。この指示が初回ですので全commentを出力します)";
         private const string DefaultGeminiPrompt = "【処理済みcomment】\r\n(以下のcommentはレスポンスに出力しないてください)\r\n\r\n{{text}}";
 
@@ -259,6 +259,7 @@ namespace IriamCommentReader
 
         private const string DefaultBouyomiURL = "http://localhost:50080/Talk";
         private const string DefaultBouyomiParam = "?text={{text}}";
+        private const int DefaultChatHistoryCount = 10;
         private const float DefaultSimilarity = 0.6f;
         private const float DefaultChatSimilarity = 0.8f;
         private const int DefaultSimilarRetryInterval = 1;
@@ -297,6 +298,7 @@ namespace IriamCommentReader
 
         public bool SkipNameAll { get; set; }
         public bool SkipName { get; set; }
+        public int ChatHistoryCount { get; set; }
         public bool SimilarOnly { get; set; }
         public float Similarity { get; set; }
         public bool SimilarityRetryEnable { get; set; }
@@ -335,7 +337,10 @@ namespace IriamCommentReader
 
             foreach (Provider provider in Enum.GetValues(typeof(Provider)))
             {
-                APIs[provider].Model = DefaultModels[provider];
+                if (provider != Provider.Compatible || string.IsNullOrEmpty(APIs[provider].Model))
+                {
+                    APIs[provider].Model = DefaultModels[provider];
+                }
                 APIs[provider].MiniModel = DefaultMiniModels[provider];
                 APIs[provider].Temperature = 0.0f;
                 APIs[provider].TopP = 0.0f;
@@ -346,6 +351,7 @@ namespace IriamCommentReader
 
             SkipNameAll = false;
             SkipName = true;
+            ChatHistoryCount = DefaultChatHistoryCount;
             SimilarOnly = true;
             Similarity = DefaultSimilarity;
             SimilarityRetryEnable = true;
@@ -399,6 +405,7 @@ namespace IriamCommentReader
 
             WriteBool(SectionName, "SkipNameAll", SkipNameAll);
             WriteBool(SectionName, "SkipName", SkipName);
+            WriteInt(SectionName, "ChatHistoryCount", ChatHistoryCount);
             WriteBool(SectionName, "SimilarOnly", SimilarOnly);
             WriteFloat(SectionName, "Similarity", Similarity);
             WriteBool(SectionName, "SimilarityRetryEnable", SimilarityRetryEnable);
@@ -462,6 +469,7 @@ namespace IriamCommentReader
             pref.SkipNameAll = ReadBool(SectionName, "SkipNameAll", false);
             pref.SkipName = ReadBool(SectionName, "SkipName", true);
             pref.SimilarOnly = ReadBool(SectionName, "SimilarOnly", true);
+            pref.ChatHistoryCount = ReadInt(SectionName, "ChatHistoryCount", DefaultChatHistoryCount);
             pref.Similarity = ReadFloat(SectionName, "Similarity", DefaultSimilarity);
             pref.SimilarityRetryEnable = ReadBool(SectionName, "SimilarityRetryEnable", true);
             pref.SimilarRetryInterval = ReadInt(SectionName, "SimilarRetryInterval", DefaultSimilarRetryInterval);

@@ -75,6 +75,7 @@ namespace IriamCommentReader
             checkBoxSkipNameAll.Checked = Preference.Instance.SkipNameAll;
             checkBoxSkipName.Checked = Preference.Instance.SkipName;
             checkBoxSimilarOnly.Checked = Preference.Instance.SimilarOnly;
+            numericChatHistoryCount.Value = (Decimal)Preference.Instance.ChatHistoryCount;
             numericSimilarity.Value = (Decimal)Preference.Instance.Similarity;
             checkBoxSimilarityRetryEnable.Checked = Preference.Instance.SimilarityRetryEnable;
             numericSimilarRetryInterval.Value = (Decimal)Preference.Instance.SimilarRetryInterval;
@@ -119,9 +120,10 @@ namespace IriamCommentReader
 
             Preference.Instance.SkipNameAll = checkBoxSkipNameAll.Checked;
             Preference.Instance.SkipName = checkBoxSkipName.Checked;
-            Preference.Instance.SimilarOnly = checkBoxSimilarOnly.Checked;
-            Preference.Instance.Similarity = (float)numericSimilarity.Value;
             Preference.Instance.SimilarityRetryEnable = checkBoxSimilarityRetryEnable.Checked;
+            Preference.Instance.ChatHistoryCount = (int)numericChatHistoryCount.Value;
+            Preference.Instance.Similarity = (float)numericSimilarity.Value;
+            Preference.Instance.SimilarOnly = checkBoxSimilarOnly.Checked;
             Preference.Instance.SimilarRetryInterval = (int)numericSimilarRetryInterval.Value;
             Preference.Instance.SimilarityChatSkip = checkBoxSimilarityChatSkip.Checked;
             Preference.Instance.ChatSimilarity = (float)numericChatSimilarity.Value;
